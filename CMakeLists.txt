@@ -8,11 +8,6 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
-set(
-    CMAKE_RUNTIME_OUTPUT_DIRECTORY
-    ${CMAKE_HOME_DIRECTORY}/bin
-    )
-
 set(SHORT_NAME VNVita)
 project(${SHORT_NAME})
 include("${VITASDK}/share/vita.cmake" REQUIRED)
