@@ -18,11 +18,17 @@ SDL_Rect fillRect = { SCREEN_WIDTH  / 4,
 
 int main(int argc, char *argv[]) 
 {
-  if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-      return -1;
 
-  if ((gWindow = SDL_CreateWindow( "RedRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
-    return -1;
+  #ifdef __vita__
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+        return -1;
+    if ((gWindow = SDL_CreateWindow( "RedRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
+      return -1;
+  #endif
+  #ifdef __win32__
+    
+  #endif
+
 
   if ((gRenderer = SDL_CreateRenderer( gWindow, -1, 0)) == NULL)
       return -1;
@@ -37,6 +43,10 @@ int main(int argc, char *argv[])
   gRenderer = NULL;
   
   SDL_Quit();
-  sceKernelExitProcess(0);
+
+  #ifdef  __vita__
+    sceKernelExitProcess(0);
+  #endif
+
   return 0;
 }
