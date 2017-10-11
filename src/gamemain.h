@@ -3,11 +3,13 @@
 
 class GameMain
 {
-public:
+private:
 	SDL_Window    * gWindow   = NULL;
 	SDL_Renderer  * gRenderer = NULL;
-	ErrorType StatusCode;
+	SceCtrlData GamePad;
 
+public:
+	ErrorType StatusCode;
 	void GameTick();
 	GameMain();
 	~GameMain();

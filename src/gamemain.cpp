@@ -29,8 +29,16 @@ void GameMain::GameTick()
 		SCREEN_HEIGHT / 2 
 	};
 
-	for(uint16_t tick = 0; tick < 255; ++tick)
+	uint8_t tick = 0;
+	while(GamePad.buttons != SCE_CTRL_START)
 	{
+		sceCtrlPeekBufferPositive(0, &GamePad, 1);
+
+		if (GamePad.buttons & SCE_CTRL_DOWN)
+			tick--;
+		if (GamePad.buttons & SCE_CTRL_UP)
+			tick++;
+
 		rect.R = tick;
 		rect.G = 255 - tick;
 		rect.B = 255 - tick;
