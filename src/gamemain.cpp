@@ -8,7 +8,6 @@ GameMain::GameMain()
 
 GameMain::~GameMain()
 {
-	vita2d_fini();
 	sceKernelExitProcess(0);
 }
 
@@ -17,10 +16,10 @@ void GameMain::GameTick()
 	RedRectangle rect;
 
 	vita2d_texture *imagetest = vita2d_load_JPEG_file("ux0:data/testimage.jpg");
-	vita2d_pgf * pgf = vita2d_load_default_pgf();
-	vita2d_pvf * pvf = vita2d_load_default_pvf();
+	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
 	uint8_t tick = 0;
+	memset(&GamePad, 0, sizeof(GamePad));
 	while(GamePad.buttons != SCE_CTRL_START)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
@@ -41,14 +40,13 @@ void GameMain::GameTick()
 
 		vita2d_draw_texture_rotate(imagetest, 940/2, 544/2, ((float)tick)/10);
 
-		vita2d_pgf_draw_text(pgf, 300, 30, RGBA8(0,255,0,255), 1.0f, "oh god what am I doing i'm not good at computer");
+		vita2d_pgf_draw_text(pgf, 300, 30, RGBA8(0,255,0,255), 1.0f, "oh god what am I doing i'm not good at computer\nnewline\nhmmmmmm....");
 
 		vita2d_end_drawing();
 		vita2d_swap_buffers();
 	}
 
-
+	vita2d_fini();
 	vita2d_free_texture(imagetest);
 	vita2d_free_pgf(pgf);
-	vita2d_free_pvf(pvf);
 }
