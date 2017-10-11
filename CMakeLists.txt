@@ -22,9 +22,9 @@ include_directories(
   ../common
 )
 
+file(GLOB SOURCES src/*.cpp)
 add_executable(${SHORT_NAME}
-  src/main.cpp
-  src/gamemain.cpp
+  ${SOURCES}
 )
 
 target_link_libraries(${SHORT_NAME}
