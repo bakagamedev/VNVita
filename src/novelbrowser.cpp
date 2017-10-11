@@ -6,6 +6,8 @@ NovelBrowser::NovelBrowser()
 	if(uid >= 0)
 	{
 		SceIoDirent fileInfo;
+		std::list<std::string> DirectoryList;
+
 		for(int next = sceIoDread(uid, &fileInfo); next != 0; next = sceIoDread(uid, &fileInfo))
 		{
 			if(next > 0)
@@ -13,7 +15,8 @@ NovelBrowser::NovelBrowser()
 				SceIoStat stat = fileInfo.d_stat;
 				if(stat.st_mode == SCE_SO_IFDIR)
 				{
-					// do dir stuff
+					std::string str = (fileInfo.d_name);
+					DirectoryList.emplace(str);
 				}
 			}
 			else
@@ -25,6 +28,9 @@ NovelBrowser::NovelBrowser()
 		{
 			// also an error
 		}
+
+		/* crunch DirectoryList into NovelList here */
+
 		this->StatusCode = ErrorType::OK;
 	}
 	else
@@ -51,16 +57,18 @@ void NovelBrowser::Run()
 		if(StatusCode == ErrorType::MainDirectoryFail)
 		{
 			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
-			while(GamePad.buttons != 0)
+			while(GamePad.buttons & SCE_CTRL_START)
 			{
-				//wow I hope this multithreads this sort of thing
 				sceCtrlPeekBufferPositive(0, &GamePad, 1);
 			}
 		}
 		else
 		{
-			//double good thing you can force close things!
 			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "YES!");
+			while(GamePad.buttons & SCE_CTRL_START)
+			{
+				sceCtrlPeekBufferPositive(0, &GamePad, 1);
+			}
 		}
 
 		vita2d_end_drawing();
