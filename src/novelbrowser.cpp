@@ -4,7 +4,7 @@ NovelBrowser::NovelBrowser()
 {
 	StatusCode = ErrorType::OK;
 
-	auto Directory = sceIoDopen("ux0:data/vnvita/");
+	int Directory = sceIoDopen("ux0:data/vnvita/");
 	if(Directory >= 0)
 	{
 		SceIoDirent * FileInfo;
@@ -20,7 +20,7 @@ NovelBrowser::NovelBrowser()
 				}
 
 			}
-			sceIoDread(Directory, &info);
+			Next = sceIoDread(Directory, &info);
 		}
 	}
 	else
