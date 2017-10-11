@@ -8,12 +8,12 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
-set(SHORT_NAME VNVita)
+set(SHORT_NAME vnvita)
 project(${SHORT_NAME})
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
-set(VITA_APP_NAME "VNVita")
-set(VITA_TITLEID  "VNVT00001")
+set(VITA_APP_NAME "VNVita Alpha")
+set(VITA_TITLEID  "VNVT12345")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -23,7 +23,8 @@ include_directories(
 )
 
 add_executable(${SHORT_NAME}
-  vnvita-win/vnvita-win/main.cpp
+  src/main.cpp
+  src/gamemain.cpp
 )
 
 target_link_libraries(${SHORT_NAME}
