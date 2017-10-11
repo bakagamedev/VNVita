@@ -29,5 +29,7 @@ private:
 public:
 	ErrorType StatusCode;
 	NovelBrowser();
+	~NovelBrowser();
+	
 	void Run();
 };

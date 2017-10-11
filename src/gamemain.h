@@ -3,9 +3,6 @@
 
 class GameMain
 {
-private:
-	SceCtrlData GamePad;
-
 public:
 	ErrorType StatusCode;
 	void GameTick();

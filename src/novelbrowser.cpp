@@ -5,17 +5,53 @@ NovelBrowser::NovelBrowser()
 	StatusCode = ErrorType::OK;
 
 	auto Directory = sceIoDopen("ux0:data/vnvita/");
-	if(Directory < 0)
+	if(Directory >= 0)
 	{
-		StatusCode = ErrorType::EpicFail;
+		SceIoDirent * FileInfo;
+		int Next = sceIoDRead(Directory, &info);
+		while(Next != 0)
+		{
+			if(Next > 0)
+			{
+				SceIoStat * stat = FileInfo->d_stat;
+				if(stat->st_mode == SCE_SO_IFDIR)
+				{
+					/* add directory to list of things to consider */
+				}
+
+			}
+			sceIoDread(Directory, &info);
+		}
+	}
+	else
+	{
+		StatusCode = ErrorType::MainDirectoryFail;
 		throw std::runtime_error("No directory!");
 	}
+
+
+
+
+}
+
+NovelBrowser::~NovelBrowser()
+{
+	vita2d_free_pgf(pgf);
 }
 
 void NovelBrowser::Run()
 {
-	if(StatusCode == ErrorType::EpicFail)
+	vita2d_start_drawing();
+	vita2d_clear_screen();
+
+	if(StatusCode == ErrorType::MainDirectoryFail)
 	{
 		vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
+		return;
 	}
+
+
+	vita2d_end_drawing();
+	vita2d_swap_buffers();
 }
+

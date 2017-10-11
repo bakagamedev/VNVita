@@ -9,6 +9,7 @@
 #include <vita2d.h>
 #include <psp2/kernel/processmgr.h>
 #include <psp2/io/dirent.h> 
+#include <psp2/io/stat.h> 
 
 #include "defines.h"
 #include "gamemain.h"
