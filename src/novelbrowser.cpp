@@ -8,7 +8,7 @@ NovelBrowser::NovelBrowser()
 	if(Directory >= 0)
 	{
 		SceIoDirent * FileInfo;
-		int Next = sceIoDRead(Directory, &info);
+		int Next = sceIoDRead(Directory, &FileInfo);
 		while(Next != 0)
 		{
 			if(Next > 0)
@@ -20,18 +20,15 @@ NovelBrowser::NovelBrowser()
 				}
 
 			}
-			Next = sceIoDread(Directory, &info);
+			Next = sceIoDread(Directory, &FileInfo);	//Next file
 		}
+		sceIoDclose(Directory); 
 	}
 	else
 	{
 		StatusCode = ErrorType::MainDirectoryFail;
 		throw std::runtime_error("No directory!");
 	}
-
-
-
-
 }
 
 NovelBrowser::~NovelBrowser()
@@ -49,7 +46,6 @@ void NovelBrowser::Run()
 		vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
 		return;
 	}
-
 
 	vita2d_end_drawing();
 	vita2d_swap_buffers();
