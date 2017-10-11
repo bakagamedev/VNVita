@@ -18,11 +18,15 @@ void GameMain::GameTick()
 		{
 			case MainState::Browser:
 			{
-				
+				NovelBrowser browser;
+				if(browser.StatusCode == ErrorType::OK)
+				{
+					browser.Run();
+				};
 			};break;
 			case MainState::Novel:
 			{
-				
+
 			}; break;
 		}
 

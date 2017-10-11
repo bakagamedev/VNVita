@@ -2,32 +2,34 @@
 
 NovelBrowser::NovelBrowser()
 {
-	StatusCode = ErrorType::OK;
-
-	int Directory = sceIoDopen("ux0:data/vnvita/");
-	if(Directory >= 0)
+	SceUID uid = sceIoDopen("ux0:data/vnvita/");
+	if(uid >= 0)
 	{
-		SceIoDirent * FileInfo;
-		int Next = sceIoDRead(Directory, &FileInfo);
-		while(Next != 0)
+		SceIoDirent fileInfo;
+		for(int next = sceIoDread(uid, &fileInfo); next != 0; next = sceIoDread(uid, &fileInfo))
 		{
-			if(Next > 0)
+			if(next > 0)
 			{
-				SceIoStat * stat = FileInfo->d_stat;
-				if(stat->st_mode == SCE_SO_IFDIR)
+				SceIoStat stat = fileInfo.d_stat;
+				if(stat.st_mode == SCE_SO_IFDIR)
 				{
-					/* add directory to list of things to consider */
+					// do dir stuff
 				}
-
 			}
-			Next = sceIoDread(Directory, &FileInfo);	//Next file
+			else
+			{
+			// log error?
+			}
 		}
-		sceIoDclose(Directory); 
+		if(sceIoDclose(uid) < 0)
+		{
+			// also an error
+		}
+		this->StatusCode = ErrorType::OK;
 	}
 	else
 	{
 		StatusCode = ErrorType::MainDirectoryFail;
-		throw std::runtime_error("No directory!");
 	}
 }
 
@@ -38,16 +40,31 @@ NovelBrowser::~NovelBrowser()
 
 void NovelBrowser::Run()
 {
-	vita2d_start_drawing();
-	vita2d_clear_screen();
-
-	if(StatusCode == ErrorType::MainDirectoryFail)
+	SceCtrlData GamePad;
+	bool Ready = false;
+	while(!Ready)
 	{
-		vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
-		return;
-	}
+		sceCtrlPeekBufferPositive(0, &GamePad, 1);
+		vita2d_start_drawing();
+		vita2d_clear_screen();
 
-	vita2d_end_drawing();
-	vita2d_swap_buffers();
+		if(StatusCode == ErrorType::MainDirectoryFail)
+		{
+			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
+			while(GamePad.buttons != 0)
+			{
+				//wow I hope this multithreads this sort of thing
+				sceCtrlPeekBufferPositive(0, &GamePad, 1);
+			}
+		}
+		else
+		{
+			//double good thing you can force close things!
+			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "YES!");
+		}
+
+		vita2d_end_drawing();
+		vita2d_swap_buffers();
+	}
 }
 
