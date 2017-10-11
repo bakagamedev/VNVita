@@ -3,19 +3,12 @@
 GameMain::GameMain()
 {
 	StatusCode = ErrorType::OK;
-
-	SDL_Init( SDL_INIT_VIDEO );
-	gWindow = SDL_CreateWindow( "Test!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	gRenderer = SDL_CreateRenderer( gWindow, -1, 0);
+	vita2d_init();
 }
 
 GameMain::~GameMain()
 {
-	SDL_Delay(500);
-	SDL_DestroyRenderer( gRenderer );
-	SDL_DestroyWindow( gWindow );
-
-	SDL_Quit();
+	vita2d_fini();
 	sceKernelExitProcess(0);
 }
 
@@ -23,11 +16,9 @@ void GameMain::GameTick()
 {
 	RedRectangle rect;
 
-	SDL_Rect fillRect = { SCREEN_WIDTH  / 4, 
-		SCREEN_HEIGHT / 4, 
-		SCREEN_WIDTH  / 2, 
-		SCREEN_HEIGHT / 2 
-	};
+	vita2d_texture *imagetest = vita2d_load_JPEG_file("ux0:data/testimage.jpg");
+	vita2d_pgf * pgf = vita2d_load_default_pgf();
+	vita2d_pvf * pvf = vita2d_load_default_pvf();
 
 	uint8_t tick = 0;
 	while(GamePad.buttons != SCE_CTRL_START)
@@ -39,12 +30,25 @@ void GameMain::GameTick()
 		if (GamePad.buttons & SCE_CTRL_UP)
 			tick++;
 
+		vita2d_start_drawing();
+		vita2d_clear_screen();
+
 		rect.R = tick;
 		rect.G = 255 - tick;
-		rect.B = 255 - tick;
-		SDL_SetRenderDrawColor( gRenderer, rect.R,rect.G,rect.B, 255);
-		SDL_RenderFillRect( gRenderer, &fillRect );
-		SDL_RenderPresent( gRenderer );
-		SDL_Delay(1000/255);
+		rect.B = 255 - tick;	
+
+		vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT , RGBA8(rect.R,rect.G,rect.B, 255));
+
+		vita2d_draw_texture_rotate(imagetest, 940/2, 544/2, ((float)tick)/10);
+
+		vita2d_pgf_draw_text(pgf, 300, 30, RGBA8(0,255,0,255), 1.0f, "oh god what am I doing i'm not good at computer");
+
+		vita2d_end_drawing();
+		vita2d_swap_buffers();
 	}
+
+
+	vita2d_free_texture(imagetest);
+	vita2d_free_pgf(pgf);
+	vita2d_free_pvf(pvf);
 }

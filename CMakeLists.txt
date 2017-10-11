@@ -30,13 +30,20 @@ add_executable(${SHORT_NAME}
 target_link_libraries(${SHORT_NAME}
   SDL2
   vita2d
+  freetype
+  png
+  jpeg
+  ScePgf_stub
+  ScePvf_stub
   SceDisplay_stub
   SceCtrl_stub
   SceAudio_stub
   SceSysmodule_stub
   SceGxm_stub
   SceCommonDialog_stub
+  c
   m
+  z
 )
 
 vita_create_self(${SHORT_NAME}.self ${SHORT_NAME})
