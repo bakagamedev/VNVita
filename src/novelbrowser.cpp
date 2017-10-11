@@ -15,8 +15,8 @@ NovelBrowser::NovelBrowser()
 				SceIoStat stat = fileInfo.d_stat;
 				if(stat.st_mode == SCE_SO_IFDIR)
 				{
-					std::string str = (fileInfo.d_name);
-					DirectoryList.emplace(str);
+					std::string name(fileInfo.d_name, sizeof(fileInfo.d_name));
+					DirectoryList.push_back(name);
 				}
 			}
 			else
@@ -29,6 +29,7 @@ NovelBrowser::NovelBrowser()
 			// also an error
 		}
 
+		count = sizeof(DirectoryList);
 		/* crunch DirectoryList into NovelList here */
 
 		this->StatusCode = ErrorType::OK;
@@ -64,7 +65,9 @@ void NovelBrowser::Run()
 		}
 		else
 		{
-			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "YES!");
+			char cstr[10];
+			sprintf(cstr,"YES! %d",count);
+			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(0,255,0,255), 2.0f, cstr);
 			while(GamePad.buttons & SCE_CTRL_START)
 			{
 				sceCtrlPeekBufferPositive(0, &GamePad, 1);

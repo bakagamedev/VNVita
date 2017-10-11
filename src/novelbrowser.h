@@ -25,6 +25,7 @@ class NovelBrowser
 private:
 	std::list<NovelHeader> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
+	int count = 0;
 
 public:
 	ErrorType StatusCode;
