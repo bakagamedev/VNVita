@@ -3,7 +3,7 @@
 
 class NovelHeader
 {
-public:
+	public:
 	NovelHeader(std::string Path)
 	{
 		this->Name = Path;
@@ -12,17 +12,16 @@ public:
 		//Check if file exists before read?
 		std::string IconPath = Path.c_str();
 		IconPath.append("\\icon.png");
-		Icon = vita2d_load_PNG_file(IconPath.c_str());
-	}
-	~NovelHeader()
-	{
-		//if(Icon != NULL)
-			//vita2d_free_texture(Icon);
-	}
+		auto iconPointer = vita2d_load_PNG_file(IconPath.c_str());
+		if(iconPointer != NULL)
+		{
+			this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
+		}
+	}	
 
 	std::string Name;
 	std::string Path;
-	vita2d_texture *Icon;
+	std::shared_ptr<vita2d_texture> Icon;
 };
 
 class NovelBrowser

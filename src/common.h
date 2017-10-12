@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <array>
+#include <memory>
 #include <string.h>
 #include <iostream>
 #include <stdio.h>

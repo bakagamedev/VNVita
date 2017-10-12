@@ -47,7 +47,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			std::string TempPath = SearchPath;
 			TempPath.append(Name);
-			NovelList.push_back(NovelHeader(TempPath));
+			NovelList.emplace_back(NovelHeader(TempPath));
 		}
 
 		this->StatusCode = StatusType::OK;
@@ -119,7 +119,7 @@ void NovelBrowser::Run()
 
 				if(NovelList[i].Icon != NULL)
 				{
-					vita2d_draw_texture(NovelList[i].Icon,0,y-24);
+					vita2d_draw_texture(NovelList[i].Icon.get(),0,y-24);
 				}
 			}
 
