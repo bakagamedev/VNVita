@@ -106,6 +106,10 @@ void NovelBrowser::Run()
 			sprintf(CountString,"%d Novels detected",count);
 			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(0,255,0,255), 1.5f, CountString);
 
+			if(NovelList[ItemSelected].Thumbnail != NULL)
+			{
+				vita2d_draw_texture(NovelList[ItemSelected].Thumbnail.get(),960*(3/4),544/2);
+			}
 			//List 'o things
 			for(int i=0; i<NovelList.size(); ++i)
 			{

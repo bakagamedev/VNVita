@@ -17,11 +17,20 @@ class NovelHeader
 		{
 			this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
 		}
+		//Thumbnail
+		std::string ThumbPath = Path.c_str();
+		ThumbPath.append("\\thumbnail.png");
+		auto thumbPointer = vita2d_load_PNG_file(ThumbPath.c_str());
+		if(thumbPointer != NULL)
+		{
+			this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+		}
 	}	
 
 	std::string Name;
 	std::string Path;
 	std::shared_ptr<vita2d_texture> Icon;
+	std::shared_ptr<vita2d_texture> Thumbnail;
 };
 
 class NovelBrowser
