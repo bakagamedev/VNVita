@@ -3,6 +3,17 @@
 NovelBrowser::NovelBrowser()
 {
 	std::string SearchPath = "ux0:data/vnvita/";
+	Search(SearchPath);
+}
+
+NovelBrowser::~NovelBrowser()
+{
+	vita2d_free_pgf(pgf);
+}
+
+void NovelBrowser::Search(std::string SearchPath)
+{
+	NovelList.clear();
 	SceUID uid = sceIoDopen(SearchPath.c_str());
 	if(uid >= 0)
 	{
@@ -44,11 +55,6 @@ NovelBrowser::NovelBrowser()
 	{
 		StatusCode = ErrorType::MainDirectoryFail;
 	}
-}
-
-NovelBrowser::~NovelBrowser()
-{
-	vita2d_free_pgf(pgf);
 }
 
 void NovelBrowser::Run()
