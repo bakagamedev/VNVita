@@ -16,8 +16,8 @@ public:
 	}
 	~NovelHeader()
 	{
-		if(Icon != NULL)
-			vita2d_free_texture(Icon);
+		//if(Icon != NULL)
+			//vita2d_free_texture(Icon);
 	}
 
 	std::string Name;

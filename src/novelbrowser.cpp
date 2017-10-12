@@ -96,23 +96,21 @@ void NovelBrowser::Run()
 			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(0,255,0,255), 1.5f, CountString);
 
 			//List 'o things
-			std::string PrintList;
 			for(int i=0; i<NovelList.size(); ++i)
 			{
+				int y = 62 + (i*32);
+
 				if(i == ItemSelected)
 				{
-					PrintList.append(">");
+					vita2d_pgf_draw_text(pgf, 40, y, RGBA8(0,0,255,255), 1.5f, ">");
 				}
-				PrintList.append(NovelList[i].Path);
-				PrintList.append("\n");
+				vita2d_pgf_draw_text(pgf, 55, y, RGBA8(0,0,255,255), 1.5f, NovelList[i].Name.c_str());
 
 				if(NovelList[i].Icon != NULL)
 				{
-					vita2d_draw_texture(NovelList[i].Icon,0,30+(i*32));
+					vita2d_draw_texture(NovelList[i].Icon,0,y-24);
 				}
 			}
-			vita2d_pgf_draw_text(pgf, 30, 60, RGBA8(0,0,255,255), 1.5f, PrintList.c_str());
-
 
 			vita2d_end_drawing();
 			vita2d_swap_buffers();
