@@ -8,11 +8,16 @@ public:
 	{
 		this->Name = Path;
 		this->Path = Path;
-		//Icon = vita2d_load_JPEG_file(Path + "icon.png");
+
+		//Check if file exists before read?
+		std::string IconPath = Path.c_str();
+		IconPath.append("\\icon.png");
+		Icon = vita2d_load_PNG_file(IconPath.c_str());
 	}
 	~NovelHeader()
 	{
-		//vita2d_free_texture(Icon);
+		if(Icon != NULL)
+			vita2d_free_texture(Icon);
 	}
 
 	std::string Name;

@@ -105,8 +105,14 @@ void NovelBrowser::Run()
 				}
 				PrintList.append(NovelList[i].Path);
 				PrintList.append("\n");
+
+				if(NovelList[i].Icon != NULL)
+				{
+					vita2d_draw_texture(NovelList[i].Icon,0,30+(i*32));
+				}
 			}
 			vita2d_pgf_draw_text(pgf, 30, 60, RGBA8(0,0,255,255), 1.5f, PrintList.c_str());
+
 
 			vita2d_end_drawing();
 			vita2d_swap_buffers();
