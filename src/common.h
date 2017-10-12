@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <vector>
 #include <string.h>
 #include <iostream>
 #include <stdio.h>

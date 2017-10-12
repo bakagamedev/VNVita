@@ -6,7 +6,7 @@ class NovelHeader
 public:
 	NovelHeader(std::string Path)
 	{
-		this->Name = Name;
+		this->Name = Path;
 		this->Path = Path;
 		//Icon = vita2d_load_JPEG_file(Path + "icon.png");
 	}
@@ -23,10 +23,10 @@ public:
 class NovelBrowser
 {
 private:
-	std::list<NovelHeader> NovelList;
+	std::vector<NovelHeader> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
-	int count = 0;
 
+	int ItemSelected = 0;
 public:
 	ErrorType StatusCode;
 	NovelBrowser();

@@ -4,6 +4,7 @@ GameMain::GameMain()
 {
 	StatusCode = ErrorType::OK;
 	vita2d_init();
+	vita2d_set_vblank_wait(true);
 }
 
 void GameMain::GameTick()
@@ -11,6 +12,9 @@ void GameMain::GameTick()
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
 	MainState State = MainState::Browser;
+
+	NovelBrowser browser;
+
 	bool Running = true;
 	while(Running)
 	{
@@ -18,24 +22,24 @@ void GameMain::GameTick()
 		{
 			case MainState::Browser:
 			{
-				NovelBrowser browser;
+				browser.Run();
+
+				//Todo : Load file condition
 				if(browser.StatusCode == ErrorType::OK)
 				{
-					browser.Run();
-				};
+
+					Running = false;
+				}
+				else
+				{
+					Running = false;
+				}
 			};break;
 			case MainState::Novel:
 			{
-
+				
 			}; break;
 		}
-
-		/*
-		if (GamePad.buttons & SCE_CTRL_DOWN)
-			tick--;
-		if (GamePad.buttons & SCE_CTRL_UP)
-			tick++;
-		*/
 	}
 
 	vita2d_fini();
