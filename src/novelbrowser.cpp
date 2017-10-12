@@ -2,10 +2,9 @@
 
 NovelBrowser::NovelBrowser()
 {
-	const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
-	std::vector<std::string> some_class::v(Paths, end(Paths)); // definition
-
-	Search(SearchPath[0]);
+	//const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
+	std::string SearchPath = "ux0:data/vnvita/";
+	Search(SearchPath.c_str());
 }
 
 NovelBrowser::~NovelBrowser()
