@@ -2,7 +2,7 @@
 
 GameMain::GameMain()
 {
-	StatusCode = ErrorType::OK;
+	StatusCode = StatusType::OK;
 	vita2d_init();
 	vita2d_set_vblank_wait(true);
 }
@@ -23,12 +23,9 @@ void GameMain::GameTick()
 			case MainState::Browser:
 			{
 				browser.Run();
-
-				//Todo : Load file condition
-				if(browser.StatusCode == ErrorType::OK)
+				if(browser.StatusCode == StatusType::GoLoad)
 				{
-
-					Running = false;
+					//LoadPath
 				}
 				else
 				{

@@ -2,8 +2,10 @@
 
 NovelBrowser::NovelBrowser()
 {
-	std::string SearchPath = "ux0:data/vnvita/";
-	Search(SearchPath);
+	const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
+	std::vector<std::string> some_class::v(Paths, end(Paths)); // definition
+
+	Search(SearchPath[0]);
 }
 
 NovelBrowser::~NovelBrowser()
@@ -49,11 +51,11 @@ void NovelBrowser::Search(std::string SearchPath)
 			NovelList.push_back(NovelHeader(TempPath));
 		}
 
-		this->StatusCode = ErrorType::OK;
+		this->StatusCode = StatusType::OK;
 	}
 	else
 	{
-		StatusCode = ErrorType::MainDirectoryFail;
+		StatusCode = StatusType::MainDirectoryFail;
 	}
 }
 
@@ -67,7 +69,7 @@ void NovelBrowser::Run()
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
 
-		if(StatusCode == ErrorType::MainDirectoryFail)
+		if(StatusCode == StatusType::MainDirectoryFail)
 		{
 			vita2d_start_drawing();
 			vita2d_clear_screen();
@@ -81,7 +83,7 @@ void NovelBrowser::Run()
 			}
 		}
 
-		if(StatusCode == ErrorType::OK)
+		if(StatusCode == StatusType::OK)
 		{
 			//Picker
 			if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
@@ -90,7 +92,11 @@ void NovelBrowser::Run()
 				ItemSelected = std::min(ItemSelected+1,((int)NovelList.size())-1);
 
 			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
+			{
+				StatusCode = StatusType::GoLoad;
+				LoadPath = NovelList[ItemSelected].Path;
 				Ready = true;
+			}
 
 			vita2d_start_drawing();
 			vita2d_clear_screen();

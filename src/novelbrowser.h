@@ -31,10 +31,13 @@ private:
 	void Search(std::string SearchPath);
 	std::vector<NovelHeader> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
-
 	int ItemSelected = 0;
+
+	std::array<std::string> SearchPathOption;
 public:
-	ErrorType StatusCode;
+	StatusType StatusCode;
+	std::string LoadPath;
+	
 	NovelBrowser();
 	~NovelBrowser();
 	

@@ -7,12 +7,13 @@ enum MainState
 	Novel,
 };
 
-enum ErrorType
+enum StatusType
 {
 	OK,
 	GenericFail,
 	EpicFail,
 	MainDirectoryFail,
+	GoLoad,
 };
 
 enum {

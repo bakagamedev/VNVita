@@ -4,7 +4,7 @@
 class GameMain
 {
 public:
-	ErrorType StatusCode;
+	StatusType StatusCode;
 	void GameTick();
 	GameMain();
 };
