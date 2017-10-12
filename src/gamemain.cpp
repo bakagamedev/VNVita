@@ -11,35 +11,24 @@ void GameMain::GameTick()
 {
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
-	MainState State = MainState::Browser;
-
-	NovelBrowser browser;
-
 	bool Running = true;
 	while(Running)
 	{
-		switch(State)
+		//File browser 
+		NovelBrowser* browser = new NovelBrowser();
+		browser->Run();
+
+		//Todo : Load file condition
+		if(browser->StatusCode == ErrorType::OK)
 		{
-			case MainState::Browser:
-			{
-				browser.Run();
-
-				//Todo : Load file condition
-				if(browser.StatusCode == ErrorType::OK)
-				{
-
-					Running = false;
-				}
-				else
-				{
-					Running = false;
-				}
-			};break;
-			case MainState::Novel:
-			{
-				
-			}; break;
+			Running = false;
 		}
+		else
+		{
+			Running = false;
+		}
+
+		delete browser;
 	}
 
 	vita2d_fini();
