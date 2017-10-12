@@ -23,6 +23,7 @@ void GameMain::GameTick()
 			case MainState::Browser:
 			{
 				browser.Run();
+				Running = false;	
 				if(browser.StatusCode == StatusType::GoLoad)
 				{
 					//LoadPath
