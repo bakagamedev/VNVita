@@ -80,25 +80,28 @@ class NovelHeader
 			this->Path = Path;
 
 			//Load name from info.txt
+
 			auto InfoPath = Path + "\\info.txt";
-	    	INIReader reader(InfoPath);
-	    	if (reader.ParseError() < 0) {
+	    	INIReader * reader = new INIReader(InfoPath);
+	    	if (reader->ParseError() < 0) {
 	    		Name = Path;
 	    		Name.append("#");
 	    	}
 	    	else
 	    	{
-	    		Name = reader.Get("", "title", Path);
+	    		Name = reader->Get("", "title", Path);
 	    	}
+	    	delete reader;
 
 	    	//Image size from img.ini
 			auto ImgPath = Path + "\\img.ini";
-	    	INIReader reader(InfoPath);
-			if (reader.ParseError() >= 0)
+	    	reader = new INIReader(ImgPath);
+			if (reader->ParseError() >= 0)
 			{
-				Width = GetInteger("", "width", Width);
-				Height = GetInteger("", "height", Height);
+				Width = reader->GetInteger("", "width", Width);
+				Height = reader->GetInteger("", "height", Height);
 			}
+			delete reader;
 
 			//Images
 			if(LoadImages)
@@ -120,4 +123,4 @@ class NovelHeader
 				}
 			}
 		}	
-}
+};

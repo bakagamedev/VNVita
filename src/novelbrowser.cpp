@@ -9,6 +9,7 @@ NovelBrowser::NovelBrowser()
 
 NovelBrowser::~NovelBrowser()
 {
+	vita2d_wait_rendering_done();
 	vita2d_free_pgf(pgf);
 }
 
@@ -121,6 +122,10 @@ std::string NovelBrowser::Run()
 				float X = 960/2;
 				float Y = 32;
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
+
+				char ResolutionString[10];
+				sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
+				vita2d_pgf_draw_text(pgf, 960/2, 520,RGBA8(255,255,255,255), 1.0f, ResolutionString);
 			}
 
 			//List 'o things

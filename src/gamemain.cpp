@@ -9,15 +9,15 @@ GameMain::GameMain()
 
 void GameMain::GameTick()
 {
-	MainState State = MainState::Browser;
-
 	bool Running = true;
 	while(Running)
 	{
-		std::string Path;
-		NovelBrowser browser;
-		Path = browser.Run();
-		if(browser.StatusCode == StatusType::GoLoad)
+		NovelBrowser * browser = new NovelBrowser();
+		std::string Path = browser->Run();
+		StatusType Status = browser->StatusCode;
+		delete browser;
+
+		if(Status == StatusType::GoLoad)
 		{		
 			NovelMain novel = NovelMain(Path);
 			novel.Run();
