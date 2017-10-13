@@ -112,7 +112,12 @@ std::string NovelBrowser::Run()
 			if(Thumbnail != NULL)
 			{
 				//Scale to fit half of screen
-				float Scale = (960/2) / vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
+				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
+				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
+				{
+					Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
+				}
+				float Scale = (960/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
 				float X = 960/2;
 				float Y = 32;
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
