@@ -58,8 +58,9 @@ void NovelBrowser::Search(std::string SearchPath)
 	}
 }
 
-void NovelBrowser::Run()
+std::string NovelBrowser::Run()
 {
+	std::string PathReturn = "";
 	SceCtrlData GamePad, GamePadLast;
 	ItemSelected = 0;
 
@@ -93,9 +94,7 @@ void NovelBrowser::Run()
 			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 			{
 				StatusCode = StatusType::GoLoad;
-				NovelHeader TempNovel = NovelHeader(NovelList[ItemSelected].Path,false);
-				NovelSelected = &TempNovel;
-				Ready = true;
+				return NovelList[ItemSelected].Path;
 			}
 
 			vita2d_start_drawing();
@@ -148,5 +147,7 @@ void NovelBrowser::Run()
 
 		GamePadLast = GamePad;
 	}
+
+	return PathReturn;
 }
 

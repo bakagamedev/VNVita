@@ -4,11 +4,11 @@
 class NovelMain
 {
 private:
-	NovelHeader * NovelSelected;
+	std::string Path;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
 public:
-	NovelMain(NovelHeader * NovelSelected);
+	NovelMain(std::string LoadPath);
 	~NovelMain();
 	void Run();
 };

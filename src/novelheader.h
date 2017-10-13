@@ -64,6 +64,8 @@ class NovelHeader
 		}
 
 	public:
+	NovelHeader(void);
+
 	NovelHeader(std::string Path, bool LoadImages)
 	{
 		this->Name = Path;

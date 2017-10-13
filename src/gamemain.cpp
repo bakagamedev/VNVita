@@ -11,35 +11,20 @@ void GameMain::GameTick()
 {
 	MainState State = MainState::Browser;
 
-	NovelHeader * CurrentNovel;
 	bool Running = true;
 	while(Running)
 	{
-		switch(State)
+		std::string Path;
+		NovelBrowser browser;
+		Path = browser.Run();
+		if(browser.StatusCode == StatusType::GoLoad)
+		{		
+			NovelMain novel = NovelMain(Path);
+			novel.Run();
+		}
+		else
 		{
-			case MainState::Browser:
-			{
-				NovelBrowser browser;
-				browser.Run();
-				if(browser.StatusCode == StatusType::GoLoad)
-				{
-					State = MainState::Novel;
-					CurrentNovel = browser.NovelSelected;
-				}
-				else
-				{
-					Running = false;
-				}
-			};break;
-			case MainState::Novel:
-			{
-				//Uncomment to crash console!
-				/*
-				NovelMain novel(CurrentNovel);
-				novel.Run();
-				*/
-				Running = false;
-			}; break;
+			Running = false;
 		}
 	}
 

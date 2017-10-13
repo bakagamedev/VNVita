@@ -10,10 +10,9 @@ private:
 	int ItemSelected = 0;
 public:
 	StatusType StatusCode;
-	NovelHeader * NovelSelected;
 	
 	NovelBrowser();
 	~NovelBrowser();
 	
-	void Run();
+	std::string Run();
 };
