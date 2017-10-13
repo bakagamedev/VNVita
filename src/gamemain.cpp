@@ -12,11 +12,13 @@ void GameMain::GameTick()
 	bool Running = true;
 	while(Running)
 	{
-		NovelBrowser * browser = new NovelBrowser();
-		std::string Path = browser->Run();
-		StatusType Status = browser->StatusCode;
-		delete browser;
-
+		std::string Path;
+		StatusType Status;
+		{
+			NovelBrowser browser = NovelBrowser();
+			Path = browser.Run();
+			Status = browser.StatusCode;
+		}
 		if(Status == StatusType::GoLoad)
 		{		
 			NovelMain novel = NovelMain(Path);
