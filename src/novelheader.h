@@ -71,6 +71,17 @@ class NovelHeader
 		this->Name = Path;
 		this->Path = Path;
 
+		auto InfoPath = Path + "\\info.txt";
+    	INIReader reader(InfoPath);
+    	if (reader.ParseError() < 0) {
+    		Name = Path;
+    		Name.append("#");
+    	}
+    	else
+    	{
+    		Name = reader.Get("", "title", Path);
+    	}
+
 		if(LoadImages)
 		{
 			//Icon
