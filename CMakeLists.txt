@@ -24,6 +24,8 @@ include_directories(
 
 file(GLOB SOURCES src/*.cpp)
 add_executable(${SHORT_NAME}
+  src/ini/INIReader.cpp
+  src/ini/ini.c
   ${SOURCES}
 )
 
