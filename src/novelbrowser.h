@@ -14,7 +14,7 @@ class NovelHeader
 			vita2d_texture* Texture;
 			std::string PathTemp = Path;
 
-			// High png
+			// High PNG
 			Texture = vita2d_load_PNG_file((PathTemp.append("-high.png")).c_str());
 			
 			// High JPG

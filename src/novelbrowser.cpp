@@ -89,7 +89,7 @@ void NovelBrowser::Run()
 				ItemSelected = std::max(ItemSelected-1,0);
 			if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
 				ItemSelected = std::min(ItemSelected+1,((int)NovelList.size())-1);
-
+			
 			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 			{
 				StatusCode = StatusType::GoLoad;
@@ -102,28 +102,42 @@ void NovelBrowser::Run()
 
 			//Header text
 			int count = NovelList.size();
-			char CountString[25];
-			sprintf(CountString,"%d Novels detected",count);
-			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(0,255,0,255), 1.5f, CountString);
+			char CountString[30];
+			sprintf(CountString,"VNVita - %d Novels detected",count);
+			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,255,255), 1.5f, CountString);
+			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));
 
-			if(NovelList[ItemSelected].Thumbnail != NULL)
+			//Thumbnail
+			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
+			if(Thumbnail != NULL)
 			{
-				vita2d_draw_texture(NovelList[ItemSelected].Thumbnail.get(),960*(3/4),544/2);
+				//Scale to fit half of screen
+				float Scale = (960/2) / vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
+				float X = 960/2;
+				float Y = 32;
+				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
 			}
+
 			//List 'o things
 			for(int i=0; i<NovelList.size(); ++i)
 			{
-				int y = 62 + (i*32);
+				float Y = 64 + (i*64);
 
+				auto White = RGBA8(255,255,255,255);
+				auto Colour = RGBA8(0,0,255,255);
 				if(i == ItemSelected)
-				{
-					vita2d_pgf_draw_text(pgf, 40, y, RGBA8(0,0,255,255), 1.5f, ">");
-				}
-				vita2d_pgf_draw_text(pgf, 55, y, RGBA8(0,0,255,255), 1.5f, NovelList[i].Name.c_str());
+					Colour = White;
 
-				if(NovelList[i].Icon != NULL)
+				vita2d_draw_line(0,Y+32, 960/2, Y+32, White);
+				vita2d_pgf_draw_text(pgf, 66, Y, Colour, 2.0f, NovelList[i].Name.c_str());
+				vita2d_pgf_draw_text(pgf, 66, Y+24, RGBA8(0,0,255,255), 1.0f, NovelList[i].Path.c_str());
+
+				auto Icon = NovelList[i].Icon.get();
+				if(Icon != NULL)
 				{
-					vita2d_draw_texture(NovelList[i].Icon.get(),0,y-24);
+					float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
+					vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
+					//vita2d_draw_texture(Icon,0,Y-32);
 				}
 			}
 
