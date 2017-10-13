@@ -17,3 +17,4 @@
 #include "defines.h"
 #include "gamemain.h"
 #include "novelbrowser.h"
+#include "novelmain.h"

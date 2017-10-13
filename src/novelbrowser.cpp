@@ -47,7 +47,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			std::string TempPath = SearchPath;
 			TempPath.append(Name);
-			NovelList.emplace_back(NovelHeader(TempPath));
+			NovelList.emplace_back(NovelHeader(TempPath,true));
 		}
 
 		this->StatusCode = StatusType::OK;
@@ -93,7 +93,8 @@ void NovelBrowser::Run()
 			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 			{
 				StatusCode = StatusType::GoLoad;
-				LoadPath = NovelList[ItemSelected].Path;
+				NovelHeader TempNovel = NovelHeader(NovelList[ItemSelected].Path,false);
+				NovelSelected = TempNovel;
 				Ready = true;
 			}
 

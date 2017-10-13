@@ -1,10 +1,12 @@
 #pragma once
+#include "common.h"
 
 class NovelMain
 {
 private:
-	std::string Path;
+	NovelHeader * NovelSelected;
 
 public:
-	NovelMain(std::string Path);
-}
+	NovelMain(NovelHeader * NovelSelected);
+	bool Run();
+};

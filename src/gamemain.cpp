@@ -9,11 +9,9 @@ GameMain::GameMain()
 
 void GameMain::GameTick()
 {
-	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
-
 	MainState State = MainState::Browser;
 
-
+	NovelHeader * CurrentNovel;
 	bool Running = true;
 	while(Running)
 	{
@@ -25,7 +23,8 @@ void GameMain::GameTick()
 				browser.Run();
 				if(browser.StatusCode == StatusType::GoLoad)
 				{
-					
+					State = MainState::Novel;
+					CurrentNovel = browser.NovelSelected;
 				}
 				else
 				{
@@ -34,13 +33,13 @@ void GameMain::GameTick()
 			};break;
 			case MainState::Novel:
 			{
-				
+				NovelMain novel(CurrentNovel);
+				novel.Run();
 			}; break;
 		}
 	}
 
 	vita2d_fini();
-	vita2d_free_pgf(pgf);
 
 	sceKernelExitProcess(0);
 }

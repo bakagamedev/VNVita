@@ -64,25 +64,28 @@ class NovelHeader
 		}
 
 	public:
-	NovelHeader(std::string Path)
+	NovelHeader(std::string Path, bool LoadImages)
 	{
 		this->Name = Path;
 		this->Path = Path;
 
-		//Icon
-		vita2d_texture * iconPointer = LoadImageName(Path + "\\icon"); 
-		if(iconPointer != NULL)
+		if(LoadImages)
 		{
-			vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-			this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
-		}
+			//Icon
+			vita2d_texture * iconPointer = LoadImageName(Path + "\\icon"); 
+			if(iconPointer != NULL)
+			{
+				vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+				this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
+			}
 
-		//Thumbnail / Preview
-		vita2d_texture * thumbPointer = LoadImageName(Path + "\\thumbnail"); 
-		if(thumbPointer != NULL)
-		{	
-			vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-			this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+			//Thumbnail / Preview
+			vita2d_texture * thumbPointer = LoadImageName(Path + "\\thumbnail"); 
+			if(thumbPointer != NULL)
+			{	
+				vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+				this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+			}
 		}
 	}	
 
@@ -101,7 +104,7 @@ private:
 	int ItemSelected = 0;
 public:
 	StatusType StatusCode;
-	std::string LoadPath;
+	NovelHeader * NovelSelected;
 	
 	NovelBrowser();
 	~NovelBrowser();
