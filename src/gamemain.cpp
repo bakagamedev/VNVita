@@ -13,7 +13,6 @@ void GameMain::GameTick()
 
 	MainState State = MainState::Browser;
 
-	NovelBrowser browser;
 
 	bool Running = true;
 	while(Running)
@@ -22,11 +21,11 @@ void GameMain::GameTick()
 		{
 			case MainState::Browser:
 			{
+				NovelBrowser browser;
 				browser.Run();
-				Running = false;	
 				if(browser.StatusCode == StatusType::GoLoad)
 				{
-					//LoadPath
+					
 				}
 				else
 				{
