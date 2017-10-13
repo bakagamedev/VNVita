@@ -9,6 +9,7 @@ NovelBrowser::NovelBrowser()
 
 NovelBrowser::~NovelBrowser()
 {
+	vita2d_wait_rendering_done();
 	vita2d_free_pgf(pgf);
 }
 
