@@ -23,8 +23,10 @@ include_directories(
 )
 
 file(GLOB SOURCES src/*.cpp)
+file(GLOB INI src/ini/*.cpp)
 add_executable(${SHORT_NAME}
   ${SOURCES}
+  ${INI}
 )
 
 target_link_libraries(${SHORT_NAME}
