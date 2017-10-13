@@ -33,8 +33,12 @@ void GameMain::GameTick()
 			};break;
 			case MainState::Novel:
 			{
+				//Uncomment to crash console!
+				/*
 				NovelMain novel(CurrentNovel);
 				novel.Run();
+				*/
+				Running = false;
 			}; break;
 		}
 	}
