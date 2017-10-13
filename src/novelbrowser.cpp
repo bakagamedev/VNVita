@@ -94,7 +94,7 @@ void NovelBrowser::Run()
 			{
 				StatusCode = StatusType::GoLoad;
 				NovelHeader TempNovel = NovelHeader(NovelList[ItemSelected].Path,false);
-				NovelSelected = TempNovel;
+				NovelSelected = &TempNovel;
 				Ready = true;
 			}
 
