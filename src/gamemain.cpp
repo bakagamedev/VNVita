@@ -9,38 +9,26 @@ GameMain::GameMain()
 
 void GameMain::GameTick()
 {
-	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
-
 	MainState State = MainState::Browser;
-
 
 	bool Running = true;
 	while(Running)
 	{
-		switch(State)
+		std::string Path;
+		NovelBrowser browser;
+		Path = browser.Run();
+		if(browser.StatusCode == StatusType::GoLoad)
+		{		
+			NovelMain novel = NovelMain(Path);
+			novel.Run();
+		}
+		else
 		{
-			case MainState::Browser:
-			{
-				NovelBrowser browser;
-				browser.Run();
-				if(browser.StatusCode == StatusType::GoLoad)
-				{
-					
-				}
-				else
-				{
-					Running = false;
-				}
-			};break;
-			case MainState::Novel:
-			{
-				
-			}; break;
+			Running = false;
 		}
 	}
 
 	vita2d_fini();
-	vita2d_free_pgf(pgf);
 
 	sceKernelExitProcess(0);
 }

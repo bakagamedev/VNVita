@@ -47,7 +47,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			std::string TempPath = SearchPath;
 			TempPath.append(Name);
-			NovelList.emplace_back(NovelHeader(TempPath));
+			NovelList.emplace_back(NovelHeader(TempPath,true));
 		}
 
 		this->StatusCode = StatusType::OK;
@@ -58,8 +58,9 @@ void NovelBrowser::Search(std::string SearchPath)
 	}
 }
 
-void NovelBrowser::Run()
+std::string NovelBrowser::Run()
 {
+	std::string PathReturn = "";
 	SceCtrlData GamePad, GamePadLast;
 	ItemSelected = 0;
 
@@ -72,7 +73,7 @@ void NovelBrowser::Run()
 		{
 			vita2d_start_drawing();
 			vita2d_clear_screen();
-			vita2d_pgf_draw_text(pgf, 30, 30, RGBA8(255,0,0,255), 2.0f, "bad. No directory for you.");
+			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,0,0,255), 1.5f, "No directory!");
 			vita2d_end_drawing();
 			vita2d_swap_buffers();
 
@@ -93,8 +94,7 @@ void NovelBrowser::Run()
 			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 			{
 				StatusCode = StatusType::GoLoad;
-				LoadPath = NovelList[ItemSelected].Path;
-				Ready = true;
+				return NovelList[ItemSelected].Path;
 			}
 
 			vita2d_start_drawing();
@@ -147,5 +147,7 @@ void NovelBrowser::Run()
 
 		GamePadLast = GamePad;
 	}
+
+	return PathReturn;
 }
 
