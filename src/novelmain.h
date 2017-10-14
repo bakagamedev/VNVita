@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "imagecontrol.h"
+#include "menupanel.h"
 
 class NovelMain
 {
@@ -10,6 +11,7 @@ private:
 
 	ForegroundControl Foreground;
 	BackgroundControl Background;
+	MenuPanel Menu;
 
 	NovelHeader Novel;
 	bool Tick(SceCtrlData GamePad,SceCtrlData GamePadLast);

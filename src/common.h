@@ -14,10 +14,5 @@
 #include <psp2/io/dirent.h> 
 #include <psp2/io/stat.h> 
 
-#include "ini/INIReader.h"
-
 #include "defines.h"
-#include "gamemain.h"
 #include "novelheader.h"
-#include "novelbrowser.h"
-#include "novelmain.h"

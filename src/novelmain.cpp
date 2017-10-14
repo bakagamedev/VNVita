@@ -18,10 +18,7 @@ NovelMain::NovelMain(std::string LoadPath)
 
 bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
-	if((GamePad.buttons & SCE_CTRL_TRIANGLE) && ((GamePadLast.buttons & SCE_CTRL_TRIANGLE) == 0))
-	{
-		return true;
-	} 	
+
 
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
@@ -46,6 +43,9 @@ void NovelMain::Draw()
 	Background.Draw();
 	Foreground.Draw();
 	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
+	//Textbox draw
+	//UI Draw
+	Menu.Draw();
 
 	vita2d_end_drawing();
 	vita2d_swap_buffers();
@@ -60,7 +60,16 @@ void NovelMain::Run()
 	while(!Ready)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
-
+		
+		if((GamePad.buttons & SCE_CTRL_TRIANGLE) && ((GamePadLast.buttons & SCE_CTRL_TRIANGLE) == 0))
+		{
+			Menu.Show = !Menu.Show;
+		} 	
+		if(Menu.Show)
+		{
+			Menu.Tick();
+		}
+		
 		Ready = Tick(GamePad,GamePadLast);
 		Draw();
 
