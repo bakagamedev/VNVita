@@ -43,7 +43,7 @@ public:
 		}
 		if(Path != this->Path)
 		{
-			if(imagePointer != NULL)	//Clear current texture
+			if(imagePointer != NULL)	//Clear current texture before loading new one.
 			{
 				vita2d_wait_rendering_done();
 				vita2d_free_texture(imagePointer);
@@ -71,18 +71,16 @@ class BackgroundControl : public ImageControl
 public:
 	void Draw()
 	{
-		vita2d_texture * Back = Image.get();
-
 		float BackgroundX = (ScreenWidth - (NovelWidth*Scale)) / 2;	
 		float BackgroundY = 0.0f;
-		if((Show == false) || (Back == NULL))
+		if((Show == false) || (imagePointer == NULL))
 		{
 			//Draw black background and quit
 			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish
 			return;
 		}
 
-		vita2d_draw_texture_scale(Back,BackgroundX,BackgroundY,Scale,Scale);
+		vita2d_draw_texture_scale(imagePointer, BackgroundX, BackgroundY, Scale, Scale);
 	}
 };
 
@@ -100,13 +98,11 @@ public:
 
 	void Draw()
 	{
-		vita2d_texture * Fore = Image.get();
-
-		if((Show == false) || (Fore == NULL))
+		if((Show == false) || (imagePointer == NULL))
 		{
 			return;
 		}
 
-		vita2d_draw_texture_scale(Fore,X * Scale,Y * Scale,Scale,Scale);
+		vita2d_draw_texture_scale(imagePointer, X * Scale, Y * Scale, Scale, Scale);
 	}
 };

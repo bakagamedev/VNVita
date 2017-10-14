@@ -10,6 +10,9 @@ NovelMain::NovelMain(std::string LoadPath)
 	Novel.Reset(Path,false);
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
+
+	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
+	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
 }
 
 bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
