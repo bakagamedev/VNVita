@@ -12,14 +12,26 @@ private:
 public:
 	std::string Path;
 	bool Show;
-	float Width,Height;
+	float ScreenWidth = 960;
+	float ScreenHeight = 544;
+	float NovelWidth = 256;
+	float NovelHeight = 196;
+	float Scale = 1.0f;
 	vita2d_texture * imagePointer;
 	std::shared_ptr<vita2d_texture> Image;
 
 	void SetScreenSize(float Width, float Height)
 	{
-		this->Width = Width;
-		this->Height = Height;
+		this->ScreenWidth = Width;
+		this->ScreenHeight = Height;
+		Scale = ScreenHeight / NovelHeight;
+	}
+
+	void SetNovelSize(float Width, float Height)
+	{
+		this->NovelWidth = Width;
+		this->NovelHeight = Height;
+		Scale = ScreenHeight / NovelHeight;
 	}
 
 	void SetImage(std::string Path)
@@ -57,20 +69,19 @@ public:
 class BackgroundControl : public ImageControl
 {
 public:
-	void DrawBackground()
+	void Draw()
 	{
 		vita2d_texture * Back = Image.get();
 
-		float BackgroundX = (960 - Width) / 2;	
+		float BackgroundX = (ScreenWidth - (NovelWidth*Scale)) / 2;	
 		float BackgroundY = 0.0f;
 		if((Show == false) || (Back == NULL))
 		{
 			//Draw black background and quit
-			vita2d_draw_rectangle(BackgroundX, BackgroundY, Width, Height, RGBA8(100,0,0, 255));	//actually redish
+			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish
 			return;
 		}
 
-		float Scale = 544.0f / vita2d_texture_get_height(Back);
 		vita2d_draw_texture_scale(Back,BackgroundX,BackgroundY,Scale,Scale);
 	}
 };
@@ -87,7 +98,7 @@ public:
 		this->Y = Y;
 	}
 
-	void DrawForeground()
+	void Draw()
 	{
 		vita2d_texture * Fore = Image.get();
 
@@ -96,7 +107,6 @@ public:
 			return;
 		}
 
-		float Scale = 544.0f * (vita2d_texture_get_height(Fore) / Height);	// Screen size * (Sprite / DS Screen size) 
 		vita2d_draw_texture_scale(Fore,X * Scale,Y * Scale,Scale,Scale);
 	}
 };

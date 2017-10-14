@@ -8,8 +8,8 @@ NovelMain::NovelMain(std::string LoadPath)
 {
 	this->Path = LoadPath;
 	Novel.Reset(Path,false);
-	Foreground.SetScreenSize(Novel.Width,Novel.Height);
-	Background.SetScreenSize(Novel.Width,Novel.Height);
+	Foreground.SetNovelSize(Novel.Width,Novel.Height);
+	Background.SetNovelSize(Novel.Width,Novel.Height);
 }
 
 bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
@@ -27,10 +27,8 @@ void NovelMain::Draw()
 	vita2d_clear_screen();
 
 	vita2d_draw_rectangle(0, 0, 960, 544, RGBA8(114, 137, 217, 255));
-	vita2d_pgf_draw_text(pgf, 64,64, RGBA8(255,0,0,255), 1.0f, Novel.Path.c_str());
 
-	if(Novel.Icon.get() != NULL)
-		vita2d_draw_texture_scale(Novel.Icon.get(), 0, 0, 1.0f,1.0f);
+	Background.Draw();
 
 	vita2d_end_drawing();
 	vita2d_swap_buffers();
