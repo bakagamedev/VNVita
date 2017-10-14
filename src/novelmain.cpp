@@ -63,14 +63,14 @@ void NovelMain::Run()
 		
 		if((GamePad.buttons & SCE_CTRL_TRIANGLE) && ((GamePadLast.buttons & SCE_CTRL_TRIANGLE) == 0))
 		{
-			Menu.Show = !Menu.Show;
-		} 	
-		if(Menu.Show)
-		{
-			Menu.Tick();
+			Menu.Open = !Menu.Open;
 		}
-		
-		Ready = Tick(GamePad,GamePadLast);
+
+		Menu.Tick();
+
+		if(!Menu.Open)
+			Tick(GamePad,GamePadLast);
+
 		Draw();
 
 		GamePadLast = GamePad;
