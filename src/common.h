@@ -15,4 +15,3 @@
 #include <psp2/io/stat.h> 
 
 #include "defines.h"
-#include "novelheader.h"

@@ -1,13 +1,13 @@
 #pragma once
 
-enum MainState
+enum class MainState
 {
 	Startup,
 	Browser,
 	Novel,
 };
 
-enum StatusType
+enum class StatusType
 {
 	OK,
 	GenericFail,
@@ -16,8 +16,6 @@ enum StatusType
 	GoLoad,
 };
 
-enum {
-	SCREEN_WIDTH  = 960,
-	SCREEN_HEIGHT = 544
-};
+constexpr static const int SCREEN_WIDTH  = 960;
+constexpr static const int	SCREEN_HEIGHT = 544;
 

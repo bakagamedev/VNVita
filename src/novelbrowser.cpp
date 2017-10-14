@@ -106,7 +106,9 @@ std::string NovelBrowser::Run()
 			char CountString[30];
 			sprintf(CountString,"VNVita - %d Novels detected",count);
 			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,255,255), 1.5f, CountString);
-			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));
+			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
+
+			vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	//Divide centre of screen
 
 			//Thumbnail
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
@@ -118,14 +120,14 @@ std::string NovelBrowser::Run()
 				{
 					Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
 				}
-				float Scale = (960/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
-				float X = 960/2;
+				float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
+				float X = SCREEN_WIDTH/2;
 				float Y = 32;
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
 
 				char ResolutionString[10];
 				sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
-				vita2d_pgf_draw_text(pgf, 960/2, 520,RGBA8(255,255,255,255), 1.0f, ResolutionString);
+				vita2d_pgf_draw_text(pgf, SCREEN_WIDTH/2, 520,RGBA8(255,255,255,255), 1.0f, ResolutionString);
 			}
 
 			//List 'o things
@@ -138,7 +140,7 @@ std::string NovelBrowser::Run()
 				if(i == ItemSelected)
 					Colour = White;
 
-				vita2d_draw_line(0,Y+32, 960/2, Y+32, White);
+				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, White);
 				vita2d_pgf_draw_text(pgf, 66, Y, Colour, 2.0f, NovelList[i].Name.c_str());
 				vita2d_pgf_draw_text(pgf, 66, Y+24, RGBA8(0,0,255,255), 1.0f, NovelList[i].Path.c_str());
 

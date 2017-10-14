@@ -12,8 +12,8 @@ private:
 public:
 	std::string Path;
 	bool Show;
-	float ScreenWidth = 960;
-	float ScreenHeight = 544;
+	float ScreenWidth = SCREEN_WIDTH;
+	float ScreenHeight = SCREEN_HEIGHT;
 	float NovelWidth = 256;
 	float NovelHeight = 196;
 	float Scale = 1.0f;

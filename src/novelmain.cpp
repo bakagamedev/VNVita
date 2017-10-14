@@ -38,7 +38,7 @@ void NovelMain::Draw()
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
-	vita2d_draw_rectangle(0, 0, 960, 544, RGBA8(114, 137, 217, 255));
+	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, RGBA8(114, 137, 217, 255));
 
 	Background.Draw();
 	Foreground.Draw();
