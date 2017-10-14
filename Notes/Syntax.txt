@@ -1,0 +1,64 @@
+
+Observations;
+	Starts from main.scr and works from there.
+	Empty lines are discarded.	
+	background, foreground, sound and script dirs can be substituted with a .zip of the same name. 
+	The format is designed for a 256x192px screen, high res targets scale up from that.
+		setimg coordinates are scaled by (ScreenWidth/256) and (ScreenHeight/192) before drawing. (2.5x on a 640x480 novel)
+	I'm unsure how route completion variables are stored. 
+
+Flow:
+	label Namenamename
+		Used for goto's
+	goto LabelName
+		Goes to named label in current script
+	jump Script.scr
+		Dumps current script and starts named file. Always loaded from Scripts/
+
+	choice Text 1|Text 2|Text 3
+		Dumps choice number to "selected" variable. First choice is (selected == 1)
+		Not sure how many choices are possible, at least 10.
+		[exit] as a choice seems to abort something. Test it.
+
+Variables:
+	setvar name = value
+		Sets variable to value. Seems to support Int's or String's
+	if name == value
+		Skip to next/paired "fi" label when false
+		Unsure if if's can be nested. Test.
+	fi
+		Ends if block
+	setvar ~ ~
+		Clears every variable? Only seems to be used at the top of main.src
+
+Audio:	(.ogg/.mp3/.aac)
+	music path.format
+		^Loads from Sounds/ and loops until changed
+	music ~
+		clears music.
+	sound path.format
+		^Loads from Sounds/ and plays once
+	sound ~
+		clears sound.
+
+Graphics:	(.jpg / .png)
+	bgload path.format
+		^Always loads from background dir
+		Input blocking.
+	bgload ~
+		Clears background
+	setimg path x y
+		^Loads image from foreground dir and sets to x&y (From top-left corner)
+		Investigate : How are multiple foreground images handled? 
+
+Text:
+	text words words words
+		^Everything on line after "text" is parsed
+	text ~
+		Brief pause (1/2th second? test).	Tsukihime is littered with these during dramatic moments.
+	text @words
+		Unsure.
+	text !
+		Unsure.
+
+Note on x & y handling
