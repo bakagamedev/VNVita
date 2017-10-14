@@ -44,11 +44,6 @@ public:
 		if(Path != this->Path)
 		{
 			vita2d_wait_rendering_done();
-			if(imagePointer != NULL)	//Clear current texture before loading new one.
-			{
-				//vita2d_free_texture(imagePointer);
-			}
-
 			if(FileExists(Path))
 			{
 				if((Path.find(".jpg") != std::string::npos) || (Path.find(".JPG") != std::string::npos))
@@ -59,8 +54,7 @@ public:
 				if(imagePointer != NULL)
 				{
 					vita2d_texture_set_filters(imagePointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					//Image.reset(imagePointer);
-					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);;
+					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);
 				}
 			}
 		}
