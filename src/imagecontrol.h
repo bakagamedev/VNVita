@@ -17,7 +17,7 @@ public:
 	float NovelWidth = 256;
 	float NovelHeight = 196;
 	float Scale = 1.0f;
-	vita2d_texture * imagePointer;
+	vita2d_texture * imagePointer = NULL;
 	std::shared_ptr<vita2d_texture> Image;
 
 	void SetScreenSize(float Width, float Height)
@@ -43,10 +43,10 @@ public:
 		}
 		if(Path != this->Path)
 		{
+			vita2d_wait_rendering_done();
 			if(imagePointer != NULL)	//Clear current texture before loading new one.
 			{
-				vita2d_wait_rendering_done();
-				vita2d_free_texture(imagePointer);
+				//vita2d_free_texture(imagePointer);
 			}
 
 			if(FileExists(Path))
@@ -59,7 +59,8 @@ public:
 				if(imagePointer != NULL)
 				{
 					vita2d_texture_set_filters(imagePointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);
+					//Image.reset(imagePointer);
+					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);;
 				}
 			}
 		}
@@ -71,16 +72,22 @@ class BackgroundControl : public ImageControl
 public:
 	void Draw()
 	{
-		float BackgroundX = (ScreenWidth - (NovelWidth*Scale)) / 2;	
 		float BackgroundY = 0.0f;
-		if((Show == false) || (imagePointer == NULL))
+		float BackgroundX = (ScreenWidth - (NovelWidth*Scale)) / 2;	
+		if((Show == false) || (Image.get() == NULL))
 		{
 			//Draw black background and quit
 			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish
 			return;
 		}
 
-		vita2d_draw_texture_scale(imagePointer, BackgroundX, BackgroundY, Scale, Scale);
+		vita2d_draw_texture_scale(Image.get(), BackgroundX, BackgroundY, Scale, Scale);
+	}
+	void DrawBorders()
+	{
+		float BackgroundX = (ScreenWidth - (NovelWidth*Scale)) / 2;	
+		vita2d_draw_rectangle(0,0, BackgroundX, ScreenHeight, RGBA8(0,0,0, 255));	//Cover up sides
+		vita2d_draw_rectangle(BackgroundX + (NovelWidth*Scale),0, BackgroundX, ScreenHeight, RGBA8(0,0,0, 255));	
 	}
 };
 
@@ -90,7 +97,7 @@ private:
 	float X,Y;
 
 public:
-	void SetXY(float X, float Y)
+	void SetPosition(float X, float Y)
 	{
 		this->X = X;
 		this->Y = Y;
@@ -98,11 +105,11 @@ public:
 
 	void Draw()
 	{
-		if((Show == false) || (imagePointer == NULL))
+		if((Show == false) || (Image.get() == NULL))
 		{
 			return;
 		}
 
-		vita2d_draw_texture_scale(imagePointer, X * Scale, Y * Scale, Scale, Scale);
+		vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
 	}
 };
