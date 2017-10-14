@@ -8,6 +8,8 @@ NovelMain::NovelMain(std::string LoadPath)
 {
 	this->Path = LoadPath;
 	Novel.Reset(Path,false);
+	Foreground.SetScreenSize(Novel.Width,Novel.Height);
+	Background.SetScreenSize(Novel.Width,Novel.Height);
 }
 
 bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)

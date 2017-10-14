@@ -54,7 +54,7 @@ public:
 	}
 };
 
-class BackgroundControl : ImageControl
+class BackgroundControl : public ImageControl
 {
 public:
 	void DrawBackground()
@@ -75,7 +75,7 @@ public:
 	}
 };
 
-class ForegroundControl : ImageControl
+class ForegroundControl : public ImageControl
 {
 private:
 	float X,Y;

@@ -21,4 +21,3 @@
 #include "novelheader.h"
 #include "novelbrowser.h"
 #include "novelmain.h"
-#include "imagecontrol.h"
