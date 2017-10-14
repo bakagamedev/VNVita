@@ -7,7 +7,49 @@ NovelMain::~NovelMain()
 NovelMain::NovelMain(std::string LoadPath)
 {
 	this->Path = LoadPath;
+	Novel.Reset(Path,false);
+	Foreground.SetNovelSize(Novel.Width,Novel.Height);
+	Background.SetNovelSize(Novel.Width,Novel.Height);
+	
+	Foreground.SetPosition(157,25);
+	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
+	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
 }
+
+bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
+{
+	if((GamePad.buttons & SCE_CTRL_TRIANGLE) && ((GamePadLast.buttons & SCE_CTRL_TRIANGLE) == 0))
+	{
+		return true;
+	} 	
+
+	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
+	{
+		Background.SetImage("ux0:data/vnvita/ever17/background/bg07b1.jpg");
+		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu11bdl.png");
+	} 
+	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
+	{
+		Background.SetImage("ux0:data/vnvita/ever17/background/bg01a3.jpg");
+		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu13bdl.png");
+	} 
+	return false;
+}
+
+void NovelMain::Draw()
+{
+	vita2d_start_drawing();
+	vita2d_clear_screen();
+
+	vita2d_draw_rectangle(0, 0, 960, 544, RGBA8(114, 137, 217, 255));
+
+	Background.Draw();
+	Foreground.Draw();
+	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
+
+	vita2d_end_drawing();
+	vita2d_swap_buffers();
+} 
 
 void NovelMain::Run()
 {
@@ -18,19 +60,9 @@ void NovelMain::Run()
 	while(!Ready)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
-		if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
-		{
-			Ready = true;
-		}
 
-		vita2d_start_drawing();
-		vita2d_clear_screen();
-
-		vita2d_draw_rectangle(0, 0, 960, 544, RGBA8(114, 137, 217, 255));
-		vita2d_pgf_draw_text(pgf, 64,64, RGBA8(255,0,0,255), 1.0f, Path.c_str());
-
-		vita2d_end_drawing();
-		vita2d_swap_buffers();
+		Ready = Tick(GamePad,GamePadLast);
+		Draw();
 
 		GamePadLast = GamePad;
 	}
