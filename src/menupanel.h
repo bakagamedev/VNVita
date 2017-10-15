@@ -1,13 +1,13 @@
 #pragma once
 #include "common.h"
 
-class MenuOptionType
+class MenuItem
 {
 public:
 	std::string Title;
 	std::function<void()> FunctionPointer;
 
-	MenuOptionType(std::string Title, std::function<void()> FunctionPointer)
+	MenuItem(std::string Title, std::function<void()> FunctionPointer)
 	{
 		this->Title = Title;
 		this->FunctionPointer = FunctionPointer;
@@ -21,7 +21,7 @@ private:
 	std::shared_ptr<vita2d_texture> LogoSmall;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
-	std::vector<MenuOptionType> MenuOptions;
+	std::vector<MenuItem> MenuItemList;
 
 	float X = 0;
 	float SlideSpeed = 8.0f;

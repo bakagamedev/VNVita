@@ -5,12 +5,12 @@ MenuPanel::MenuPanel()
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
 
-	MenuOptions.emplace_back(MenuOptionType("Quicksave",MenuDoesNothing));
-	MenuOptions.emplace_back(MenuOptionType("QuickLoad",MenuDoesNothing));
-	MenuOptions.emplace_back(MenuOptionType("Save",MenuDoesNothing));
-	MenuOptions.emplace_back(MenuOptionType("Load",MenuDoesNothing));
-	MenuOptions.emplace_back(MenuOptionType("Options",MenuDoesNothing));
-	MenuOptions.emplace_back(MenuOptionType("Exit",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("Quicksave",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("QuickLoad",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("Save",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("Load",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("Options",MenuDoesNothing));
+	MenuItemList.emplace_back(MenuItem("Exit",MenuDoesNothing));
 }
 
 void MenuPanel::MenuExitNovel()
@@ -37,12 +37,12 @@ void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 		}
 		if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
 		{
-			Selected = std::min(Selected+1,((int)MenuOptions.size())-1);
+			Selected = std::min(Selected+1,((int)MenuItemList.size())-1);
 		}
 
 		if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 		{
-			std::function<void()> FunctionPointer = MenuOptions[Selected].FunctionPointer;
+			std::function<void()> FunctionPointer = MenuItemList[Selected].FunctionPointer;
 			FunctionPointer();
 		}
 	}
@@ -66,10 +66,10 @@ void MenuPanel::Draw()
 	if(logoPointer != NULL)
 		vita2d_draw_texture(logoPointer,Left, 0);
 
-	for(int i=0; i<MenuOptions.size(); ++i)
+	for(int i=0; i<MenuItemList.size(); ++i)
 	{
 		auto Colour = (i == Selected) ? COLOUR_Selected : COLOUR_Deselected;
-		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*38), Colour, 2.0f, MenuOptions[i].Title.c_str());
+		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*38), Colour, 2.0f, MenuItemList[i].Title.c_str());
 	}
 
 
