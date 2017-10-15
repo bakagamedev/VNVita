@@ -135,10 +135,8 @@ std::string NovelBrowser::Run()
 			{
 				float Y = 64 + (i*64);
 
-				auto White = RGBA8(255,255,255,255);
-				auto Colour = RGBA8(0,0,255,255);
-				if(i == ItemSelected)
-					Colour = White;
+				auto White = RGBA8(200,200,200,255);
+				auto Colour = (i == ItemSelected) ? COLOUR_Selected : COLOUR_Deselected;
 
 				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, White);
 				vita2d_pgf_draw_text(pgf, 66, Y, Colour, 2.0f, NovelList[i].Name.c_str());
