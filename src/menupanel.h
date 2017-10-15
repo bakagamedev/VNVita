@@ -30,7 +30,7 @@ private:
 
 	//Callbacks
 	static void MenuDoesNothing()	{};
-	void MenuExitNovel();
+	static void MenuExitNovel();
 
 public:
 	MenuPanel();

@@ -5,12 +5,12 @@ MenuPanel::MenuPanel()
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
 
-	MenuItemList.emplace_back(MenuItem("Quicksave",MenuDoesNothing));
-	MenuItemList.emplace_back(MenuItem("QuickLoad",MenuDoesNothing));
-	MenuItemList.emplace_back(MenuItem("Save",MenuDoesNothing));
-	MenuItemList.emplace_back(MenuItem("Load",MenuDoesNothing));
-	MenuItemList.emplace_back(MenuItem("Options",MenuDoesNothing));
-	MenuItemList.emplace_back(MenuItem("Exit",MenuDoesNothing));
+	MenuItemList.emplace_back("Quicksave",MenuDoesNothing);
+	MenuItemList.emplace_back("Quickload",MenuDoesNothing);
+	MenuItemList.emplace_back("Save",MenuDoesNothing);
+	MenuItemList.emplace_back("Load",MenuDoesNothing);
+	MenuItemList.emplace_back("Options",MenuDoesNothing);
+	MenuItemList.emplace_back("Exit",MenuDoesNothing);
 }
 
 void MenuPanel::MenuExitNovel()

@@ -48,7 +48,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			std::string TempPath = SearchPath;
 			TempPath.append(Name);
-			NovelList.emplace_back(NovelHeader(TempPath,true));
+			NovelList.emplace_back(TempPath,true);
 		}
 
 		this->StatusCode = StatusType::OK;
