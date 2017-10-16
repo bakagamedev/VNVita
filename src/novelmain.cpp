@@ -34,12 +34,10 @@ void NovelMain::Draw()
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
-	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, RGBA8(114, 137, 217, 255));
-
 	Background.Draw();
 	Foreground.Draw();
 	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
-	//Textbox draw
+	Text.Draw(128,64);
 	//UI Draw
 	Menu.Draw();
 
