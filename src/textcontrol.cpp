@@ -39,10 +39,22 @@ void TextControl::SetBorderSize(float Border)
 	this->Border = Border;
 }
 
+void TextControl::ScrollUp()
+{
+	Scroll = std::max(--Scroll,MaxLines - (int)(TextList.size()));
+}
+
+void TextControl::ScrollDown()
+{
+	Scroll = std::min(++Scroll,0);
+}
+
 void TextControl::Tick(bool Continue)
 {
 	if(TextList.size() == 0)
 	    return;
+	if(Scroll != 0)
+		return;
 
 	auto CurrentLine = TextList[std::max(0,(int)TextList.size()-1)];
 	int LineLength = CurrentLine.size();
@@ -62,6 +74,7 @@ void TextControl::Draw()
 	if(Show)
 	{
 		auto Spacing = 35;
+
 		vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
 		vita2d_set_clip_rectangle(X + Border, Y + Border, X + Border + ((Width*Scale) - (Border*2)), Y + Border + (Height*Scale) - (Border*2));
@@ -71,17 +84,31 @@ void TextControl::Draw()
 		int Size = TextList.size();
 		if(Size > 1)	//If there is a backlog
 		{
-		    for(int i=0; i<(Size-1); ++i)
+			int listStart = Size-MaxLines;
+			int listEnd = Size-1;
+			if(Scroll != 0)
+			{
+				listStart += Scroll;
+				listEnd += Scroll+1;	// +1 so it goes into current line position
+			}
+			listStart = std::max(0,listStart);
+			offset = std::max(0,(MaxLines - Size) * Spacing);	//Pad it so current line is at the bottom of the screen
+		    for(int i=listStart; i<listEnd; ++i)
 		    {
-				vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset + (Spacing/2), RGBA8(128,128,255,255), 1.5f, TextList[i].c_str());
+				vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 20 + offset + (Spacing/2), RGBA8(128,128,255,255), 1.5f, TextList[i].c_str());
 				offset += Spacing;
 		    }
 		}
+		else
+		{
+			offset = (MaxLines-1)*Spacing;	//If there's nothing before current line, move it to bottom.
+		}
+
 		if(Size > 0)	//Current line
 		{
 			std::string Line = TextList[Size - 1];
 			Line.erase(CharsDisplay, std::string::npos);
-			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset + (Spacing/2), RGBA8(255,255,255,255), 1.5f, Line.c_str());
+			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 20 + offset + (Spacing/2), RGBA8(255,255,255,255), 1.5f, Line.c_str());
 		}
 
 		vita2d_disable_clipping();

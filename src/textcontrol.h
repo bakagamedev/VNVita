@@ -11,13 +11,17 @@ private:
 	float Border = 32;
 	float X,Y,Width,Height;
 	uint8_t Alpha = 128;
-
+	int MaxLines = 13;	
+	int Scroll = 0;
 public:
 	~TextControl();
 	TextControl();
 
 	void TextAdd(std::string Text);
 	void TextClear();
+
+	void ScrollUp();
+	void ScrollDown();
 
 	bool Ready = true;
 	bool Show = true;
