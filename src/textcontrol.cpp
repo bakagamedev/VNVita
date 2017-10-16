@@ -4,9 +4,13 @@ TextControl::TextControl()
 {
 	ptrArrowUp = vita2d_load_PNG_file(ASSET_ArrowUp);
 	ImgArrowUp = std::shared_ptr<vita2d_texture>(ptrArrowUp, vita2d_free_texture);
-	
 	ptrArrowDown = vita2d_load_PNG_file(ASSET_ArrowDown);
 	ImgArrowDown = std::shared_ptr<vita2d_texture>(ptrArrowDown, vita2d_free_texture);
+
+	X = 0;
+	Y = 0;
+	Width = SCREEN_WIDTH;
+	Height = SCREEN_HEIGHT;
 }
 TextControl::~TextControl()
 {
@@ -31,6 +35,7 @@ void TextControl::SetNovelSize(float Width, float Height)
 	this->Width = Width;
 	this->Height = Height;
 	Scale = SCREEN_HEIGHT / Height;
+	Y = 0;
 	X = (SCREEN_WIDTH - (Width*Scale)) / 2;	
 }
 

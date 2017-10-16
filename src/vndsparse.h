@@ -13,7 +13,7 @@ public:
 	bool Active = false;
 
 	VNDSParser();
-	void LoadFile(std::string Path, std::string File);
+	void LoadFile(const std::string Path, const std::string File);
 	std::string GetNextLine();
 	void JumpTo(int LineNo);
 	bool IsFinished();

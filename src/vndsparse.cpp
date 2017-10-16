@@ -5,7 +5,7 @@ VNDSParser::VNDSParser()
 	Active = false;
 }
 
-void VNDSParser::LoadFile(std::string Path,std::string File)
+void VNDSParser::LoadFile(const std::string Path, const std::string File)
 {
 	Active = true;
 	this->Path = Path+"/script";
