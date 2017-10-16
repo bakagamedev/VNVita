@@ -12,13 +12,13 @@ void VNDSParser::LoadFile(std::string Path,std::string File)
 	this->CurrentScript = this->Path + "/"+ File;
 
 	std::string line;
-	std::ifstream text("ux0:data/vnvita/ever17/script/op00.scr");
+	std::ifstream text(CurrentScript);
 	if (text.is_open())
 	{
 		while (text.good())
 		{
 			getline(text,line);
-			if(line != "")
+			if(!line.empty())
 			{
 				Script.push_back(line);
 			}	
@@ -34,7 +34,14 @@ void VNDSParser::LoadFile(std::string Path,std::string File)
 std::string VNDSParser::GetNextLine()
 {
 	CurrentLine++;
-	return Script[CurrentLine];
+	if(!IsFinished())
+	{
+		return Script[CurrentLine];
+	}
+	else
+	{
+		return "oh no, EOF!";
+	}
 }
 
 void VNDSParser::JumpTo(int LineNo)
@@ -44,5 +51,5 @@ void VNDSParser::JumpTo(int LineNo)
 
 bool VNDSParser::IsFinished()
 {
-	return false;
+	return (CurrentLine >= (int)Script.size());
 }
