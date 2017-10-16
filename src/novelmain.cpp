@@ -11,9 +11,10 @@ NovelMain::NovelMain(std::string LoadPath)
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(Novel.Width,Novel.Height);
+	
+	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	/*
 	Foreground.SetPosition(157,25);
-	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
 	*/
 }
