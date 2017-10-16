@@ -26,7 +26,7 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-		
+
 	} 	
 	if((GamePad.buttons & SCE_CTRL_START) && ((GamePadLast.buttons & SCE_CTRL_START) == 0))
 	{
@@ -50,6 +50,11 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 	if(Text.Ready)
 	{
 		Text.TextAdd(Parser.GetNextLine());
+	}
+
+	if((Text.Ready) && (Parser.IsFinished()))
+	{
+		//Ready = true;
 	}
 }
 
