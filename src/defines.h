@@ -24,6 +24,7 @@ constexpr static const char * VersionString = "0.1a";
 constexpr static const char * ASSET_LogoSmall = "app0:assets/logosmall.png";
 constexpr static const char * ASSET_ArrowUp	  = "app0:assets/arrowup.png";
 constexpr static const char * ASSET_ArrowDown = "app0:assets/arrowdown.png";
+constexpr static const char * ASSET_NoAsset	  = "app0:assets/nofile.png";
 
 //constexpr static const auto 
 constexpr static const auto COLOUR_Deselected	= RGBA8(28,28,28,255);
