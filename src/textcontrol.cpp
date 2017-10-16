@@ -64,6 +64,9 @@ void TextControl::Draw()
 		auto Spacing = 35;
 		vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
+		vita2d_set_clip_rectangle(X + Border, Y + Border, X + Border + ((Width*Scale) - (Border*2)), Y + Border + (Height*Scale) - (Border*2));
+		vita2d_enable_clipping();
+
 		int offset = 0;
 		int Size = TextList.size();
 		if(Size > 1)	//If there is a backlog
@@ -80,5 +83,7 @@ void TextControl::Draw()
 			Line.erase(CharsDisplay, std::string::npos);
 			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset + (Spacing/2), RGBA8(255,255,255,255), 1.5f, Line.c_str());
 		}
+
+		vita2d_disable_clipping();
 	}
 }
