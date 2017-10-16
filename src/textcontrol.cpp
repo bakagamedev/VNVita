@@ -32,6 +32,6 @@ void TextControl::Draw()
 {
 	vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
-	const char * Text = "Test words\nWords words words\nline 3\nNo Items, Fox Only, Final Destination";
-	vita2d_pgf_draw_text(pgf, X + Border + 4, Y + Border + 32, RGBA8(0,0,0,255), 1.5f, Text) ;
+	const char * TextTemp = "Test words\nWords words words\nline 3\nNo Items, Fox Only, Final Destination";
+	vita2d_pgf_draw_text(pgf, X + Border + 4, Y + Border + 32, RGBA8(0,0,0,255), 1.5f, TextTemp) ;
 }
