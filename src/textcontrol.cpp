@@ -61,6 +61,7 @@ void TextControl::Draw()
 {
 	if(Show)
 	{
+		auto Spacing = 35;
 		vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
 		int offset = 0;
@@ -69,15 +70,15 @@ void TextControl::Draw()
 		{
 		    for(int i=0; i<(Size-1); ++i)
 		    {
-		    	offset = i*20;
-				vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset, RGBA8(128,128,255,255), 1.0f, TextList[i].c_str());
+				vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset + (Spacing/2), RGBA8(128,128,255,255), 1.5f, TextList[i].c_str());
+				offset += Spacing;
 		    }
 		}
 		if(Size > 0)	//Current line
 		{
 			std::string Line = TextList[Size - 1];
 			Line.erase(CharsDisplay, std::string::npos);
-			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset, RGBA8(255,255,255,255), 1.0f, Line.c_str());
+			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 8 + offset + (Spacing/2), RGBA8(255,255,255,255), 1.5f, Line.c_str());
 		}
 	}
 }
