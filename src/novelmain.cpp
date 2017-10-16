@@ -12,7 +12,7 @@ NovelMain::NovelMain(std::string LoadPath)
 	Background.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(Novel.Width,Novel.Height);
 
-	Parser.LoadFile(Path,"op00.scr");	//Should load main but that's too complicated for now
+	Parser.LoadFile(Path,"main.scr");	//Should load main but that's too complicated for now
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	Text.TextAdd(Parser.Path);
 	Text.TextAdd(Parser.CurrentScript);
@@ -47,14 +47,9 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 	} 
 
 	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
-	if(Text.Ready)
+	if ((Text.Ready) && (!Parser.IsFinished()))
 	{
 		Text.TextAdd(Parser.GetNextLine());
-	}
-
-	if((Text.Ready) && (Parser.IsFinished()))
-	{
-		//Ready = true;
 	}
 }
 
@@ -79,8 +74,8 @@ void NovelMain::Run()
 	SceCtrlData GamePad, GamePadLast;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	
-	bool Ready = false;
-	while(!Ready)
+	bool Finished = false;
+	while(!Finished)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
 		
@@ -95,6 +90,11 @@ void NovelMain::Run()
 			Tick(GamePad,GamePadLast);
 
 		Draw();
+
+		if((Text.Ready) && (Parser.IsFinished()))
+		{
+			Finished = true;
+		}
 
 		GamePadLast = GamePad;
 	}
