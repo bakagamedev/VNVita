@@ -41,12 +41,14 @@ void TextControl::SetBorderSize(float Border)
 
 void TextControl::ScrollUp()
 {
-	Scroll = std::max(--Scroll,MaxLines - (int)(TextList.size()));
+	Scroll = std::max(Scroll-1,MaxLines - (int)(TextList.size()));
 }
 
 void TextControl::ScrollDown()
 {
-	Scroll = std::min(++Scroll,0);
+	Scroll = std::min(Scroll+1,0);
+	if((int)TextList.size() < MaxLines)
+		Scroll = 0;
 }
 
 void TextControl::Tick(bool Continue)
@@ -82,6 +84,7 @@ void TextControl::Draw()
 
 		int offset = 0;
 		int Size = TextList.size();
+
 		if(Size > 1)	//If there is a backlog
 		{
 			int listStart = Size-MaxLines;
@@ -92,6 +95,8 @@ void TextControl::Draw()
 				listEnd += Scroll+1;	// +1 so it goes into current line position
 			}
 			listStart = std::max(0,listStart);
+    		listEnd = std::min(listEnd,Size);
+
 			offset = std::max(0,(MaxLines - Size) * Spacing);	//Pad it so current line is at the bottom of the screen
 		    for(int i=listStart; i<listEnd; ++i)
 		    {
@@ -104,7 +109,7 @@ void TextControl::Draw()
 			offset = (MaxLines-1)*Spacing;	//If there's nothing before current line, move it to bottom.
 		}
 
-		if(Size > 0)	//Current line
+		if((Size > 0) && (Scroll == 0))	//Current line
 		{
 			std::string Line = TextList[Size - 1];
 			Line.erase(CharsDisplay, std::string::npos);

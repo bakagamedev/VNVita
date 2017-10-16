@@ -34,6 +34,15 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 		Text.Show = !Text.Show;
 	} 
 
+	if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
+	{
+		Text.ScrollUp();
+	} 
+	if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
+	{
+		Text.ScrollDown();
+	} 
+
 	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
 }
 
