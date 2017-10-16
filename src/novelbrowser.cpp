@@ -108,7 +108,6 @@ std::string NovelBrowser::Run()
 			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,255,255), 1.5f, CountString);
 			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
 
-			vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	//Divide centre of screen
 
 			//Thumbnail
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
@@ -138,6 +137,8 @@ std::string NovelBrowser::Run()
 				auto White = RGBA8(200,200,200,255);
 				auto Colour = (i == ItemSelected) ? COLOUR_Selected : COLOUR_Deselected;
 
+				vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, COLOUR_UIBackground);
+
 				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, White);
 				vita2d_pgf_draw_text(pgf, 66, Y, Colour, 2.0f, NovelList[i].Name.c_str());
 				vita2d_pgf_draw_text(pgf, 66, Y+24, RGBA8(0,0,255,255), 1.0f, NovelList[i].Path.c_str());
@@ -150,6 +151,9 @@ std::string NovelBrowser::Run()
 					//vita2d_draw_texture(Icon,0,Y-32);
 				}
 			}
+
+			//Divide centre of screen
+			vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	
 
 			vita2d_end_drawing();
 			vita2d_swap_buffers();

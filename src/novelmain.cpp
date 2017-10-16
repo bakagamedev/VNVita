@@ -10,27 +10,47 @@ NovelMain::NovelMain(std::string LoadPath)
 	Novel.Reset(Path,false);
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
-	
-	Foreground.SetPosition(157,25);
+	Text.SetNovelSize(Novel.Width,Novel.Height);
+
+	Parser.LoadFile(Path,"main.scr");	//Should load main but that's too complicated for now
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
+	Text.TextAdd(Parser.Path);
+	Text.TextAdd(Parser.CurrentScript);
+	/*
+	Foreground.SetPosition(157,25);
 	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
+	*/
 }
 
-bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
+void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
-
-
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-		Background.SetImage("ux0:data/vnvita/ever17/background/bg07b1.jpg");
-		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu11bdl.png");
+
+	} 	
+	if((GamePad.buttons & SCE_CTRL_START) && ((GamePadLast.buttons & SCE_CTRL_START) == 0))
+	{
+
 	} 
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
-		Background.SetImage("ux0:data/vnvita/ever17/background/bg01a3.jpg");
-		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu13bdl.png");
+		Text.Show = !Text.Show;
 	} 
-	return false;
+
+	if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
+	{
+		Text.ScrollUp();
+	} 
+	if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
+	{
+		Text.ScrollDown();
+	} 
+
+	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
+	if ((Text.Ready) && (!Parser.IsFinished()))
+	{
+		Text.TextAdd(Parser.GetNextLine());
+	}
 }
 
 void NovelMain::Draw()
@@ -38,12 +58,10 @@ void NovelMain::Draw()
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
-	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, RGBA8(114, 137, 217, 255));
-
 	Background.Draw();
 	Foreground.Draw();
 	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
-	//Textbox draw
+	Text.Draw();
 	//UI Draw
 	Menu.Draw();
 
@@ -56,8 +74,8 @@ void NovelMain::Run()
 	SceCtrlData GamePad, GamePadLast;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	
-	bool Ready = false;
-	while(!Ready)
+	bool Finished = false;
+	while(!Finished)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
 		
@@ -65,12 +83,18 @@ void NovelMain::Run()
 		{
 			Menu.Open = !Menu.Open;
 		}
+
 		Menu.Tick(GamePad,GamePadLast);
 
-		if(!Menu.Open)
+		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
 
 		Draw();
+
+		if((Text.Ready) && (Parser.IsFinished()))
+		{
+			Finished = true;
+		}
 
 		GamePadLast = GamePad;
 	}

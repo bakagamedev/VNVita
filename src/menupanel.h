@@ -37,6 +37,7 @@ public:
 	~MenuPanel();
 
 	bool Open = false;
+	bool Active = false;
 	void Draw();
 	void Tick(SceCtrlData GamePad, SceCtrlData GamePadLast);
 };

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <functional>
+#include <fstream>
 
 #include <psp2/ctrl.h>
 #include <vita2d.h>
