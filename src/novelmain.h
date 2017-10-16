@@ -15,7 +15,7 @@ private:
 	MenuPanel Menu;
 
 	NovelHeader Novel;
-	bool Tick(SceCtrlData GamePad,SceCtrlData GamePadLast);
+	void Tick(SceCtrlData GamePad,SceCtrlData GamePadLast);
 	void Draw();
 public:
 	NovelMain(std::string LoadPath);

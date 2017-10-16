@@ -10,27 +10,23 @@ NovelMain::NovelMain(std::string LoadPath)
 	Novel.Reset(Path,false);
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
-	
+	/*
 	Foreground.SetPosition(157,25);
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
+	*/
 }
 
-bool NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
+void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
-
-
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-		Background.SetImage("ux0:data/vnvita/ever17/background/bg07b1.jpg");
-		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu11bdl.png");
+
 	} 
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
-		Background.SetImage("ux0:data/vnvita/ever17/background/bg01a3.jpg");
-		Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu13bdl.png");
+
 	} 
-	return false;
 }
 
 void NovelMain::Draw()
@@ -65,6 +61,7 @@ void NovelMain::Run()
 		{
 			Menu.Open = !Menu.Open;
 		}
+
 		Menu.Tick(GamePad,GamePadLast);
 
 		if(!Menu.Open)

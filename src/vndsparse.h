@@ -4,5 +4,7 @@
 class VNDSParser
 {
 public:
+
 private:
+	
 };
