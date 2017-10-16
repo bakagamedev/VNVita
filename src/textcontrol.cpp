@@ -2,6 +2,11 @@
 
 TextControl::TextControl()
 {
+	ptrArrowUp = vita2d_load_PNG_file(ASSET_ArrowUp);
+	ImgArrowUp = std::shared_ptr<vita2d_texture>(ptrArrowUp, vita2d_free_texture);
+	
+	ptrArrowDown = vita2d_load_PNG_file(ASSET_ArrowDown);
+	ImgArrowDown = std::shared_ptr<vita2d_texture>(ptrArrowDown, vita2d_free_texture);
 }
 TextControl::~TextControl()
 {
@@ -117,5 +122,15 @@ void TextControl::Draw()
 		}
 
 		vita2d_disable_clipping();
+
+		//Scroll markers
+		if(Scroll == 0)
+		{
+			if(ptrArrowUp != NULL)
+				vita2d_draw_texture(ptrArrowUp, (SCREEN_WIDTH/2) - 16, 0);
+
+			if(ptrArrowDown != NULL)
+				vita2d_draw_texture(ptrArrowDown,(SCREEN_WIDTH/2) - 16, SCREEN_HEIGHT-16);
+		}
 	}
 }

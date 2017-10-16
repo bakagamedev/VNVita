@@ -13,6 +13,13 @@ private:
 	uint8_t Alpha = 128;
 	int MaxLines = 13;	
 	int Scroll = 0;
+
+	//UI Gizmos
+	vita2d_texture * ptrArrowUp;
+	std::shared_ptr<vita2d_texture> ImgArrowUp;
+	vita2d_texture * ptrArrowDown;
+	std::shared_ptr<vita2d_texture> ImgArrowDown;
+
 public:
 	~TextControl();
 	TextControl();
