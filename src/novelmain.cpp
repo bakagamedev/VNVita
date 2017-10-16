@@ -26,11 +26,11 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-		Text.TextAdd("Buttocks");
+		
 	} 	
 	if((GamePad.buttons & SCE_CTRL_START) && ((GamePadLast.buttons & SCE_CTRL_START) == 0))
 	{
-		Text.TextAdd("No buttocks!");
+
 	} 
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
