@@ -26,9 +26,11 @@ MenuPanel::~MenuPanel()
 
 void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 {
-	X = (Open) ? std::max(X - SlideSpeed, -256.0f) : std::min(X + SlideSpeed, 0.5f);
+	constexpr static const float PanelWidth = 256.0f; 
+	X = (Open) ? std::max(X - SlideSpeed, -PanelWidth) : std::min(X + SlideSpeed, 0.5f);
+	Active = (X < -(PanelWidth/2));	//Enable controls if panel is at least half open
 
-	if(Open)
+	if((Open) && (Active))
 	{
 		if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
 		{

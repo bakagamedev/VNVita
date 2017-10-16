@@ -64,7 +64,7 @@ void NovelMain::Run()
 
 		Menu.Tick(GamePad,GamePadLast);
 
-		if(!Menu.Open)
+		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
 
 		Draw();
