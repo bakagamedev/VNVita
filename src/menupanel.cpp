@@ -67,11 +67,13 @@ void MenuPanel::Draw()
 		vita2d_draw_texture(logoPointer,Left, 0);
 	vita2d_draw_line(Left,96,Left + PanelWidth, 96, COLOUR_UIBorder);
 
+	int Spacing = 42;
 	for(int i=0; i<MenuItemList.size(); ++i)
 	{
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
-		vita2d_draw_rectangle(Left, 96 + (i*38), PanelWidth, 38, Colour);
-		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*38), COLOUR_Font, 2.0f, MenuItemList[i].Title.c_str());
+		vita2d_draw_rectangle(Left, 96 + (i*Spacing), PanelWidth, Spacing, Colour);
+		vita2d_draw_line(Left, 96 + ((i+1)*Spacing), Left+PanelWidth, 96 + ((i+1)*Spacing), COLOUR_UIBorder);
+		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*Spacing), COLOUR_Font, 2.0f, MenuItemList[i].Title.c_str());
 	}
 
 
