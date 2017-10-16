@@ -10,6 +10,7 @@ NovelMain::NovelMain(std::string LoadPath)
 	Novel.Reset(Path,false);
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
+	Text.SetNovelSize(Novel.Width,Novel.Height);
 	/*
 	Foreground.SetPosition(157,25);
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
@@ -25,7 +26,7 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 	} 
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
-
+		Text.Show = !Text.Show;
 	} 
 }
 
@@ -37,7 +38,7 @@ void NovelMain::Draw()
 	Background.Draw();
 	Foreground.Draw();
 	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
-	Text.Draw(128,64);
+	Text.Draw();
 	//UI Draw
 	Menu.Draw();
 
