@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "novelheader.h"
+#include "vndsparse.h"
 #include "imagecontrol.h"
 #include "textcontrol.h"
 #include "menupanel.h"
@@ -11,6 +12,7 @@ private:
 	std::string Path;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
+	VNDSParser Parser;
 	TextControl Text;
 	ForegroundControl Foreground;
 	BackgroundControl Background;
