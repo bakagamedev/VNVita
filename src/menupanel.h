@@ -17,6 +17,7 @@ public:
 class MenuPanel
 {
 private:
+	constexpr static const float PanelWidth = 256.0f; 
 	vita2d_texture * logoPointer;
 	std::shared_ptr<vita2d_texture> LogoSmall;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
@@ -26,7 +27,7 @@ private:
 	float X = 0;
 	float SlideSpeed = 8.0f;
 
-	int Selected = 0;
+	int ItemSelected = 0;
 
 	//Callbacks
 	static void MenuDoesNothing()	{};

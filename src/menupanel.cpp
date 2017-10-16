@@ -26,7 +26,6 @@ MenuPanel::~MenuPanel()
 
 void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 {
-	constexpr static const float PanelWidth = 256.0f; 
 	X = (Open) ? std::max(X - SlideSpeed, -PanelWidth) : std::min(X + SlideSpeed, 0.5f);
 	Active = (X < -(PanelWidth/2));	//Enable controls if panel is at least half open
 
@@ -34,16 +33,16 @@ void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 	{
 		if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
 		{
-			Selected = std::max(Selected-1,0);
+			ItemSelected = std::max(ItemSelected-1,0);
 		}
 		if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
 		{
-			Selected = std::min(Selected+1,((int)MenuItemList.size())-1);
+			ItemSelected = std::min(ItemSelected+1,((int)MenuItemList.size())-1);
 		}
 
 		if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 		{
-			std::function<void()> FunctionPointer = MenuItemList[Selected].FunctionPointer;
+			std::function<void()> FunctionPointer = MenuItemList[ItemSelected].FunctionPointer;
 			FunctionPointer();
 		}
 	}
@@ -60,17 +59,19 @@ void MenuPanel::Draw()
 	vita2d_draw_rectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT, RGBA8(0,0,0, (int)-(X/2)));
 
 	//Draw panel & border line
-	vita2d_draw_rectangle(Left, 0, 256, SCREEN_HEIGHT, COLOUR_UIBackground);
+	vita2d_draw_rectangle(Left, 0, PanelWidth, SCREEN_HEIGHT, COLOUR_UIBackground);
 	vita2d_draw_rectangle(Left-2.0f, 0, 3, SCREEN_HEIGHT, COLOUR_UIBorder);
 
 	//Draw logo at top
 	if(logoPointer != NULL)
 		vita2d_draw_texture(logoPointer,Left, 0);
+	vita2d_draw_line(Left,96,Left + PanelWidth, 96, COLOUR_UIBorder);
 
 	for(int i=0; i<MenuItemList.size(); ++i)
 	{
-		auto Colour = (i == Selected) ? COLOUR_Selected : COLOUR_Deselected;
-		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*38), Colour, 2.0f, MenuItemList[i].Title.c_str());
+		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
+		vita2d_draw_rectangle(Left, 96 + (i*38), PanelWidth, 38, Colour);
+		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*38), COLOUR_Font, 2.0f, MenuItemList[i].Title.c_str());
 	}
 
 
