@@ -2,6 +2,7 @@
 #include "common.h"
 #include "novelheader.h"
 #include "imagecontrol.h"
+#include "textcontrol.h"
 #include "menupanel.h"
 
 class NovelMain
@@ -10,6 +11,7 @@ private:
 	std::string Path;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
+	TextControl Text;
 	ForegroundControl Foreground;
 	BackgroundControl Background;
 	MenuPanel Menu;
