@@ -11,7 +11,7 @@ NovelMain::NovelMain(std::string LoadPath)
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(Novel.Width,Novel.Height);
-	
+
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	/*
 	Foreground.SetPosition(157,25);
@@ -29,6 +29,8 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 	{
 		Text.Show = !Text.Show;
 	} 
+
+	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
 }
 
 void NovelMain::Draw()
