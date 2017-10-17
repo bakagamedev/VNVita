@@ -17,8 +17,9 @@ public:
 	float NovelWidth = 256;
 	float NovelHeight = 196;
 	float Scale = 1.0f;
-	vita2d_texture * imagePointer = NULL;
 	std::shared_ptr<vita2d_texture> Image;
+
+	virtual ~ImageControl() = default;
 
 	void SetScreenSize(float Width, float Height)
 	{
@@ -46,6 +47,8 @@ public:
 			vita2d_wait_rendering_done();
 			if(FileExists(Path))
 			{
+				vita2d_texture * imagePointer = NULL;
+
 				if((Path.find(".jpg") != std::string::npos) || (Path.find(".JPG") != std::string::npos))
 					imagePointer =  vita2d_load_JPEG_file(Path.c_str());
 				if((Path.find(".png") != std::string::npos) || (Path.find(".PNG") != std::string::npos))
@@ -76,11 +79,12 @@ public:
 		if((Show == false) || (Image.get() == NULL))
 		{
 			//Draw black background and quit
-			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish
+			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish 
 			return;
 		}
 
-		vita2d_draw_texture_scale(Image.get(), BackgroundX, BackgroundY, Scale, Scale);
+		if(Image.get() != NULL)
+			vita2d_draw_texture_scale(Image.get(), BackgroundX, BackgroundY, Scale, Scale);
 	}
 	void DrawBorders()
 	{
@@ -109,6 +113,7 @@ public:
 			return;
 		}
 
-		vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
+		if(Image.get() != NULL)
+			vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
 	}
 };

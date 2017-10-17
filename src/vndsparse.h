@@ -11,12 +11,13 @@ public:
 	int CurrentLine = 0;
 	std::vector<VNDSInstruction> Script;
 public:
+	bool Active = false;
 	VNDSParser();
 
+	OpcodeType GetOpcode(const std::string Line);
 	void LoadFile(const std::string Path, const std::string File);
 	std::string GetNextLine();
 
-	VNDSInstruction GetOpcode(const std::string Line);
 	void JumpTo(int LineNo);
 	bool IsFinished();
 };

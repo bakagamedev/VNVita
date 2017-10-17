@@ -16,10 +16,10 @@ NovelMain::NovelMain(std::string LoadPath)
 	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	Text.TextAdd(Parser.Path);
 	Text.TextAdd(Parser.CurrentScript);
-	/*
+	
 	Foreground.SetPosition(157,25);
 	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
-	*/
+	
 }
 
 void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
