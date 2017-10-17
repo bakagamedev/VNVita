@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-enum class OpcodeType
+enum class OpcodeType 
 {
 	None,
 	//flow
@@ -37,3 +37,4 @@ public:
 		this->Operand = Operand;
 	}
 };
+

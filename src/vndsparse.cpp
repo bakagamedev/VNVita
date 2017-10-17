@@ -34,7 +34,10 @@ void VNDSParser::LoadFile(const std::string Path, const std::string File)
 
 OpcodeType VNDSParser::GetOpcode(const std::string Line)
 {
-	return OpcodeType::Text;
+	std::string type = Line.substr(0, Line.find(" "));
+	if(OpcodeLookup.count(type) == 1)
+		return OpcodeLookup[type];
+	return OpcodeType::None;
 }
 
 std::string VNDSParser::GetNextLine()

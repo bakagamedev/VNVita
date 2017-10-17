@@ -3,7 +3,8 @@
 #include <vector>
 #include <array>
 #include <memory>
-#include <string.h>
+#include <map>
+#include <string>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
