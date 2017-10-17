@@ -56,6 +56,11 @@ public:
 					vita2d_texture_set_filters(imagePointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
 					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);
 				}
+				else
+				{
+					imagePointer =  vita2d_load_PNG_file(ASSET_NoAsset);
+					Image = std::shared_ptr<vita2d_texture>(imagePointer, vita2d_free_texture);
+				}
 			}
 		}
 	}

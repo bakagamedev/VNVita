@@ -3,7 +3,7 @@
 GameMain::GameMain()
 {
 	StatusCode = StatusType::OK;
-	vita2d_init();
+	vita2d_init_advanced(8 * 1024 * 1024);
 	vita2d_set_vblank_wait(true);
 }
 

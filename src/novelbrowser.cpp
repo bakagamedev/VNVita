@@ -2,6 +2,7 @@
 
 NovelBrowser::NovelBrowser()
 {
+	vita2d_set_clear_color(COLOUR_UIBackground);
 	//const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
 	std::string SearchPath = "ux0:data/vnvita/";
 	Search(SearchPath.c_str());
@@ -101,47 +102,53 @@ std::string NovelBrowser::Run()
 			vita2d_start_drawing();
 			vita2d_clear_screen();
 
-			//Header text
+			//Headerbar
 			int count = NovelList.size();
-			char CountString[30];
-			sprintf(CountString,"VNVita - %d Novels detected",count);
-			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,255,255), 1.5f, CountString);
+			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
+			vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
 			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
 
 
-			//Thumbnail
+			//Preview section
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
 			if(Thumbnail != NULL)
-			{
-				//Scale to fit half of screen
+			{				
+				float X = SCREEN_WIDTH/2;
+				float Y = 32;
+
+				//Status panel above thumbnail
+				vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 32, COLOUR_UITitlebar);
+				vita2d_draw_line(X,Y+32, X+(SCREEN_WIDTH/2), Y+32, COLOUR_UIBorder);
+
+				Y += 32;
+				//Thumbnail
 				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
 				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
 				{
 					Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
 				}
 				float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
-				float X = SCREEN_WIDTH/2;
-				float Y = 32;
+
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
 
+				Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
+				//Text area
 				char ResolutionString[10];
 				sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
-				vita2d_pgf_draw_text(pgf, SCREEN_WIDTH/2, 520,RGBA8(255,255,255,255), 1.0f, ResolutionString);
+				vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 			}
 
 			//List 'o things
 			for(int i=0; i<NovelList.size(); ++i)
 			{
 				float Y = 64 + (i*64);
+				auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 
-				auto White = RGBA8(200,200,200,255);
-				auto Colour = (i == ItemSelected) ? COLOUR_Selected : COLOUR_Deselected;
+				vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
 
-				vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, COLOUR_UIBackground);
-
-				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, White);
-				vita2d_pgf_draw_text(pgf, 66, Y, Colour, 2.0f, NovelList[i].Name.c_str());
-				vita2d_pgf_draw_text(pgf, 66, Y+24, RGBA8(0,0,255,255), 1.0f, NovelList[i].Path.c_str());
+				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, COLOUR_UIBorder);
+				vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Name.c_str());
+				vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
 
 				auto Icon = NovelList[i].Icon.get();
 				if(Icon != NULL)
