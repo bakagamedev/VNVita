@@ -21,7 +21,11 @@ void VNDSParser::LoadFile(const std::string Path, const std::string File)
 			if(!Line.empty())
 			{
 				OpcodeType code = GetOpcode(Line);
-				Script.emplace_back(code,Line);
+				if(code != OpcodeType::None)
+				{
+					Line = Line.substr(Line.find_first_of(" \t")+1);	//Delete the opcode
+					Script.emplace_back(code,Line);
+				}
 			}	
 		}
 		text.close();
@@ -42,15 +46,14 @@ OpcodeType VNDSParser::GetOpcode(const std::string Line)
 
 std::string VNDSParser::GetNextLine()
 {
-	CurrentLine++;
-	if(!IsFinished())
+	++CurrentLine;
+	while(Script[CurrentLine].Opcode != OpcodeType::Text)
 	{
-		return Script[CurrentLine].Operand;
+		++CurrentLine;
+		if(IsFinished())
+			return "oh no, EOF!";
 	}
-	else
-	{
-		return "oh no, EOF!";
-	}
+	return(Script[CurrentLine].Operand);
 }
 
 void VNDSParser::JumpTo(int LineNo)

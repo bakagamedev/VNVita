@@ -8,6 +8,8 @@ public:
 	std::string Path;
 	std::string CurrentScript;
 
+	std::map<std::string,uint> LabelLocations;
+
 	std::map<std::string,OpcodeType> OpcodeLookup = {
 		{ "label", OpcodeType::Label },
 		{ "jump", OpcodeType::Jump },
@@ -31,6 +33,7 @@ public:
 	std::vector<VNDSInstruction> Script;
 public:
 	bool Active = false;
+	
 	VNDSParser();
 
 	OpcodeType GetOpcode(const std::string Line);

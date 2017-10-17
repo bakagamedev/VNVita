@@ -12,13 +12,13 @@ NovelMain::NovelMain(std::string LoadPath)
 	Background.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(Novel.Width,Novel.Height);
 
-	Parser.LoadFile(Path,"main.scr");	//Should load main but that's too complicated for now
-	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
+	Parser.LoadFile(Path,"s_1a.scr");	//Should load main but that's too complicated for now
+	//Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
 	Text.TextAdd(Parser.Path);
 	Text.TextAdd(Parser.CurrentScript);
 	
 	Foreground.SetPosition(157,25);
-	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
+	//Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
 	
 }
 
@@ -26,7 +26,6 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-
 	} 	
 	if((GamePad.buttons & SCE_CTRL_START) && ((GamePadLast.buttons & SCE_CTRL_START) == 0))
 	{
