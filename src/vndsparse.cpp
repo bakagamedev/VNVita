@@ -11,32 +11,33 @@ void VNDSParser::LoadFile(std::string Path,std::string File)
 	this->Path = Path+"/script";
 	this->CurrentScript = this->Path + "/"+ File;
 
-	std::string line;
+	std::string Line;
 	std::ifstream text(CurrentScript);
 	if (text.is_open())
 	{
 		while (text.good())
 		{
-			getline(text,line);
-			if(!line.empty())
+			getline(text,Line);
+			if(!Line.empty())
 			{
-				Script.push_back(line);
+				
+				Script.emplace_back(OpcodeType::Text,Line);
 			}	
 		}
 		text.close();
 	}
 	else
 	{
-		Script.push_back("can't open file!");
+		Script.emplace_back(OpcodeType::Text,"can't open file!");
 	}
 }
 
-std::string VNDSParser::GetNextLine()
+std::string VNDSParser::RunNextLine()
 {
 	CurrentLine++;
 	if(!IsFinished())
 	{
-		return Script[CurrentLine];
+		return Script[CurrentLine].Operand;
 	}
 	else
 	{

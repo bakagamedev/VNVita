@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "vndsinstruction.h"
 
 class VNDSParser
 {
@@ -8,7 +9,7 @@ public:
 	std::string CurrentScript;
 
 	int CurrentLine = 0;
-	std::vector<std::string> Script;
+	std::vector<VNDSInstruction> Script;
 public:
 	bool Active = false;
 
