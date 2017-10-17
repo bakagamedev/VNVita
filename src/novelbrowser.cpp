@@ -116,12 +116,11 @@ std::string NovelBrowser::Run()
 				float X = SCREEN_WIDTH/2;
 				float Y = 32;
 
-				//Status panel above thumnail
+				//Status panel above thumbnail
 				vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 32, COLOUR_UITitlebar);
-				vita2d_draw_line(X,Y+31, X+(SCREEN_WIDTH/2), Y+31, COLOUR_UIBorder);
+				vita2d_draw_line(X,Y+32, X+(SCREEN_WIDTH/2), Y+32, COLOUR_UIBorder);
 
 				Y += 32;
-
 				//Thumbnail
 				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
 				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
@@ -132,7 +131,7 @@ std::string NovelBrowser::Run()
 
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
 
-				Y += vita2d_texture_get_height(Thumbnail) + 12;
+				Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
 				//Text area
 				char ResolutionString[10];
 				sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
