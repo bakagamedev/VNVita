@@ -20,8 +20,8 @@ void VNDSParser::LoadFile(const std::string Path, const std::string File)
 			getline(text,Line);
 			if(!Line.empty())
 			{
-				
-				Script.emplace_back(OpcodeType::Text,Line);
+				VNDSInstruction code = GetOpcode(Line);
+				Script.emplace_back(code,Line);
 			}	
 		}
 		text.close();
@@ -32,7 +32,12 @@ void VNDSParser::LoadFile(const std::string Path, const std::string File)
 	}
 }
 
-std::string VNDSParser::RunNextLine()
+VNDSInstruction GetOpcode(const std::string Line)
+{
+	return VNDSInstruction::Text;
+}
+
+std::string VNDSParser::GetNextLine()
 {
 	CurrentLine++;
 	if(!IsFinished())
