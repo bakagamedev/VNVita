@@ -7,11 +7,9 @@ class VNDSParser
 {
 private:
 	std::string Path;
-	std::string CurrentScript;
+	std::string File;
 
-	std::map<std::string,uint> LabelLocations;
-
-	std::map<std::string,OpcodeType> OpcodeLookup = {
+	std::map<std::string,OpcodeType> OpcodeStrings = {
 		{ "label", OpcodeType::Label },
 		{ "jump", OpcodeType::Jump },
 		{ "goto", OpcodeType::Goto },
@@ -30,32 +28,10 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
-	int CurrentLine = 0;
-	std::vector<VNDSInstruction> Script;
-
-	void ParseCurrentLine();
-	OpcodeType GetOpcode(const std::string Line);
+	char * TextTable;
 
 public:
-	bool WaitingForInput = false;
-	std::string CurrentLineText;
-	bool Active = false;
-
-	VNDSParser();
-
+	VNDSParser(std::string Path,std::string File);
 	void SetPath(const std::string Path);
-	void LoadFile(const std::string File);
-
-	bool HasText();
-	std::string GetLineText();
-	void RunNextLine();
-	void JumpTo(int LineNo);
-	bool IsFinished();
-
-	void DebugDump();
-
-	//Functions
-	void FunctionGoto();
-	void FunctionJump();
-	void FunctionText();
+	void SetFile(const std::string File);
 };

@@ -4,7 +4,7 @@
 enum class OpcodeType 
 {
 	None,
-	FileEnd,
+	End,
 	//flow
 	Label,
 	Jump,
@@ -38,4 +38,3 @@ public:
 		this->Operand = Operand;
 	}
 };
-
