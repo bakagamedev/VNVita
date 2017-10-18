@@ -4,6 +4,7 @@
 enum class OpcodeType 
 {
 	None,
+	FileEnd,
 	//flow
 	Label,
 	Jump,

@@ -4,7 +4,7 @@
 
 class VNDSParser
 {
-public:
+private:
 	std::string Path;
 	std::string CurrentScript;
 
@@ -31,15 +31,30 @@ public:
 
 	int CurrentLine = 0;
 	std::vector<VNDSInstruction> Script;
+
+	void ParseCurrentLine();
+	OpcodeType GetOpcode(const std::string Line);
+
 public:
+	bool WaitingForInput = false;
+	std::string CurrentLineText;
 	bool Active = false;
-	
+
 	VNDSParser();
 
-	OpcodeType GetOpcode(const std::string Line);
-	void LoadFile(const std::string Path, const std::string File);
-	std::string GetNextLine();
+	void SetPath(const std::string Path);
+	void LoadFile(const std::string File);
 
+	bool HasText();
+	std::string GetLineText();
+	void RunNextLine();
 	void JumpTo(int LineNo);
 	bool IsFinished();
+
+	void DebugDump();
+
+	//Functions
+	void FunctionGoto();
+	void FunctionJump();
+	void FunctionText();
 };
