@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "vndsinstruction.h"
+#include "stringhelpers.h"
 
 class VNDSParser
 {
