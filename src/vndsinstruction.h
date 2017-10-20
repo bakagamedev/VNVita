@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "charviewer.h"
 
 enum class OpcodeType 
 {
@@ -26,15 +27,27 @@ enum class OpcodeType
 	Choice,
 };
 
+enum class OperandType
+{
+	Integer,
+	String,
+};
+
 class VNDSInstruction
 {
 public:
+	/*
 	OpcodeType Opcode;
-	std::string Operand;
+
+	union {
+		TypeInt,
+		TypeViewer,
+	} Operand;
 	
-	VNDSInstruction(OpcodeType Opcode, std::string Operand)
+	VNDSInstruction(OpcodeType Opcode)
 	{
 		this->Opcode = Opcode;
 		this->Operand = Operand;
 	}
+	*/
 };

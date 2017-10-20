@@ -28,10 +28,17 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
-	char * TextTable;
+	std::vector<VNDSInstruction> Instructions;
 
+	std::string StringBlob;
+
+	//Loading
+	OpcodeType GetOpcode(const std::string line);
+	void GetOperand(std::string &line);
 public:
-	VNDSParser(std::string Path,std::string File);
+	VNDSParser();
 	void SetPath(const std::string Path);
 	void SetFile(const std::string File);
+
+	void DumpStrings(const std::string outfile);
 };

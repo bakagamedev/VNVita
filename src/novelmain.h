@@ -12,7 +12,7 @@ private:
 	std::string Path;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
-	//VNDSParser Parser;	
+	VNDSParser Parser;	
 	TextControl Text;
 	ForegroundControl Foreground;
 	BackgroundControl Background;

@@ -8,13 +8,14 @@ NovelMain::NovelMain(std::string LoadPath)
 {
 	this->Path = LoadPath;
 	Novel.Reset(Path,false);
+
+	Parser.SetPath(Path);
+	Parser.SetFile("s402.scr");
+	Parser.DumpStrings("s402.txt");
+
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(Novel.Width,Novel.Height);
-
-	Foreground.SetPosition(157,25);
-	//Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
-	
 }
 
 void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
