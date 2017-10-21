@@ -38,7 +38,7 @@ void VNDSParser::SetFile(const std::string File)
 
 		OpcodeType Opcode = GetOpcode(Line);
 
-		//Skip recognisable lines
+		//Skip unrecognisable lines
 		if(Opcode == OpcodeType::None)
 			continue;
 
@@ -68,20 +68,22 @@ void VNDSParser::RunNextLine()
 {
 	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
-	StringViewer Viewer;
-	if(CurrentInstruction->OperandType == VNDSInstructionOperandType::String)
-	{
-		Viewer = CurrentInstruction->Operand.String;
-	}
-	
 	//replace with map or something
-	switch(CurrentInstruction->Opcode)
+	switch(CurrentInstruction->OperandType)
 	{
-		case OpcodeType::Text:
-			FunctionText(Viewer);
-			break;
+		case VNDSInstructionOperandType::String:
+			switch(CurrentInstruction->Opcode)
+			{
+				case OpcodeType::Text:
+					FunctionText(CurrentInstruction->Operand.String);
+					break;
+				case OpcodeType::Jump:
+					FunctionJump(CurrentInstruction->Operand.String);
+					break;
+			}
+		break;
 	}
-	
+
 	++CurrentLine;
 }
 
@@ -113,5 +115,12 @@ void VNDSParser::GetOperand(std::string &line)
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	//Text->TextAdd(String);	//shrug!
+	Text->TextAdd(String);	//shrug!
+}
+
+void VNDSParser::FunctionJump(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	std::string File = String.substr(0, String.find(" "));	//Find first arg. 
+	SetFile(File);
 }

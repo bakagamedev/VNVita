@@ -49,6 +49,7 @@ private:
 
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
+	void FunctionJump(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);

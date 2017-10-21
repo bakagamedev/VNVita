@@ -49,13 +49,12 @@ public:
 	{
 		this->Opcode = Opcode;
 		this->Operand.String = Operand;
-		this->OperandType = VNDSInstructionOperandType::Integer;
+		this->OperandType = VNDSInstructionOperandType::String;
 	}
 	VNDSInstruction(OpcodeType Opcode, int Operand)
 	{
 		this->Opcode = Opcode;
 		this->Operand.Integer = Operand;
-		this->OperandType = VNDSInstructionOperandType::String;
+		this->OperandType = VNDSInstructionOperandType::Integer;
 	}
-	
 };
