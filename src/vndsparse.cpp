@@ -51,29 +51,38 @@ void VNDSParser::SetFile(const std::string File)
 		}
 
 		uint StringLength = Line.size();
-		//Instructions.push_back(Opcode,CharViewer(&StringBlob,StringBlob.size(),StringLength));
+		Instructions.push_back(VNDSInstruction(Opcode, StringViewer(StringBlob.size(),StringLength)));
 		StringBlob.append(Line);
 		++LineNo;
 	}
+
+	DumpStrings(Path + File + ".txt");
+}
+
+void VNDSParser::Tick(bool Pressed)
+{
+	RunNextLine();
 }
 
 void VNDSParser::RunNextLine()
 {
-	VNDSInstruction CurrentInstruction = Instructions[CurrentLine];
+	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
 	StringViewer Viewer;
-	if(CurrentInstruction.OperandType == VNDSInstructionOperandType::String)
+	if(CurrentInstruction->OperandType == VNDSInstructionOperandType::String)
 	{
-		Viewer = CurrentInstruction.Operand.String;
+		Viewer = CurrentInstruction->Operand.String;
 	}
 	
 	//replace with map or something
-	switch(CurrentInstruction.Opcode)
+	switch(CurrentInstruction->Opcode)
 	{
 		case OpcodeType::Text:
 			FunctionText(Viewer);
 			break;
 	}
+	
+	++CurrentLine;
 }
 
 void VNDSParser::DumpStrings(const std::string outfile)
@@ -104,5 +113,5 @@ void VNDSParser::GetOperand(std::string &line)
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd(String);	//shrug!
+	//Text->TextAdd(String);	//shrug!
 }

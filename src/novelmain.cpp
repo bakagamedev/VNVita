@@ -11,7 +11,6 @@ NovelMain::NovelMain(std::string LoadPath)
 
 	Parser.SetPath(Path);
 	Parser.SetFile("main.scr");
-	Parser.DumpStrings("main.txt");
 
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
@@ -40,7 +39,12 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 		Text.ScrollDown();
 	} 
 
-	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
+	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
+	Text.Tick(Pressed);
+	if(Text.Ready)
+	{
+		Parser.Tick(Pressed);
+	}
 }
 
 void NovelMain::Draw()
