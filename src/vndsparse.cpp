@@ -117,6 +117,16 @@ void VNDSParser::GetOperand(std::string &line)
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
+
+	bool blocking = true;
+	char firstchar = String.at(0);
+	if(firstchar == '@')	
+		{	blocking = false;	String.erase(0,1);	}
+	if(firstchar == '~')	
+		{	String = "";	blocking = false;	}
+	if(firstchar == '!')	
+		{	String = ""; blocking = true;	}
+
 	Text->TextAdd(String);	//shrug!
 }
 
