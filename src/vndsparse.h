@@ -32,7 +32,8 @@ private:
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
 
-	uint CurrentLine;
+	uint CurrentLine = 0;
+	int FramesCountdown = -1;
 
 	//Loading
 	OpcodeType GetOpcode(const std::string line);

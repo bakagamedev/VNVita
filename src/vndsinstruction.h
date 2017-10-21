@@ -1,6 +1,6 @@
 #pragma once
+#include "stringviewer.h"
 #include "common.h"
-#include "charviewer.h"
 
 enum class OpcodeType 
 {
@@ -27,27 +27,35 @@ enum class OpcodeType
 	Choice,
 };
 
-enum class OperandType
+enum class VNDSInstructionOperandType
 {
 	Integer,
 	String,
 };
 
+union VNDSInstructionOperand {
+	int Integer;
+	Stringviewer String;
+};
+
 class VNDSInstruction
 {
 public:
-	/*
 	OpcodeType Opcode;
-
-	union {
-		TypeInt,
-		TypeViewer,
-	} Operand;
+	VNDSInstructionOperand Operand;
+	VNDSInstructionOperandType OperandType;
 	
-	VNDSInstruction(OpcodeType Opcode)
+	VNDSInstruction(OpcodeType Opcode, Stringviewer Operand)
 	{
 		this->Opcode = Opcode;
-		this->Operand = Operand;
+		this->Operand.String = Operand;
+		this->OperandType = VNDSInstructionOperandType::Integer;
 	}
-	*/
+	VNDSInstruction(OpcodeType Opcode, int Operand)
+	{
+		this->Opcode = Opcode;
+		this->Operand.Integer = Operand;
+		this->OperandType = VNDSInstructionOperandType::String;
+	}
+	
 };
