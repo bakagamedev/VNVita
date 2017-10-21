@@ -35,7 +35,7 @@ enum class VNDSInstructionOperandType
 
 union VNDSInstructionOperand {
 	int Integer;
-	Stringviewer String;
+	StringViewer String;
 };
 
 class VNDSInstruction
@@ -45,7 +45,7 @@ public:
 	VNDSInstructionOperand Operand;
 	VNDSInstructionOperandType OperandType;
 	
-	VNDSInstruction(OpcodeType Opcode, Stringviewer Operand)
+	VNDSInstruction(OpcodeType Opcode, StringViewer Operand)
 	{
 		this->Opcode = Opcode;
 		this->Operand.String = Operand;

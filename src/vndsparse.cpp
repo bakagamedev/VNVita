@@ -1,7 +1,10 @@
 #include "vndsparse.h"
 
-VNDSParser::VNDSParser()
+VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text)
 {
+	this->Background = Background;
+	this->Foreground = Foreground;
+	this->Text = Text;
 }
 
 void VNDSParser::SetPath(const std::string Path)
@@ -57,14 +60,20 @@ void VNDSParser::SetFile(const std::string File)
 void VNDSParser::RunNextLine()
 {
 	VNDSInstruction CurrentInstruction = Instructions[CurrentLine];
-	/*
+
+	StringViewer Viewer;
+	if(CurrentInstruction.OperandType == VNDSInstructionOperandType::String)
+	{
+		Viewer = CurrentInstruction.Operand.String;
+	}
+	
+	//replace with map or something
 	switch(CurrentInstruction.Opcode)
 	{
 		case OpcodeType::Text:
-			//????
+			FunctionText(Viewer);
 			break;
 	}
-	*/
 }
 
 void VNDSParser::DumpStrings(const std::string outfile)
@@ -86,4 +95,14 @@ OpcodeType VNDSParser::GetOpcode(const std::string line)
 void VNDSParser::GetOperand(std::string &line)
 {
 	line = line.substr(line.find_first_of(" \t")+1);
+}
+
+/*
+	Function zone! Actung!
+*/
+
+void VNDSParser::FunctionText(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	Text->TextAdd(String);	//shrug!
 }

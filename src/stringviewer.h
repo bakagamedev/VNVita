@@ -2,15 +2,15 @@
 #include <cstddef>
 #include "common.h"
 
-class Stringviewer
+class StringViewer
 {
 private:
 	std::size_t Start;
 	std::size_t Length;
 
 public:
-	Stringviewer(void) = default;
-	Stringviewer(std::size_t Start, std::size_t Length)
+	StringViewer(void) = default;
+	StringViewer(std::size_t Start, std::size_t Length)
 	{
 		this->Start = Start;
 		this->Length = Length;

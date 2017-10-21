@@ -1,12 +1,20 @@
 #pragma once
 #include "common.h"
+#include <fstream>
 #include "vndsinstruction.h"
 #include "stringhelpers.h"
-#include <fstream>
+#include "stringviewer.h"
+#include "imagecontrol.h"
+#include "textcontrol.h"
+#include "stringviewer.h"
 
 class VNDSParser
 {
 private:
+	BackgroundControl * Background;
+	ForegroundControl * Foreground; 
+	TextControl * Text;
+
 	std::string Path;
 	std::string File;
 
@@ -38,8 +46,12 @@ private:
 	//Loading
 	OpcodeType GetOpcode(const std::string line);
 	void GetOperand(std::string &line);
+
+	//VNDS Functions
+	void FunctionText(StringViewer Viewer);
 public:
-	VNDSParser();
+	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
+
 	void SetPath(const std::string Path);
 	void SetFile(const std::string File);
 
