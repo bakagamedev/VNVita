@@ -109,17 +109,18 @@ std::string NovelBrowser::Run()
 			vita2d_disable_clipping();
 
 			//Preview section
+			float X = SCREEN_WIDTH/2;
+			float Y = 32;	
+			//Status panel above thumbnail
+			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 32, COLOUR_UITitlebar);
+			vita2d_pgf_draw_text(pgf, X,Y+25,COLOUR_Font, 1.5f,NovelList[ItemSelected].Name.c_str());
+			vita2d_draw_line(X,Y+32, X+(SCREEN_WIDTH/2), Y+32, COLOUR_UIBorder);
+			//Thumbnail itself
+			Y += 32;
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
 			if(Thumbnail != NULL)
 			{				
-				float X = SCREEN_WIDTH/2;
-				float Y = 32;
 
-				//Status panel above thumbnail
-				vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 32, COLOUR_UITitlebar);
-				vita2d_draw_line(X,Y+32, X+(SCREEN_WIDTH/2), Y+32, COLOUR_UIBorder);
-
-				Y += 32;
 				//Thumbnail
 				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
 				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
@@ -129,13 +130,16 @@ std::string NovelBrowser::Run()
 				float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
 
 				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
-
 				Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
-				//Text area
-				char ResolutionString[10];
-				sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
-				vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 			}
+			else
+			{
+				Y += 360;	//How tall a properly configured thumbnail should be.
+			}
+			//Text area
+			char ResolutionString[10];
+			sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
+			vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 
 			//Headerbar
 			int count = NovelList.size();
@@ -204,11 +208,12 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 
 	if(ViewMode == ViewModeType::Grid)
 	{
-		if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
+		//L & R trigger defines are swapped??
+		if((GamePad.buttons & SCE_CTRL_RTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_RTRIGGER ) == 0))
 		{
 			GridPerLine = std::max(GridPerLine-1,4);
 		}
-		if((GamePad.buttons & SCE_CTRL_RTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_RTRIGGER ) == 0))
+		if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
 		{
 			GridPerLine = std::min(GridPerLine+1,10);
 		}
