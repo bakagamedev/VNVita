@@ -31,6 +31,7 @@ void NovelBrowser::Search(std::string SearchPath)
 				if(stat.st_mode == 4486)	//4486 == directory
 				{
 					std::string name(fileInfo.d_name);
+					stringtrim(name);
 					DirectoryList.push_back(name);
 				}
 			}
@@ -43,6 +44,9 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			// also an error
 		}
+
+		//Sort alphabetically (doesn't really work)
+		std::sort(DirectoryList.begin(),DirectoryList.end());
 
 		//Add to list
 	    for (std::string Name : DirectoryList)
@@ -63,8 +67,9 @@ void NovelBrowser::Search(std::string SearchPath)
 std::string NovelBrowser::Run()
 {
 	std::string PathReturn = "";
-	SceCtrlData GamePad, GamePadLast;
 	ItemSelected = 0;
+
+	ViewModeType ViewMode = ViewModeType::List;
 
 	bool Ready = false;
 	while(!Ready)
@@ -87,27 +92,21 @@ std::string NovelBrowser::Run()
 
 		if(StatusCode == StatusType::OK)
 		{
-			//Picker
-			if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
-				ItemSelected = std::max(ItemSelected-1,0);
-			if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
-				ItemSelected = std::min(ItemSelected+1,((int)NovelList.size())-1);
-			
-			if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
-			{
-				StatusCode = StatusType::GoLoad;
+			if(Tick(ViewMode))
 				return NovelList[ItemSelected].Path;
-			}
 
 			vita2d_start_drawing();
 			vita2d_clear_screen();
 
-			//Headerbar
-			int count = NovelList.size();
-			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
-			vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
-			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
+			vita2d_set_clip_rectangle(0,32,SCREEN_WIDTH/2,SCREEN_HEIGHT);
+			vita2d_enable_clipping();
 
+			if(ViewMode == ViewModeType::List)
+				DrawList();
+			else
+				DrawGrid();
+
+			vita2d_disable_clipping();
 
 			//Preview section
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
@@ -138,26 +137,11 @@ std::string NovelBrowser::Run()
 				vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 			}
 
-			//List 'o things
-			for(int i=0; i<NovelList.size(); ++i)
-			{
-				float Y = 64 + (i*64);
-				auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
-
-				vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
-
-				vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, COLOUR_UIBorder);
-				vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Name.c_str());
-				vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
-
-				auto Icon = NovelList[i].Icon.get();
-				if(Icon != NULL)
-				{
-					float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
-					vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
-					//vita2d_draw_texture(Icon,0,Y-32);
-				}
-			}
+			//Headerbar
+			int count = NovelList.size();
+			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
+			vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
+			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
 
 			//Divide centre of screen
 			vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	
@@ -172,3 +156,110 @@ std::string NovelBrowser::Run()
 	return PathReturn;
 }
 
+bool NovelBrowser::Tick(ViewModeType &ViewMode)
+{
+	int GoLeft,GoRight,GoUp,GoDown;
+	switch(ViewMode)
+	{
+		case ViewModeType::List:
+		{
+			GoLeft = 0;
+			GoRight= 0;
+			GoUp = 	 1;
+			GoDown = 1;
+		}; break;
+		case ViewModeType::Grid:
+		{
+			GoLeft = 1;
+			GoRight= 1;
+			GoUp = 	 GridPerLine;
+			GoDown = GridPerLine;
+		}; break;
+	}
+
+	//Picker
+	if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
+		ItemSelected = std::max(ItemSelected-GoUp,0);
+	if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
+		ItemSelected = std::min(ItemSelected+GoDown,((int)NovelList.size())-1);
+	if((GamePad.buttons & SCE_CTRL_LEFT) && ((GamePadLast.buttons & SCE_CTRL_LEFT) == 0))
+		ItemSelected = std::max(ItemSelected-GoLeft,0);
+	if((GamePad.buttons & SCE_CTRL_RIGHT) && ((GamePadLast.buttons & SCE_CTRL_RIGHT) == 0))
+		ItemSelected = std::min(ItemSelected+GoRight,((int)NovelList.size())-1);
+	
+	if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
+	{
+		StatusCode = StatusType::GoLoad;
+		return true;
+	}
+
+	//Other buttons
+	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
+	{
+		if(ViewMode == ViewModeType::List)
+			ViewMode = ViewModeType::Grid;
+		else
+			ViewMode = ViewModeType::List;
+	}
+
+	if(ViewMode == ViewModeType::Grid)
+	{
+		if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
+		{
+			GridPerLine = std::max(GridPerLine-1,4);
+		}
+		if((GamePad.buttons & SCE_CTRL_RTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_RTRIGGER ) == 0))
+		{
+			GridPerLine = std::min(GridPerLine+1,10);
+		}
+	}
+
+	return false;
+}
+
+void NovelBrowser::DrawList()
+{
+	//List 'o things
+	for(int i=0; i<NovelList.size(); ++i)
+	{
+		float Y = 64 + (i*64);
+		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
+
+		vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
+
+		vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, COLOUR_UIBorder);
+		vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Name.c_str());
+		vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
+
+		auto Icon = NovelList[i].Icon.get();
+		if(Icon != NULL)
+		{
+			float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
+			vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
+			//vita2d_draw_texture(Icon,0,Y-32);
+		}
+	}
+}
+
+void NovelBrowser::DrawGrid()
+{
+	const float IconWidth = (SCREEN_WIDTH / 2) / GridPerLine;	//96px at 5
+
+	float Y = 32;
+	float X = 0;
+	for(int i=0; i<NovelList.size(); ++i)
+	{
+		auto Icon = NovelList[i].Icon.get();
+		if(Icon != NULL)
+		{
+			float Scale = IconWidth / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
+			vita2d_draw_texture_scale(Icon, X*IconWidth, Y, Scale, Scale);
+		}
+
+		if(++X >= GridPerLine)
+		{
+			X = 0;
+			Y += IconWidth;
+		}
+	}
+}
