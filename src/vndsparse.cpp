@@ -1,6 +1,4 @@
 #include "vndsparse.h"
-#include "stringhelpers.h"
-#include <fstream>
 
 VNDSParser::VNDSParser()
 {
@@ -15,7 +13,9 @@ void VNDSParser::SetFile(const std::string File)
 {
 	this->File = File;
 
+	//Clear State
 	StringBlob.clear();
+	CurrentLine = 0;
 
 	//Log label locations
 	std::map<std::string,uint> LabelLocations;
@@ -48,10 +48,23 @@ void VNDSParser::SetFile(const std::string File)
 		}
 
 		uint StringLength = Line.size();
-		Instructions.push_back(Opcode,CharViewer(&StringBlob,StringBlob.size(),StringLength));
+		//Instructions.push_back(Opcode,CharViewer(&StringBlob,StringBlob.size(),StringLength));
 		StringBlob.append(Line);
 		++LineNo;
 	}
+}
+
+void VNDSParser::RunNextLine()
+{
+	VNDSInstruction CurrentInstruction = Instructions[CurrentLine];
+	/*
+	switch(CurrentInstruction.Opcode)
+	{
+		case OpcodeType::Text:
+			//????
+			break;
+	}
+	*/
 }
 
 void VNDSParser::DumpStrings(const std::string outfile)
@@ -70,7 +83,6 @@ OpcodeType VNDSParser::GetOpcode(const std::string line)
 	}
 	return OpcodeType::None;
 }
-
 void VNDSParser::GetOperand(std::string &line)
 {
 	line = line.substr(line.find_first_of(" \t")+1);

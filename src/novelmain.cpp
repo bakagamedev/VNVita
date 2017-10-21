@@ -10,8 +10,8 @@ NovelMain::NovelMain(std::string LoadPath)
 	Novel.Reset(Path,false);
 
 	Parser.SetPath(Path);
-	Parser.SetFile("s402.scr");
-	Parser.DumpStrings("s402.txt");
+	Parser.SetFile("main.scr");
+	Parser.DumpStrings("main.txt");
 
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);

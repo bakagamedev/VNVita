@@ -2,6 +2,7 @@
 #include "common.h"
 #include "vndsinstruction.h"
 #include "stringhelpers.h"
+#include <fstream>
 
 class VNDSParser
 {
@@ -29,8 +30,9 @@ private:
 	};
 
 	std::vector<VNDSInstruction> Instructions;
+	std::string StringBlob;	
 
-	std::string StringBlob;
+	uint CurrentLine;
 
 	//Loading
 	OpcodeType GetOpcode(const std::string line);
@@ -40,5 +42,6 @@ public:
 	void SetPath(const std::string Path);
 	void SetFile(const std::string File);
 
+	void RunNextLine();
 	void DumpStrings(const std::string outfile);
 };
