@@ -9,7 +9,10 @@ VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foregro
 
 void VNDSParser::SetPath(const std::string Path)
 {
-	this->Path = Path+"/script/";
+	this->BasePath = Path;
+	this->ScriptPath = Path + "/script/";
+	this->BackgroundPath = Path + "/background/";
+	this->ForegroundPath = Path + "/foreground/";
 }
 
 void VNDSParser::SetFile(const std::string File)
@@ -17,6 +20,7 @@ void VNDSParser::SetFile(const std::string File)
 	this->File = File;
 
 	//Clear State
+	Instructions.clear();
 	StringBlob.clear();
 	CurrentLine = 0;
 
@@ -26,7 +30,7 @@ void VNDSParser::SetFile(const std::string File)
 	//Read file
 	uint LineNo = 0;
 
-	std::ifstream fileread(Path + File);
+	std::ifstream fileread(ScriptPath + File);
 	std::string Line;
 	while(std::getline(fileread, Line))
 	{
@@ -56,7 +60,7 @@ void VNDSParser::SetFile(const std::string File)
 		++LineNo;
 	}
 
-	DumpStrings(Path + File + ".txt");
+	DumpStrings(ScriptPath + File + ".txt");
 }
 
 void VNDSParser::Tick(bool Pressed)
@@ -69,19 +73,17 @@ void VNDSParser::RunNextLine()
 	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
 	//replace with map or something
-	switch(CurrentInstruction->OperandType)
+	switch(CurrentInstruction->Opcode)
 	{
-		case VNDSInstructionOperandType::String:
-			switch(CurrentInstruction->Opcode)
-			{
-				case OpcodeType::Text:
-					FunctionText(CurrentInstruction->Operand.String);
-					break;
-				case OpcodeType::Jump:
-					FunctionJump(CurrentInstruction->Operand.String);
-					break;
-			}
-		break;
+		case OpcodeType::Text:
+			FunctionText(CurrentInstruction->Operand.String);
+			break;
+		case OpcodeType::Jump:
+			FunctionJump(CurrentInstruction->Operand.String);
+			break;
+		case OpcodeType::Bgload:
+			FunctionBgload(CurrentInstruction->Operand.String);
+			break;
 	}
 
 	++CurrentLine;
@@ -89,7 +91,7 @@ void VNDSParser::RunNextLine()
 
 void VNDSParser::DumpStrings(const std::string outfile)
 {
-    std::ofstream out(Path + outfile);
+    std::ofstream out(ScriptPath + outfile);
     out << StringBlob;
     out.close();
 }
@@ -121,6 +123,13 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 void VNDSParser::FunctionJump(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	std::string File = String.substr(0, String.find(" "));	//Find first arg. 
+	std::string File = String.substr(0, String.find(" "));	//Find first arg. todo: Make a splitter function
 	SetFile(File);
+}
+
+void VNDSParser::FunctionBgload(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	Text->TextAdd(BackgroundPath+String);
+	Background->SetImage(BackgroundPath+String);
 }

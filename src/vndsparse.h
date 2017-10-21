@@ -15,7 +15,10 @@ private:
 	ForegroundControl * Foreground; 
 	TextControl * Text;
 
-	std::string Path;
+	std::string BasePath;
+	std::string ScriptPath;
+	std::string BackgroundPath;
+	std::string ForegroundPath;
 	std::string File;
 
 	std::map<std::string,OpcodeType> OpcodeStrings = {
@@ -50,6 +53,7 @@ private:
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
+	void FunctionBgload(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);
