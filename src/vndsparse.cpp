@@ -38,7 +38,7 @@ void VNDSParser::SetFile(const std::string File)
 		if(Line.empty())
 			continue;
 
-		stringltrim(Line);
+		stringtrim(Line);
 
 		OpcodeType Opcode = GetOpcode(Line);
 
