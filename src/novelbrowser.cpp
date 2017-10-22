@@ -227,9 +227,16 @@ void NovelBrowser::DrawList()
 	Scroll = (ItemSelected-4);
 	Scroll = std::min(std::max(Scroll,0),(int)(NovelList.size())-8);
 	Scroll *= 64;
+
+	int ScrollYInt = (int)ScrollY;
+	if(Scroll > ScrollYInt)
+		ScrollY += 16.0f;	//has to cleanly divide into 64
+	if(Scroll < ScrollYInt)
+		ScrollY -= 16.0f; 
+
 	for(int i=0; i<NovelList.size(); ++i)
 	{
-		float Y = -Scroll+(64 + (i*64));
+		float Y = -ScrollY+ (64 + (i*64));
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 
 		vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
