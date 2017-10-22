@@ -51,7 +51,7 @@ void TextControl::SetBorderSize(float Border)
 
 void TextControl::ScrollClamp()
 {
-	Scroll = std::max(std::min(Scroll,-((int)TextList.size())-1),0);
+	Scroll = std::min(std::max(Scroll,-((int)TextList.size())-1),0);
 }
 void TextControl::ScrollUp()
 {
@@ -127,7 +127,6 @@ void TextControl::Draw()
 
 				vita2d_pgf_draw_text(pgf, X,TextY,Colour, 1.5f, String.c_str());
 			}
-
 		}
 
 		vita2d_disable_clipping();
