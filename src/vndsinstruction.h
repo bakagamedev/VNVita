@@ -1,9 +1,11 @@
 #pragma once
+#include "stringviewer.h"
 #include "common.h"
 
-enum class OpcodeType
+enum class OpcodeType 
 {
 	None,
+	End,
 	//flow
 	Label,
 	Jump,
@@ -25,15 +27,34 @@ enum class OpcodeType
 	Choice,
 };
 
+enum class VNDSInstructionOperandType
+{
+	Integer,
+	String,
+};
+
+union VNDSInstructionOperand {
+	int Integer;
+	StringViewer String;
+};
+
 class VNDSInstruction
 {
 public:
 	OpcodeType Opcode;
-	std::string Operand;
+	VNDSInstructionOperand Operand;
+	VNDSInstructionOperandType OperandType;
 	
-	VNDSInstruction(OpcodeType Opcode, std::string Operand)
+	VNDSInstruction(OpcodeType Opcode, StringViewer Operand)
 	{
 		this->Opcode = Opcode;
-		this->Operand = Operand;
+		this->Operand.String = Operand;
+		this->OperandType = VNDSInstructionOperandType::String;
+	}
+	VNDSInstruction(OpcodeType Opcode, int Operand)
+	{
+		this->Opcode = Opcode;
+		this->Operand.Integer = Operand;
+		this->OperandType = VNDSInstructionOperandType::Integer;
 	}
 };

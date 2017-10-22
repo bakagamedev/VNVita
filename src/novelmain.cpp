@@ -8,29 +8,24 @@ NovelMain::NovelMain(std::string LoadPath)
 {
 	this->Path = LoadPath;
 	Novel.Reset(Path,false);
+
+	Parser.SetPath(Path);
+	Parser.SetFile("main.scr");
+
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
-	Text.SetNovelSize(Novel.Width,Novel.Height);
-
-	Parser.LoadFile(Path,"main.scr");	//Should load main but that's too complicated for now
-	Background.SetImage("ux0:data/vnvita/ever17/background/bg28a2r.jpg");
-	Text.TextAdd(Parser.Path);
-	Text.TextAdd(Parser.CurrentScript);
-	
-	Foreground.SetPosition(157,25);
-	Foreground.SetImage("ux0:data/vnvita/ever17/foreground/yu12bdm.png");
-	
+	//Text.SetNovelSize(Novel.Width,Novel.Height);
+	Text.SetNovelSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+	Text.SetBorderSize(0);
 }
 
 void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
-
 	} 	
 	if((GamePad.buttons & SCE_CTRL_START) && ((GamePadLast.buttons & SCE_CTRL_START) == 0))
 	{
-
 	} 
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
@@ -46,10 +41,16 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 		Text.ScrollDown();
 	} 
 
-	Text.Tick(((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0)));
-	if ((Text.Ready) && (!Parser.IsFinished()))
+	if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
 	{
-		Text.TextAdd(Parser.GetNextLine());
+		AutoMode = !AutoMode;
+	}
+
+	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
+	Text.Tick(Pressed || AutoMode);
+	if(Text.Ready)
+	{
+		Parser.Tick(Pressed || AutoMode);
 	}
 }
 
@@ -89,12 +90,9 @@ void NovelMain::Run()
 		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
 
-		Draw();
+		Finished = (Parser.IsFinished());	//End when novel ends
 
-		if((Text.Ready) && (Parser.IsFinished()))
-		{
-			Finished = true;
-		}
+		Draw();
 
 		GamePadLast = GamePad;
 	}

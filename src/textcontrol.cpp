@@ -22,7 +22,6 @@ void TextControl::TextAdd(std::string Text)
 {
 	TextList.push_back(Text);
 	CharsDisplay = 0;
-	Ready = false;
 }
 
 void TextControl::TextClear()
@@ -49,93 +48,87 @@ void TextControl::SetBorderSize(float Border)
 	this->Border = Border;
 }
 
+
+void TextControl::ScrollClamp()
+{
+	Scroll = std::min(std::max(Scroll,-((int)TextList.size())-1),0);
+}
 void TextControl::ScrollUp()
 {
-	Scroll = std::max(Scroll-1,MaxLines - (int)(TextList.size()));
+	--Scroll;
+	ScrollClamp();
 }
 
 void TextControl::ScrollDown()
 {
-	Scroll = std::min(Scroll+1,0);
-	if((int)TextList.size() < MaxLines)
-		Scroll = 0;
+	++Scroll;
+	ScrollClamp();
 }
 
 void TextControl::Tick(bool Continue)
 {
-	if(TextList.size() == 0)
-	    return;
-	if(Scroll != 0)
-		return;
-
-	auto CurrentLine = TextList[std::max(0,(int)TextList.size()-1)];
-	int LineLength = CurrentLine.size();
-	if(CharsDisplay < LineLength)
+	int Size = TextList.size();
+	if(Size == 0)
 	{
-	    CharsDisplay = std::min(++CharsDisplay,LineLength);
-	    Ready = false;
+		Ready = true;
+		return;
+	}
+
+	Ready = false;
+	auto String = TextList[Size-1];
+	if(CharsDisplay < String.size())  
+	{ 
+	    ++CharsDisplay;
 	}
 	else
 	{
-	    Ready = Continue;
+		if(Continue)
+			Ready = true;
 	}
+
+	if(Scroll != 0)
+	    Ready = false;
 }
 
 void TextControl::Draw()
 {
 	if(Show)
 	{
-		auto Spacing = 35;
-
 		vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
 		vita2d_set_clip_rectangle(X + Border, Y + Border, X + Border + ((Width*Scale) - (Border*2)), Y + Border + (Height*Scale) - (Border*2));
 		vita2d_enable_clipping();
 
-		int offset = 0;
+		int MaxCharsPerLine = 68;//44;	//Guess.
+		int CharHeight = 28;	//Guess. Not sure how to get this value.
+		int MaxLines = (Height / CharHeight)+1;	//Lines on screen at once
+		int DrawOffset = 12;	//Because vita2d's text drawing is wonky
+
+		int TextY = Height + DrawOffset;
 		int Size = TextList.size();
 
-		if(Size > 1)	//If there is a backlog
+		if(Size > 0)
 		{
-			int listStart = Size-MaxLines;
-			int listEnd = Size-1;
-			if(Scroll != 0)
+			int ListMax = std::max((Size+Scroll)-1,0);
+			int ListMin = std::max(ListMax - MaxLines,0);
+
+			for(int i=ListMax; i>=ListMin; --i)
 			{
-				listStart += Scroll;
-				listEnd += Scroll+1;	// +1 so it goes into current line position
+				auto String = TextList[i];
+				String = stringwrap(String,MaxCharsPerLine);
+				TextY -= CharHeight*((std::count(String.begin(), String.end(), '\n'))+1);
+
+				auto Colour = RGBA8(255,255,255,255);	//White
+				if(i == (Size-1))
+				{
+					String.resize(CharsDisplay);	//Do this after counting \n's so the box doesn't jump around while writing
+					Colour = RGBA8(64,255,64,255);	//Blue
+				}
+
+				vita2d_pgf_draw_text(pgf, X,TextY,Colour, 1.5f, String.c_str());
 			}
-			listStart = std::max(0,listStart);
-    		listEnd = std::min(listEnd,Size);
-
-			offset = std::max(0,(MaxLines - Size) * Spacing);	//Pad it so current line is at the bottom of the screen
-		    for(int i=listStart; i<listEnd; ++i)
-		    {
-				vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 20 + offset + (Spacing/2), RGBA8(128,128,255,255), 1.5f, TextList[i].c_str());
-				offset += Spacing;
-		    }
-		}
-		else
-		{
-			offset = (MaxLines-1)*Spacing;	//If there's nothing before current line, move it to bottom.
-		}
-
-		if((Size > 0) && (Scroll == 0))	//Current line
-		{
-			std::string Line = TextList[Size - 1];
-			Line.erase(CharsDisplay, std::string::npos);
-			vita2d_pgf_draw_text(pgf, X + Border + 8, Y + Border + 20 + offset + (Spacing/2), RGBA8(255,255,255,255), 1.5f, Line.c_str());
 		}
 
 		vita2d_disable_clipping();
-
-		//Scroll markers
-		if(Scroll == 0)
-		{
-			if(ptrArrowUp != NULL)
-				vita2d_draw_texture(ptrArrowUp, (SCREEN_WIDTH/2) - 16, 0);
-
-			if(ptrArrowDown != NULL)
-				vita2d_draw_texture(ptrArrowDown,(SCREEN_WIDTH/2) - 16, SCREEN_HEIGHT-16);
-		}
 	}
 }
