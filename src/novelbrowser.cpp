@@ -224,15 +224,16 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 void NovelBrowser::DrawList()
 {
 	//List 'o things
-	Scroll = (ItemSelected-4);
-	Scroll = std::min(std::max(Scroll,0),(int)(NovelList.size())-8);
-	Scroll *= 64;
-
-	int ScrollYInt = (int)ScrollY;
-	if(Scroll > ScrollYInt)
-		ScrollY += 16.0f;	//has to cleanly divide into 64
-	if(Scroll < ScrollYInt)
-		ScrollY -= 16.0f; 
+	int IconSize = 64;
+	int SelectedY = (ItemSelected * IconSize);
+	if (SelectedY < ScrollY)
+	{
+		ScrollY -= 16;
+	}
+	if(SelectedY > (ScrollY+(512-IconSize)))
+	{
+		ScrollY += 16;
+	}
 
 	for(int i=0; i<NovelList.size(); ++i)
 	{
