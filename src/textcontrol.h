@@ -1,19 +1,20 @@
 #pragma once
 #include "common.h"
+#include "stringhelpers.h"
 
 class TextControl
 {
 private:
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//I hope to one day swap these with an actual font loader so that it's all shared.
+	
 	std::vector<std::string> TextList;
 	int CharsDisplay = 0;
+	int Scroll = 0; 
 
 	float Scale = 1.0;
 	float Border = 32;
 	float X,Y,Width,Height;
 	uint8_t Alpha = 128;
-	int MaxLines = 13;	
-	int Scroll = 0;
 
 	//UI Gizmos
 	vita2d_texture * ptrArrowUp;
@@ -21,6 +22,7 @@ private:
 	vita2d_texture * ptrArrowDown;
 	std::shared_ptr<vita2d_texture> ImgArrowDown;
 
+	void ScrollClamp();
 public:
 	~TextControl();
 	TextControl();
