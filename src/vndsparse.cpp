@@ -136,6 +136,8 @@ void VNDSParser::GetOperand(std::string &line)
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
+	if (String.size() == 0)
+		return;
 
 	bool blocking = true;
 	char firstchar = String.at(0);
