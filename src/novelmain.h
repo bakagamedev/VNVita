@@ -22,6 +22,8 @@ private:
 	NovelHeader Novel;
 	void Tick(SceCtrlData GamePad,SceCtrlData GamePadLast);
 	void Draw();
+
+	bool AutoMode = false;
 public:
 	NovelMain(std::string LoadPath);
 	~NovelMain();

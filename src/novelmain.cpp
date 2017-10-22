@@ -14,7 +14,9 @@ NovelMain::NovelMain(std::string LoadPath)
 
 	Foreground.SetNovelSize(Novel.Width,Novel.Height);
 	Background.SetNovelSize(Novel.Width,Novel.Height);
-	Text.SetNovelSize(Novel.Width,Novel.Height);
+	//Text.SetNovelSize(Novel.Width,Novel.Height);
+	Text.SetNovelSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+	Text.SetBorderSize(0);
 }
 
 void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
@@ -39,11 +41,16 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 		Text.ScrollDown();
 	} 
 
+	if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
+	{
+		AutoMode = !AutoMode;
+	}
+
 	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
-	Text.Tick(Pressed);
+	Text.Tick(Pressed || AutoMode);
 	if(Text.Ready)
 	{
-		Parser.Tick(Pressed);
+		Parser.Tick(Pressed || AutoMode);
 	}
 }
 
@@ -82,6 +89,8 @@ void NovelMain::Run()
 
 		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
+
+		Finished = (Parser.IsFinished());	//End when novel ends
 
 		Draw();
 

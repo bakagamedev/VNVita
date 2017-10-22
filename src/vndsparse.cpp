@@ -60,6 +60,12 @@ void VNDSParser::SetFile(const std::string File)
 		++LineNo;
 	}
 
+	if(Instructions.size() == 0)
+	{
+		Text->TextAdd("Bad script file");
+		Text->TextAdd(ScriptPath+File);
+	}
+
 	DumpStrings(ScriptPath + File + ".txt");
 }
 
@@ -68,8 +74,18 @@ void VNDSParser::Tick(bool Pressed)
 	RunNextLine();
 }
 
+bool VNDSParser::IsFinished()
+{
+	return (CurrentLine>=Instructions.size());
+}
+
 void VNDSParser::RunNextLine()
 {
+	if(IsFinished())
+	{
+		return;
+	}
+
 	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
 	//replace with map or something
@@ -83,6 +99,9 @@ void VNDSParser::RunNextLine()
 			break;
 		case OpcodeType::Bgload:
 			FunctionBgload(CurrentInstruction->Operand.String);
+			break;
+		case OpcodeType::Setimg:
+			FunctionSetimg(CurrentInstruction->Operand.String);
 			break;
 	}
 
@@ -142,4 +161,10 @@ void VNDSParser::FunctionBgload(StringViewer Viewer)
 	std::string String = Viewer.GetString(StringBlob);
 	Text->TextAdd(BackgroundPath+String);
 	Background->SetImage(BackgroundPath+String);
+}
+
+void VNDSParser::FunctionSetimg(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	Text->TextAdd(ForegroundPath+String);
 }

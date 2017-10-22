@@ -54,9 +54,11 @@ private:
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
 	void FunctionBgload(StringViewer Viewer);
+	void FunctionSetimg(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);
+	bool IsFinished();
 
 	void SetPath(const std::string Path);
 	void SetFile(const std::string File);
