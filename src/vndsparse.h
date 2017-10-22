@@ -40,6 +40,7 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
+	std::map<std::string,uint> LabelLocations;
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
 
@@ -55,6 +56,7 @@ private:
 	void FunctionJump(StringViewer Viewer);
 	void FunctionBgload(StringViewer Viewer);
 	void FunctionSetimg(StringViewer Viewer);
+	void FunctionGoto(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);

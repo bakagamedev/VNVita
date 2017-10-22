@@ -20,13 +20,12 @@ void VNDSParser::SetFile(const std::string File)
 	this->File = File;
 
 	//Clear State
+	LabelLocations.clear();
 	Instructions.clear();
 	StringBlob.clear();
 	CurrentLine = 0;
 
 	//Log label locations
-	std::map<std::string,uint> LabelLocations;
-
 	//Read file
 	uint LineNo = 0;
 
@@ -103,6 +102,9 @@ void VNDSParser::RunNextLine()
 		case OpcodeType::Setimg:
 			FunctionSetimg(CurrentInstruction->Operand.String);
 			break;
+		case OpcodeType::Goto:
+			FunctionGoto(CurrentInstruction->Operand.String);
+			break;
 	}
 
 	++CurrentLine;
@@ -169,4 +171,19 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	Text->TextAdd(ForegroundPath+String);
+}
+
+void VNDSParser::FunctionGoto(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	Text->TextAdd("Goto : "+String);
+	if(LabelLocations.count(String) != 0)
+	{
+		CurrentLine = LabelLocations[String];
+		Text->TextAdd("Cool!");
+	}
+	else
+	{
+		Text->TextAdd("Failed.");
+	}
 }
