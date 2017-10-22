@@ -18,7 +18,7 @@ private:
 	std::vector<NovelHeader> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	int ItemSelected = 0;
-
+	int Scroll = 0;
 	int GridPerLine = 5;
 public:
 	StatusType StatusCode;

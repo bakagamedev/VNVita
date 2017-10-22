@@ -120,7 +120,6 @@ std::string NovelBrowser::Run()
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
 			if(Thumbnail != NULL)
 			{				
-
 				//Thumbnail
 				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
 				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
@@ -225,9 +224,12 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 void NovelBrowser::DrawList()
 {
 	//List 'o things
+	Scroll = (ItemSelected-4);
+	Scroll = std::min(std::max(Scroll,0),(int)(NovelList.size())-8);
+	Scroll *= 64;
 	for(int i=0; i<NovelList.size(); ++i)
 	{
-		float Y = 64 + (i*64);
+		float Y = -Scroll+(64 + (i*64));
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 
 		vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
