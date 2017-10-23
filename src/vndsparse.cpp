@@ -119,6 +119,36 @@ void VNDSParser::RunNextLine()
 			case OpcodeType::Goto:
 				FunctionGoto(CurrentInstruction->Operand.String);
 				break;
+			case OpcodeType::If:
+				TextAdd("If");
+				break;
+			case OpcodeType::Fi:
+				TextAdd("Fi");
+				break;
+			case OpcodeType::Setvar:
+				TextAdd("Setvar");
+				TextAdd(CurrentInstruction->Operand.String.GetString(StringBlob));
+				break;
+			case OpcodeType::Gsetvar:
+				TextAdd("GSetvar");
+				TextAdd(CurrentInstruction->Operand.String.GetString(StringBlob));
+				break;
+			case OpcodeType::Random:
+				TextAdd("Random");
+				break;
+			case OpcodeType::Delay:
+				TextAdd("Delay");
+				break;
+			case OpcodeType::Music:
+				TextAdd("Music");
+				break;
+			case OpcodeType::Sound:
+				TextAdd("Sound");
+				break;
+			case OpcodeType::Choice:
+				TextAdd("Choice");
+				break;
+
 		}
 		++CurrentLine;
 	}
