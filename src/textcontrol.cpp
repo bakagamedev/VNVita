@@ -94,14 +94,13 @@ void TextControl::Draw()
 {
 	if(Show)
 	{
-		vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 
 		vita2d_set_clip_rectangle(X + Border, Y + Border, X + Border + ((Width*Scale) - (Border*2)), Y + Border + (Height*Scale) - (Border*2));
 		vita2d_enable_clipping();
 
 		int MaxCharsPerLine = 68;//44;	//Guess.
 		int CharHeight = 28;	//Guess. Not sure how to get this value.
-		int DrawOffset = 12;	//Because vita2d's text drawing is wonky
+		int DrawOffset = 20;	//Because vita2d's text drawing is wonky
 		MaxLines = (Height / CharHeight)+1;	//Lines on screen at once
 
 		int TextY = Height + DrawOffset;
@@ -109,23 +108,38 @@ void TextControl::Draw()
 
 		if(Size > 0)
 		{
-			int ListMax = std::max((Size+Scroll)-1,0);
-			int ListMin = std::max(ListMax - MaxLines,0);
-
-			for(int i=ListMax; i>=ListMin; --i)
+			if((Scroll == 0) && (SmallMode = true))
 			{
-				auto String = TextList[i];
+				auto Colour = RGBA8(255,255,255,255);	//White
+				auto String = TextList[Size-1];
 				String = stringwrap(String,MaxCharsPerLine);
 				TextY -= CharHeight*((std::count(String.begin(), String.end(), '\n'))+1);
+				String.resize(CharsDisplay);
 
-				auto Colour = RGBA8(255,255,255,255);	//White
-				if(i == (Size-1))
-				{
-					String.resize(CharsDisplay);	//Do this after counting \n's so the box doesn't jump around while writing
-					Colour = RGBA8(64,255,64,255);	//Blue
-				}
-
+				vita2d_draw_rectangle(X + Border, TextY - CharHeight,(Width*Scale)-(Border*2), SCREEN_HEIGHT, RGBA8(0,0,0,Alpha));
 				vita2d_pgf_draw_text(pgf, X,TextY,Colour, 1.5f, String.c_str());
+			}
+			else	//Large box
+			{
+				vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
+				int ListMax = std::max((Size+Scroll)-1,0);
+				int ListMin = std::max(ListMax - MaxLines,0);
+
+				for(int i=ListMax; i>=ListMin; --i)
+				{
+					auto String = TextList[i];
+					String = stringwrap(String,MaxCharsPerLine);
+					TextY -= CharHeight*((std::count(String.begin(), String.end(), '\n'))+1);
+
+					auto Colour = RGBA8(255,255,255,255);	//White
+					if(i == (Size-1))
+					{
+						String.resize(CharsDisplay);	//Do this after counting \n's so the box doesn't jump around while writing
+						Colour = RGBA8(64,255,64,255);	//Blue
+					}
+
+					vita2d_pgf_draw_text(pgf, X,TextY,Colour, 1.5f, String.c_str());
+				}
 			}
 		}
 

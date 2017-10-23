@@ -15,6 +15,7 @@ private:
 	float Border = 32;
 	float X,Y,Width,Height;
 	uint8_t Alpha = 128;
+	bool SmallMode = true;
 
 	//UI Gizmos
 	vita2d_texture * ptrArrowUp;
