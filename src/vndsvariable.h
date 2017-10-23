@@ -13,13 +13,11 @@ union VNDSVariableData {
 class VNDSVariable
 {
 public:
-	std::string Name;
 	VNDSVariableData Data;
 	VNDSVariableType Type;
 
-	VNDSVariable(std::string Name, int Data)
+	VNDSVariable(int Data)
 	{
-		this->Name = Name;
 		this->Data.Integer = Data;
 		this->Type = VNDSVariableType::Integer;
 	}
