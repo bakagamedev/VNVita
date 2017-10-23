@@ -171,6 +171,7 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	Text->TextAdd(ForegroundPath+String);
+	Foreground->SetImage(ForegroundPath+String);
 }
 
 void VNDSParser::FunctionGoto(StringViewer Viewer)
