@@ -143,9 +143,17 @@ OpcodeType VNDSParser::GetOpcode(const std::string line)
 	}
 	return OpcodeType::None;
 }
+
 void VNDSParser::GetOperand(std::string &line)
 {
-	line = line.substr(line.find_first_of(" \t")+1);
+	if(line == "text")	//Blank lines manifest here as just "text"
+	{
+		line = "";
+	}
+	else
+	{
+		line = line.substr(line.find_first_of(" \t")+1);
+	}
 }
 
 void VNDSParser::TextAdd(std::string String)
