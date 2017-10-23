@@ -79,12 +79,14 @@ public:
 		if((Show == false) || (Image.get() == NULL))
 		{
 			//Draw black background and quit
-			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish 
+			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(16,16,16, 255));	//actually redish 
 			return;
 		}
 
 		if(Image.get() != NULL)
+		{
 			vita2d_draw_texture_scale(Image.get(), BackgroundX, BackgroundY, Scale, Scale);
+		}
 	}
 	void DrawBorders()
 	{
@@ -114,6 +116,8 @@ public:
 		}
 
 		if(Image.get() != NULL)
+		{
 			vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
+		}
 	}
 };

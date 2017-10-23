@@ -89,15 +89,11 @@ void TextControl::Tick(bool Continue)
 	if(Scroll != 0)
 	    Ready = false;
 }
-
+	
 void TextControl::Draw()
 {
 	if(Show)
 	{
-
-		vita2d_set_clip_rectangle(X + Border, Y + Border, X + Border + ((Width*Scale) - (Border*2)), Y + Border + (Height*Scale) - (Border*2));
-		vita2d_enable_clipping();
-
 		int MaxCharsPerLine = 68;//44;	//Guess.
 		int CharHeight = 26;	//Guess. Not sure how to get this value.
 		int DrawOffset = 20;	//Because vita2d's text drawing is wonky
@@ -142,7 +138,5 @@ void TextControl::Draw()
 				}
 			}
 		}
-
-		vita2d_disable_clipping();
 	}
 }
