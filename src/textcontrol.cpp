@@ -99,7 +99,7 @@ void TextControl::Draw()
 		vita2d_enable_clipping();
 
 		int MaxCharsPerLine = 68;//44;	//Guess.
-		int CharHeight = 28;	//Guess. Not sure how to get this value.
+		int CharHeight = 26;	//Guess. Not sure how to get this value.
 		int DrawOffset = 20;	//Because vita2d's text drawing is wonky
 		MaxLines = (Height / CharHeight)+1;	//Lines on screen at once
 
