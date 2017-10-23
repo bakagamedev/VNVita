@@ -101,8 +101,8 @@ void TextControl::Draw()
 
 		int MaxCharsPerLine = 68;//44;	//Guess.
 		int CharHeight = 28;	//Guess. Not sure how to get this value.
-		int MaxLines = (Height / CharHeight)+1;	//Lines on screen at once
 		int DrawOffset = 12;	//Because vita2d's text drawing is wonky
+		MaxLines = (Height / CharHeight)+1;	//Lines on screen at once
 
 		int TextY = Height + DrawOffset;
 		int Size = TextList.size();

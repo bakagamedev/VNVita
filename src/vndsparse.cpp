@@ -85,29 +85,42 @@ void VNDSParser::RunNextLine()
 		return;
 	}
 
-	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
+	/*
+	if(--DelayFrames >= 0)
+		return
+	*/
 
-	//replace with map or something
-	switch(CurrentInstruction->Opcode)
+	blocking = false;
+	//"Blocking" being set to true hands control back to the UI.
+	while(!blocking)
 	{
-		case OpcodeType::Text:
-			FunctionText(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Jump:
-			FunctionJump(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Bgload:
-			FunctionBgload(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Setimg:
-			FunctionSetimg(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Goto:
-			FunctionGoto(CurrentInstruction->Operand.String);
-			break;
-	}
+		VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
-	++CurrentLine;
+		//replace with map or something
+		switch(CurrentInstruction->Opcode)
+		{
+			case OpcodeType::Text:
+				FunctionText(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Cleartext:
+				FunctionClearText();
+				break;
+			case OpcodeType::Jump:
+				FunctionJump(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Bgload:
+				FunctionBgload(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Setimg:
+				FunctionSetimg(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Goto:
+				FunctionGoto(CurrentInstruction->Operand.String);
+				break;
+		}
+
+		++CurrentLine;
+	}
 }
 
 void VNDSParser::DumpStrings(const std::string outfile)
@@ -134,14 +147,13 @@ void VNDSParser::GetOperand(std::string &line)
 /*
 	Function zone! Actung!
 */
-
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	if (String.size() == 0)
 		return;
 
-	bool blocking = true;
+	blocking = true;
 	char firstchar = String.at(0);
 	if(firstchar == '@')	
 		{	blocking = false;	String.erase(0,1);	}
@@ -151,6 +163,12 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 		{	String = ""; blocking = true;	}
 
 	Text->TextAdd(String);	//shrug!
+}
+
+void VNDSParser::FunctionClearText()
+{
+	for(int i=0; i<Text->MaxLines; ++i)
+		Text->TextAdd("\n");
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)

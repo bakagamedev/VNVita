@@ -22,21 +22,21 @@ private:
 	std::string File;
 
 	std::map<std::string,OpcodeType> OpcodeStrings = {
-		{ "label", OpcodeType::Label },
-		{ "jump", OpcodeType::Jump },
-		{ "goto", OpcodeType::Goto },
+		{ "label", OpcodeType::Label },	//Done
+		{ "jump", OpcodeType::Jump },	//Half done
+		{ "goto", OpcodeType::Goto },	//Done
 		{ "if", OpcodeType::If },
 		{ "fi", OpcodeType::Fi },
 		{ "setvar", OpcodeType::Setvar },
 		{ "gsetvar", OpcodeType::Gsetvar },
 		{ "random", OpcodeType::Random },
 		{ "delay", OpcodeType::Delay },
-		{ "bgload", OpcodeType::Bgload },
-		{ "setimg", OpcodeType::Setimg },
+		{ "bgload", OpcodeType::Bgload },	//Half done 
+		{ "setimg", OpcodeType::Setimg },	//Sorta done
 		{ "music", OpcodeType::Music },
 		{ "sound", OpcodeType::Sound },
-		{ "cleartext", OpcodeType::Cleartext },
-		{ "text", OpcodeType::Text },
+		{ "cleartext", OpcodeType::Cleartext },	//Done, untested
+		{ "text", OpcodeType::Text },	//Done
 		{ "choice", OpcodeType::Choice },
 	};
 
@@ -44,6 +44,7 @@ private:
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
 
+	bool blocking = false;
 	uint CurrentLine = 0;
 	int FramesCountdown = -1;
 
@@ -57,6 +58,7 @@ private:
 	void FunctionBgload(StringViewer Viewer);
 	void FunctionSetimg(StringViewer Viewer);
 	void FunctionGoto(StringViewer Viewer);
+	void FunctionClearText();
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);
