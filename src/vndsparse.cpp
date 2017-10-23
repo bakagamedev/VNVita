@@ -127,11 +127,9 @@ void VNDSParser::RunNextLine()
 				break;
 			case OpcodeType::Setvar:
 				TextAdd("Setvar");
-				TextAdd(CurrentInstruction->Operand.String.GetString(StringBlob));
 				break;
 			case OpcodeType::Gsetvar:
 				TextAdd("GSetvar");
-				TextAdd(CurrentInstruction->Operand.String.GetString(StringBlob));
 				break;
 			case OpcodeType::Random:
 				TextAdd("Random");

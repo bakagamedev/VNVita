@@ -2,11 +2,13 @@
 #include "common.h"
 #include <fstream>
 #include "vndsinstruction.h"
+#include "vndsvariable.h"
 #include "stringhelpers.h"
 #include "stringviewer.h"
 #include "imagecontrol.h"
 #include "textcontrol.h"
 #include "stringviewer.h"
+#include "vndsvariable.h"
 
 class VNDSParser
 {
@@ -41,6 +43,9 @@ private:
 		{ "text", OpcodeType::Text },	//Done
 		{ "choice", OpcodeType::Choice },
 	};
+
+	std::vector<VNDSVariable> LocalVariables;
+	std::vector<VNDSVariable> GlobalVariables;
 
 	std::string TempString;	//Pass to Text object
 	std::map<std::string,uint> LabelLocations;
