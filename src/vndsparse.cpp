@@ -112,7 +112,7 @@ void VNDSParser::RunNextLine()
 
 void VNDSParser::DumpStrings(const std::string outfile)
 {
-    std::ofstream out(ScriptPath + outfile);
+    std::ofstream out(outfile);
     out << StringBlob;
     out.close();
 }

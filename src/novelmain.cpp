@@ -90,7 +90,7 @@ void NovelMain::Run()
 		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
 
-		Finished = (Parser.IsFinished());	//End when novel ends
+		Finished = ((Parser.IsFinished()) && (Text.Ready));	//End when novel ends and nothing is being printed
 
 		Draw();
 
