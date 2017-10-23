@@ -13,6 +13,7 @@ void VNDSParser::SetPath(const std::string Path)
 	this->ScriptPath = Path + "/script/";
 	this->BackgroundPath = Path + "/background/";
 	this->ForegroundPath = Path + "/foreground/";
+	this->SavePath = Path + "/foreground/";
 }
 
 void VNDSParser::SetFile(const std::string File)
@@ -80,20 +81,21 @@ bool VNDSParser::IsFinished()
 
 void VNDSParser::RunNextLine()
 {
-	if(IsFinished())
-	{
-		return;
-	}
-
 	/*
 	if(--DelayFrames >= 0)
 		return
 	*/
 
+	TempString.clear();
 	blocking = false;
 	//"Blocking" being set to true hands control back to the UI.
 	while(!blocking)
 	{
+		if(IsFinished())
+		{
+			return;
+		}
+
 		VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
 
 		//replace with map or something
@@ -118,9 +120,11 @@ void VNDSParser::RunNextLine()
 				FunctionGoto(CurrentInstruction->Operand.String);
 				break;
 		}
-
 		++CurrentLine;
 	}
+
+	if(!TempString.empty())
+		Text->TextAdd(TempString);
 }
 
 void VNDSParser::DumpStrings(const std::string outfile)
@@ -144,6 +148,12 @@ void VNDSParser::GetOperand(std::string &line)
 	line = line.substr(line.find_first_of(" \t")+1);
 }
 
+void VNDSParser::TextAdd(std::string String)
+{
+	if(!TempString.empty())	TempString += "\n";
+	TempString += String;
+}
+
 /*
 	Function zone! Actung!
 */
@@ -162,13 +172,13 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 	if(firstchar == '!')	
 		{	String = ""; blocking = true;	}
 
-	Text->TextAdd(String);	//shrug!
+	TextAdd(String);
 }
 
 void VNDSParser::FunctionClearText()
 {
 	for(int i=0; i<Text->MaxLines; ++i)
-		Text->TextAdd("\n");
+		TempString+= "\n";
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)
@@ -181,28 +191,28 @@ void VNDSParser::FunctionJump(StringViewer Viewer)
 void VNDSParser::FunctionBgload(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd(BackgroundPath+String);
+	TextAdd(BackgroundPath+String);
 	Background->SetImage(BackgroundPath+String);
 }
 
 void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd(ForegroundPath+String);
+	TextAdd(ForegroundPath+String);
 	Foreground->SetImage(ForegroundPath+String);
 }
 
 void VNDSParser::FunctionGoto(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd("Goto : "+String);
+	TextAdd("Goto : "+String);
 	if(LabelLocations.count(String) != 0)
 	{
 		CurrentLine = LabelLocations[String];
-		Text->TextAdd("Cool!");
+		TextAdd("Cool!");
 	}
 	else
 	{
-		Text->TextAdd("Failed.");
+		TextAdd("Failed.");
 	}
 }

@@ -17,8 +17,10 @@ private:
 
 	std::string BasePath;
 	std::string ScriptPath;
+	std::string SavePath;
 	std::string BackgroundPath;
 	std::string ForegroundPath;
+
 	std::string File;
 
 	std::map<std::string,OpcodeType> OpcodeStrings = {
@@ -40,6 +42,7 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
+	std::string TempString;	//Pass to Text object
 	std::map<std::string,uint> LabelLocations;
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
@@ -52,6 +55,7 @@ private:
 	OpcodeType GetOpcode(const std::string line);
 	void GetOperand(std::string &line);
 
+	void TextAdd(std::string String);
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
