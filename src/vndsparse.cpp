@@ -25,6 +25,7 @@ void VNDSParser::SetFile(const std::string File)
 	Instructions.clear();
 	StringBlob.clear();
 	CurrentLine = 0;
+	FunctionClearText();
 
 	//Log label locations
 	//Read file
@@ -74,10 +75,9 @@ void VNDSParser::Tick(bool Pressed)
 	--DelayFrames;
 	if(DelayFrames > 0)
 	{
-		Text->TextAdd(std::to_string(DelayFrames));
 		return;
 	}
-	
+
 	if((Pressed) || (DelayFrames == 0))
 	{
 		RunNextLine();
@@ -218,8 +218,7 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 
 void VNDSParser::FunctionClearText()
 {
-	for(int i=0; i<Text->MaxLines; ++i)
-		TempString += "\n";
+	Text->TextClear();
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)
@@ -235,6 +234,8 @@ void VNDSParser::FunctionBgload(StringViewer Viewer)
 	auto Tokens = stringsplit(String);
 	TextAdd(BackgroundPath+String);
 	Background->SetImage(BackgroundPath+Tokens[0].GetString(String));
+
+	Foreground->SetImage("~");	//Background changes cancel out foreground
 
 	if(Tokens.size() > 1)
 	{
