@@ -52,9 +52,9 @@ private:
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
 
-	bool blocking = false;
+	int DelayFrames = -1;
+	bool Blocking = false;
 	uint CurrentLine = 0;
-	int FramesCountdown = -1;
 
 	//Loading
 	OpcodeType GetOpcode(const std::string line);
@@ -68,6 +68,7 @@ private:
 	void FunctionSetimg(StringViewer Viewer);
 	void FunctionGoto(StringViewer Viewer);
 	void FunctionClearText();
+	void FunctionDelay(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);

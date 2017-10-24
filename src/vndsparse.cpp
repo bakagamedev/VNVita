@@ -71,7 +71,17 @@ void VNDSParser::SetFile(const std::string File)
 
 void VNDSParser::Tick(bool Pressed)
 {
-	RunNextLine();
+	--DelayFrames;
+	if(DelayFrames > 0)
+	{
+		Text->TextAdd(std::to_string(DelayFrames));
+		return;
+	}
+	
+	if((Pressed) || (DelayFrames == 0))
+	{
+		RunNextLine();
+	}
 }
 
 bool VNDSParser::IsFinished()
@@ -81,15 +91,10 @@ bool VNDSParser::IsFinished()
 
 void VNDSParser::RunNextLine()
 {
-	/*
-	if(--DelayFrames >= 0)
-		return
-	*/
-
 	TempString.clear();
-	blocking = false;
+	Blocking = false;
 	//"Blocking" being set to true hands control back to the UI.
-	while(!blocking)
+	while(!Blocking)
 	{
 		if(IsFinished())
 		{
@@ -135,7 +140,7 @@ void VNDSParser::RunNextLine()
 				TextAdd("Random");
 				break;
 			case OpcodeType::Delay:
-				TextAdd("Delay");
+				FunctionDelay(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::Music:
 				TextAdd("Music");
@@ -199,14 +204,14 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 	if (String.size() == 0)
 		return;
 
-	blocking = true;
+	Blocking = true;
 	char firstchar = String.at(0);
 	if(firstchar == '@')	
-		{	blocking = false;	String.erase(0,1);	}
+		{	String.erase(0,1);	Blocking = false;}
 	if(firstchar == '~')	
-		{	String = "";	blocking = false;	}
+		{	String = "";	Blocking = false;	}
 	if(firstchar == '!')	
-		{	String = ""; blocking = true;	}
+		{	String = ""; Blocking = true;	}
 
 	TextAdd(String);
 }
@@ -241,7 +246,7 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	auto Tokens = stringsplit(String);
-	
+
 	if(Tokens[0].GetString(String).at(0) == '~')
 	{
 		Foreground->SetImage("~");
@@ -281,4 +286,20 @@ void VNDSParser::FunctionGoto(StringViewer Viewer)
 	{
 		TextAdd("Failed.");
 	}
+}
+
+void VNDSParser::FunctionDelay(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	int Delay;
+	try
+	{
+		Delay = std::stoi(String);
+	}
+	catch(std::invalid_argument)
+	{
+		Delay = 0;
+	}
+	DelayFrames = Delay;
+	Blocking = true;	//Abort parsing for current frame
 }

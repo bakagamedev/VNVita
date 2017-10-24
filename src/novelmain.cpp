@@ -48,10 +48,10 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 
 	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
 	Text.Tick(Pressed || AutoMode);
-	if(Text.Ready)
-	{
-		Parser.Tick(Pressed || AutoMode);
-	}
+
+	bool ParserReady = (Pressed || AutoMode);
+	if(!Text.Ready)	{	ParserReady = false;	}
+	Parser.Tick(ParserReady);
 }
 
 void NovelMain::Draw()
