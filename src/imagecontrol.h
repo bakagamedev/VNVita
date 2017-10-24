@@ -110,14 +110,19 @@ public:
 
 	void Draw()
 	{
+
 		if((Show == false) || (Image.get() == NULL))
 		{
 			return;
 		}
 
+		float Left = (ScreenWidth - (NovelWidth*Scale)) / 2;	
+		float PointScale = Scale*(NovelHeight/192);	//Transform from NDS size -> novel size -> Screen size
+
 		if(Image.get() != NULL)
 		{
-			vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
+			vita2d_draw_texture_scale(Image.get(), Left + (X * PointScale), Y * PointScale, Scale, Scale);
 		}
+
 	}
 };
