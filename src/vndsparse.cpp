@@ -214,7 +214,7 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 void VNDSParser::FunctionClearText()
 {
 	for(int i=0; i<Text->MaxLines; ++i)
-		TempString+= "\n";
+		TempString += "\n";
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)
@@ -227,15 +227,25 @@ void VNDSParser::FunctionJump(StringViewer Viewer)
 void VNDSParser::FunctionBgload(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
+	auto Tokens = stringsplit(String);
 	TextAdd(BackgroundPath+String);
-	Background->SetImage(BackgroundPath+String);
+	Background->SetImage(BackgroundPath+Tokens[0].GetString(String));
+
+	if(Tokens.size() > 1)
+	{
+		//Change bg delay
+	}
 }
 
 void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
+	auto Tokens = stringsplit(String);
+	Foreground->SetImage(ForegroundPath+Tokens[0].GetString(String));
+	int x = std::stoi(Tokens[1].GetString(String));
+	int y = std::stoi(Tokens[2].GetString(String));
+	Foreground->SetPosition(x,y);
 	TextAdd(ForegroundPath+String);
-	Foreground->SetImage(ForegroundPath+String);
 }
 
 void VNDSParser::FunctionGoto(StringViewer Viewer)
