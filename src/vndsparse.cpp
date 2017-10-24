@@ -241,23 +241,31 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	auto Tokens = stringsplit(String);
-	Foreground->SetImage(ForegroundPath+Tokens[0].GetString(String));
-	int x,y;
-	if(Tokens.size()>1)
+	
+	if(Tokens[0].GetString(String).at(0) == '~')
 	{
-		try
+		Foreground->SetImage("~");
+	}
+	else
+	{
+		int x=0,y=0;
+		if(Tokens.size()>1)
 		{
-			x = std::stoi(Tokens[1].GetString(String));
-			y = std::stoi(Tokens[2].GetString(String));
-		}
-		catch(std::invalid_argument)
-		{
-			x = 0;
-			y = 0;
+			try
+			{
+				x = std::stoi(Tokens[1].GetString(String));
+				y = std::stoi(Tokens[2].GetString(String));
+			}
+			catch(std::invalid_argument)
+			{
+				x = 0;
+				y = 0;
+			}
+			Foreground->SetPosition(x,y);
+			Foreground->SetImage(ForegroundPath+Tokens[0].GetString(String));
 		}
 	}
-	Foreground->SetPosition(x,y);
-	TextAdd(ForegroundPath+String);
+
 }
 
 void VNDSParser::FunctionGoto(StringViewer Viewer)
