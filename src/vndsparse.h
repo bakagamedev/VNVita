@@ -44,8 +44,8 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
-	std::vector<VNDSVariable> LocalVariables;
-	std::vector<VNDSVariable> GlobalVariables;
+	std::map<std::string,VNDSVariable> LocalVariables;
+	std::map<std::string,VNDSVariable> GlobalVariables;
 
 	std::string TempString;	//Pass to Text object
 	std::map<std::string,uint> LabelLocations;

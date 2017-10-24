@@ -220,8 +220,8 @@ void VNDSParser::FunctionClearText()
 void VNDSParser::FunctionJump(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	std::string File = String.substr(0, String.find(" "));	//Find first arg. todo: Make a splitter function
-	SetFile(File);
+	std::vector<StringViewer> Tokens = stringsplit(String);
+	SetFile(Tokens[0].GetString(String));
 }
 
 void VNDSParser::FunctionBgload(StringViewer Viewer)
