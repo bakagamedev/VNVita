@@ -57,10 +57,10 @@ private:
 	uint CurrentLine = 0;
 
 	//Loading
-	OpcodeType GetOpcode(const std::string line);
+	OpcodeType GetOpcode(const std::string &line);
 	void GetOperand(std::string &line);
 
-	void TextAdd(std::string String);
+	void TextAdd(const std::string &String);
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
@@ -78,5 +78,5 @@ public:
 	void SetFile(const std::string File);
 
 	void RunNextLine();
-	void DumpStrings(const std::string outfile);
+	void DumpStrings(const std::string &outfile);
 };

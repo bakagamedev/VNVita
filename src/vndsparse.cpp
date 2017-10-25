@@ -160,14 +160,14 @@ void VNDSParser::RunNextLine()
 		Text->TextAdd(TempString);
 }
 
-void VNDSParser::DumpStrings(const std::string outfile)
+void VNDSParser::DumpStrings(const std::string &outfile)
 {
     std::ofstream out(outfile);
     out << StringBlob;
     out.close();
 }
 
-OpcodeType VNDSParser::GetOpcode(const std::string line)
+OpcodeType VNDSParser::GetOpcode(const std::string &line)
 {
 	std::string opstring = line.substr(0, line.find(" "));
 	if(OpcodeStrings.find(opstring) != OpcodeStrings.end())
@@ -189,7 +189,7 @@ void VNDSParser::GetOperand(std::string &line)
 	}
 }
 
-void VNDSParser::TextAdd(std::string String)
+void VNDSParser::TextAdd(const std::string &String)
 {
 	if(!TempString.empty())	TempString += "\n";
 	TempString += String;
