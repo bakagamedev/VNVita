@@ -31,7 +31,9 @@ private:
 
 	//Callbacks
 	static void MenuDoesNothing()	{};
-	static void MenuExitNovel();
+
+	void Close();
+
 
 public:
 	MenuPanel();

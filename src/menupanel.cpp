@@ -5,6 +5,7 @@ MenuPanel::MenuPanel()
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
 
+	MenuItemList.emplace_back("KILL ME", [this]() { this->Close(); });
 	MenuItemList.emplace_back("Quicksave",MenuDoesNothing);
 	MenuItemList.emplace_back("Quickload",MenuDoesNothing);
 	MenuItemList.emplace_back("Save",MenuDoesNothing);
@@ -13,9 +14,9 @@ MenuPanel::MenuPanel()
 	MenuItemList.emplace_back("Exit",MenuDoesNothing);
 }
 
-void MenuPanel::MenuExitNovel()
+void MenuPanel::Close()
 {
-	//
+		Open = false;
 }
 
 MenuPanel::~MenuPanel()
@@ -42,7 +43,7 @@ void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 
 		if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 		{
-			std::function<void()> FunctionPointer = MenuItemList[ItemSelected].FunctionPointer;
+			std::function<void()> & FunctionPointer = MenuItemList[ItemSelected].FunctionPointer;
 			FunctionPointer();
 		}
 	}
@@ -75,6 +76,4 @@ void MenuPanel::Draw()
 		vita2d_draw_line(Left, 96 + ((i+1)*Spacing), Left+PanelWidth, 96 + ((i+1)*Spacing), COLOUR_UIBorder);
 		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*Spacing), COLOUR_Font, 2.0f, MenuItemList[i].Title.c_str());
 	}
-
-
 }
