@@ -33,7 +33,6 @@ private:
 
 	//Callbacks
 	static void DoesNothing()	{};
-	void Close();
 	void QuitNovel();
 public:
 	MenuPanel();

@@ -4,8 +4,6 @@ MenuPanel::MenuPanel()
 {
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
-
-	MenuItemList.emplace_back("KILL ME", [this]() { this->Close(); });
 	MenuItemList.emplace_back("Quicksave",DoesNothing);
 	MenuItemList.emplace_back("Quickload",DoesNothing);
 	MenuItemList.emplace_back("Save",DoesNothing);
@@ -14,10 +12,6 @@ MenuPanel::MenuPanel()
 	MenuItemList.emplace_back("Exit", [this]() { this->QuitNovel(); });
 }
 
-void MenuPanel::Close()
-{
-	Open = false;
-}
 void MenuPanel::QuitNovel()
 {
 	State = MenuStateType::QuitNovel;
