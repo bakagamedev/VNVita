@@ -29,12 +29,12 @@ private:
 
 	int ItemSelected = 0;
 
+	MenuStateType State = MenuStateType::OK;
+
 	//Callbacks
-	static void MenuDoesNothing()	{};
-
+	static void DoesNothing()	{};
 	void Close();
-
-
+	void QuitNovel();
 public:
 	MenuPanel();
 	~MenuPanel();
@@ -42,5 +42,5 @@ public:
 	bool Open = false;
 	bool Active = false;
 	void Draw();
-	void Tick(SceCtrlData GamePad, SceCtrlData GamePadLast);
+	MenuStateType Tick(SceCtrlData GamePad, SceCtrlData GamePadLast);
 };

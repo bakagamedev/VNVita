@@ -85,7 +85,11 @@ void NovelMain::Run()
 			Menu.Open = !Menu.Open;
 		}
 
-		Menu.Tick(GamePad,GamePadLast);
+		MenuStateType MenuState = Menu.Tick(GamePad,GamePadLast);
+		if(MenuState == MenuStateType::QuitNovel)
+		{
+			break;
+		}
 
 		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);

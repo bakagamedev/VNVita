@@ -6,17 +6,21 @@ MenuPanel::MenuPanel()
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
 
 	MenuItemList.emplace_back("KILL ME", [this]() { this->Close(); });
-	MenuItemList.emplace_back("Quicksave",MenuDoesNothing);
-	MenuItemList.emplace_back("Quickload",MenuDoesNothing);
-	MenuItemList.emplace_back("Save",MenuDoesNothing);
-	MenuItemList.emplace_back("Load",MenuDoesNothing);
-	MenuItemList.emplace_back("Options",MenuDoesNothing);
-	MenuItemList.emplace_back("Exit",MenuDoesNothing);
+	MenuItemList.emplace_back("Quicksave",DoesNothing);
+	MenuItemList.emplace_back("Quickload",DoesNothing);
+	MenuItemList.emplace_back("Save",DoesNothing);
+	MenuItemList.emplace_back("Load",DoesNothing);
+	MenuItemList.emplace_back("Options",DoesNothing);
+	MenuItemList.emplace_back("Exit", [this]() { this->QuitNovel(); });
 }
 
 void MenuPanel::Close()
 {
-		Open = false;
+	Open = false;
+}
+void MenuPanel::QuitNovel()
+{
+	State = MenuStateType::QuitNovel;
 }
 
 MenuPanel::~MenuPanel()
@@ -25,7 +29,7 @@ MenuPanel::~MenuPanel()
 	vita2d_free_pgf(pgf);
 }
 
-void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
+MenuStateType MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 {
 	X = (Open) ? std::max(X - SlideSpeed, -PanelWidth) : std::min(X + SlideSpeed, 0.5f);
 	Active = (X < -(PanelWidth/2));	//Enable controls if panel is at least half open
@@ -47,6 +51,8 @@ void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 			FunctionPointer();
 		}
 	}
+
+	return State;
 }
 
 void MenuPanel::Draw()

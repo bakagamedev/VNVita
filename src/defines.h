@@ -16,8 +16,14 @@ enum class StatusType
 	GoLoad,
 };
 
+enum class MenuStateType
+{
+	OK,
+	QuitNovel,
+};
+
 constexpr static const int SCREEN_WIDTH  = 960;
-constexpr static const int	SCREEN_HEIGHT = 544;
+constexpr static const int SCREEN_HEIGHT = 544;
 
 constexpr static const char * VersionString = "0.1a";
 
