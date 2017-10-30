@@ -7,6 +7,39 @@ VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foregro
 	this->Text = Text;
 }
 
+void VNDSParser::SaveState(const std::string SaveFile)
+{
+	//Assumes GUI handles all file conflicts
+	std::ofstream filesave(SavePath + SaveFile);
+	if(filesave.is_open())
+	{
+		filesave << File;
+		filesave << std::to_string(CurrentLine);
+	}
+	filesave.close();
+}
+void VNDSParser::LoadState(const std::string SaveFile)
+{
+	std::ifstream fileread(SavePath + SaveFile);
+
+	if(fileread.is_open())
+	{
+		fileread >> this->File;
+		SetFile(File);
+		
+		std::string CurrentLineTemp;
+		fileread >> CurrentLineTemp;
+		try
+		{
+			CurrentLine = std::stoi(CurrentLineTemp);
+		}
+		catch(std::invalid_argument)
+		{
+			CurrentLine = 0;
+		}
+	}
+}
+
 void VNDSParser::SetPath(const std::string Path)
 {
 	this->BasePath = Path;

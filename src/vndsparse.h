@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include <fstream>
+#include "ini/INIReader.h"
 #include "vndsinstruction.h"
 #include "vndsvariable.h"
 #include "stringhelpers.h"
@@ -74,6 +75,9 @@ public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);
 	bool IsFinished();
+
+	void SaveState(const std::string SaveFile);
+	void LoadState(const std::string SaveFile);
 
 	void SetPath(const std::string Path);
 	void SetFile(const std::string File);
