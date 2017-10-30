@@ -72,6 +72,7 @@ private:
 	void FunctionGoto(StringViewer Viewer);
 	void FunctionClearText();
 	void FunctionDelay(StringViewer Viewer);
+	void FunctionChoice(StringViewer Viewer);
 public:
 	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
 	void Tick(bool Pressed);
