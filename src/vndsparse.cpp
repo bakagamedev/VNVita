@@ -62,6 +62,7 @@ void VNDSParser::SetFile(const std::string File)
 	Instructions.clear();
 	StringBlob.clear();
 	CurrentLine = 0;
+	DelayFrames = 0;
 	FunctionClearText();
 
 	//Log label locations
