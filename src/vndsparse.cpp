@@ -117,7 +117,7 @@ void VNDSParser::Tick(bool Pressed)
 		return;
 	}
 
-	if((Pressed) || (Continue))
+	if((Pressed) || (Continue) || (DelayFrames==0))
 	{
 		RunNextLine();
 	}
@@ -274,8 +274,6 @@ void VNDSParser::FunctionBgload(StringViewer Viewer)
 	Continue = true;	//But do run on next, so delays get processed.
 	std::string String = Viewer.GetString(StringBlob);
 	auto Tokens = stringsplit(String);
-	TextAdd(BackgroundPath+String);
-
 	int Delay;
 	if(Tokens.size() > 1)
 	{
