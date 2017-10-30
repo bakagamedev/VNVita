@@ -10,6 +10,8 @@ VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foregro
 void VNDSParser::SaveState(const std::string SaveFile)
 {
 	//Assumes GUI handles all file conflicts
+	sceIoMkdir(SavePath.c_str(),0);
+
 	std::ofstream filesave(SavePath + SaveFile);
 	if(filesave.is_open())
 	{
@@ -39,6 +41,7 @@ void VNDSParser::LoadState(const std::string SaveFile)
 			CurrentLine = 0;
 		}
 	}
+	fileread.close();
 }
 
 void VNDSParser::SetPath(const std::string Path)

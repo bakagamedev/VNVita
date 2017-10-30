@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include <fstream>
+#include <psp2/io/stat.h>
 #include "ini/INIReader.h"
 #include "vndsinstruction.h"
 #include "vndsvariable.h"
