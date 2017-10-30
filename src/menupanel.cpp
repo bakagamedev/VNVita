@@ -1,11 +1,12 @@
 #include "menupanel.h"
 
-MenuPanel::MenuPanel()
+MenuPanel::MenuPanel(VNDSParser *Parser)
 {
+	this->Parser = Parser;
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
-	MenuItemList.emplace_back("Quicksave",DoesNothing);
-	MenuItemList.emplace_back("Quickload",DoesNothing);
+	MenuItemList.emplace_back("QuickSave",[this]() { this->QuickSave(); });
+	MenuItemList.emplace_back("QuickLoad",[this]() { this->QuickLoad(); });
 	MenuItemList.emplace_back("Save",DoesNothing);
 	MenuItemList.emplace_back("Load",DoesNothing);
 	MenuItemList.emplace_back("Options",DoesNothing);
@@ -15,6 +16,15 @@ MenuPanel::MenuPanel()
 void MenuPanel::QuitNovel()
 {
 	State = MenuStateType::QuitNovel;
+}
+
+void MenuPanel::QuickSave()
+{
+	Parser->SaveState("testsave.sav");
+}
+void MenuPanel::QuickLoad()
+{
+	Parser->LoadState("testsave.sav");
 }
 
 MenuPanel::~MenuPanel()

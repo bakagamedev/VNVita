@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "vndsparse.h"
 
 class MenuItem
 {
@@ -17,6 +18,7 @@ public:
 class MenuPanel
 {
 private:
+	VNDSParser * Parser;
 	constexpr static const float PanelWidth = 256.0f; 
 	vita2d_texture * logoPointer;
 	std::shared_ptr<vita2d_texture> LogoSmall;
@@ -34,8 +36,10 @@ private:
 	//Callbacks
 	static void DoesNothing()	{};
 	void QuitNovel();
+	void QuickSave();
+	void QuickLoad();
 public:
-	MenuPanel();
+	MenuPanel(VNDSParser *Parser);
 	~MenuPanel();
 
 	bool Open = false;

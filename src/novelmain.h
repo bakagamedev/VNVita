@@ -15,9 +15,9 @@ private:
 	TextControl Text;
 	ForegroundControl Foreground;
 	BackgroundControl Background;
-	MenuPanel Menu;
 
 	VNDSParser Parser = VNDSParser(&Background, &Foreground, &Text);
+	MenuPanel Menu = MenuPanel(&Parser);
 
 	NovelHeader Novel;
 	void Tick(SceCtrlData GamePad,SceCtrlData GamePadLast);

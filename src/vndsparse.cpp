@@ -14,6 +14,7 @@ void VNDSParser::SaveState(const std::string SaveFile)
 	if(filesave.is_open())
 	{
 		filesave << File;
+		filesave << "\n";
 		filesave << std::to_string(CurrentLine);
 	}
 	filesave.close();
@@ -46,7 +47,7 @@ void VNDSParser::SetPath(const std::string Path)
 	this->ScriptPath = Path + "/script/";
 	this->BackgroundPath = Path + "/background/";
 	this->ForegroundPath = Path + "/foreground/";
-	this->SavePath = Path + "/foreground/";
+	this->SavePath = Path + "/save/";
 }
 
 void VNDSParser::SetFile(const std::string File)
