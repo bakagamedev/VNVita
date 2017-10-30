@@ -77,8 +77,13 @@ void VNDSParser::Tick(bool Pressed)
 	{
 		return;
 	}
+	--Background->Delay;
+	if(Background->Delay > 0)
+	{
+		return;
+	}
 
-	if((Pressed) || (DelayFrames == 0))
+	if((Pressed) || (Continue))
 	{
 		RunNextLine();
 	}
@@ -93,6 +98,7 @@ void VNDSParser::RunNextLine()
 {
 	TempString.clear();
 	Blocking = false;
+	Continue = false;
 	//"Blocking" being set to true hands control back to the UI.
 	while(!Blocking)
 	{
@@ -230,17 +236,28 @@ void VNDSParser::FunctionJump(StringViewer Viewer)
 
 void VNDSParser::FunctionBgload(StringViewer Viewer)
 {
+	Blocking = true;	//Finishes execution for current frame
+	Continue = true;	//But do run on next, so delays get processed.
 	std::string String = Viewer.GetString(StringBlob);
 	auto Tokens = stringsplit(String);
 	TextAdd(BackgroundPath+String);
-	Background->SetImage(BackgroundPath+Tokens[0].GetString(String));
+
+	int Delay;
+	if(Tokens.size() > 1)
+	{
+		try
+		{
+			Delay = std::stoi(Tokens[1].GetString(String));
+		}
+		catch(std::invalid_argument)
+		{
+			Delay = 16;
+		}
+	}
+	Background->SetImage(BackgroundPath+Tokens[0].GetString(String),Delay);
 
 	Foreground->SetImage("~");	//Background changes cancel out foreground
 
-	if(Tokens.size() > 1)
-	{
-		//Change bg delay
-	}
 }
 
 void VNDSParser::FunctionSetimg(StringViewer Viewer)

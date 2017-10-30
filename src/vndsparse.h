@@ -53,6 +53,7 @@ private:
 	std::string StringBlob;	
 
 	int DelayFrames = -1;
+	bool Continue = false;
 	bool Blocking = false;
 	uint CurrentLine = 0;
 

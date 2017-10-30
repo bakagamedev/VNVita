@@ -35,7 +35,7 @@ public:
 		Scale = ScreenHeight / NovelHeight;
 	}
 
-	void SetImage(std::string Path)
+	void LoadImage(std::string Path)
 	{
 		Show = true;
 		if(Path == "~")
@@ -71,7 +71,20 @@ public:
 
 class BackgroundControl : public ImageControl
 {
+private:
 public:
+	int Delay = -1;
+	
+	void SetImage(std::string Path, int Delay)
+	{
+		LoadImage(Path);
+		this->Delay = Delay;
+	}
+	void SetImage(std::string Path)
+	{
+		LoadImage(Path);
+	}
+
 	void Draw()
 	{
 		float BackgroundY = 0.0f;
@@ -102,6 +115,10 @@ private:
 	float X,Y;
 
 public:
+	void SetImage(std::string Path)
+	{
+		LoadImage(Path);
+	}
 	void SetPosition(float X, float Y)
 	{
 		this->X = X;
