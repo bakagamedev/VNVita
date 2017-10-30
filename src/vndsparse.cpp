@@ -247,11 +247,11 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 	Blocking = true;
 	char firstchar = String.at(0);
 	if(firstchar == '@')	
-		{	String.erase(0,1);	Blocking = false;}
+		{	String.erase(0,1);	Continue = true;	Blocking = false;}
 	if(firstchar == '~')	
-		{	String = "";	Blocking = false;	}
+		{	String = "";	Blocking = true;	Continue = true;	}
 	if(firstchar == '!')	
-		{	String = ""; Blocking = true;	}
+		{	String = ""; 	Blocking = true;	}
 
 	TextAdd(String);
 }
