@@ -54,6 +54,8 @@ private:
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
 
+	StringViewer QuestionAnswerViewer;
+
 	int DelayFrames = -1;
 	bool Continue = false;
 	bool Blocking = false;
@@ -76,7 +78,7 @@ private:
 	void FunctionClearText();
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
-	
+
 public:
 	VNDSParser(ImageControl *Image, TextControl *Text);
 	void Tick(bool Pressed);
@@ -84,6 +86,7 @@ public:
 
 	bool IsQuestion();
 	void SetAnswer(int Answer);
+	std::string GetQuestionAnswers();
 
 	void SaveState(const std::string SaveFile);
 	void LoadState(const std::string SaveFile);

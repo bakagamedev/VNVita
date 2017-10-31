@@ -121,6 +121,19 @@ void VNDSParser::Tick(bool Pressed)
 		return;
 	}
 
+	if(QuestionWait)
+	{
+		if(QuestionAnswer != -1)
+		{
+			//Set local var "selected" to QuestionAnswer+1 here;
+			QuestionWait = false;
+		}
+		else
+		{
+			return;	//No answer given yet, abort.
+		}
+	}
+
 	if((Pressed) || (Continue) || (DelayFrames==0))
 	{
 		RunNextLine();
@@ -248,6 +261,11 @@ void VNDSParser::SetAnswer(int Answer)
 	QuestionAnswer = Answer;
 }
 
+std::string VNDSParser::GetQuestionAnswers()
+{
+	return QuestionAnswerViewer.GetString(StringBlob);
+}
+
 /*
 	Function zone! Actung!
 */
@@ -366,7 +384,8 @@ void VNDSParser::FunctionDelay(StringViewer Viewer)
 void VNDSParser::FunctionChoice(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	TextAdd(String);
+	QuestionAnswerViewer = Viewer;
 	Blocking = true;
 	QuestionWait = true;
+	Text->SetQuestion(String);
 }

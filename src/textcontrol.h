@@ -23,6 +23,10 @@ private:
 	vita2d_texture * ptrArrowDown;
 	std::shared_ptr<vita2d_texture> ImgArrowDown;
 
+	bool QuestionActive = false;
+	int QuestionAnswer = -1;
+	std::string QuestionText;
+
 	void ScrollClamp();
 public:
 	~TextControl();
@@ -33,6 +37,9 @@ public:
 
 	void ScrollUp();
 	void ScrollDown();
+
+	void EndQuestion();
+	void SetQuestion(const std::string Text);
 
 	int MaxLines = 10;	//Calculated on draw
 	bool Ready = true;

@@ -90,6 +90,16 @@ void TextControl::Tick(bool Continue)
 	    Ready = false;
 }
 	
+void TextControl::SetQuestion(const std::string Text)
+{
+	QuestionText = Text;
+	QuestionActive = true;
+}
+void TextControl::EndQuestion()
+{
+	QuestionActive = false;
+}
+
 void TextControl::Draw()
 {
 	if(Show)
@@ -101,9 +111,14 @@ void TextControl::Draw()
 
 		int TextY = Height + DrawOffset;
 		int Size = TextList.size();
-
 		if(Size > 0)
 		{
+			if(QuestionActive)
+			{
+				auto Colour = RGBA8(255,255,0,255);	//Yellow
+				TextY -= CharHeight*((std::count(QuestionText.begin(), QuestionText.end(), '\n'))+1);	//Number of answers
+				vita2d_pgf_draw_text(pgf,X + Border, TextY, Colour, 1.5f, QuestionText.c_str());
+			}
 			if((Scroll == 0) && (SmallMode = true))
 			{
 				auto Colour = RGBA8(255,255,255,255);	//White
