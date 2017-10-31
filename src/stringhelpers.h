@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "stringviewer.h"
 
 //https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 
@@ -40,4 +41,29 @@ static inline std::string stringwrap(std::string source, std::size_t width, std:
         currIndex += (width + 1); //due to the recently inserted "\n"
     }
     return source;
+}
+
+static inline std::vector<StringViewer> stringsplit(const std::string &input)
+{
+    std::vector<StringViewer> tokens;
+
+    int size = input.size();
+
+    int seglength = 0;
+    for(int offset = 0; offset<size; ++offset)
+    {
+        if(input.at(offset) == ' ')
+        {
+            tokens.push_back(StringViewer(offset-seglength,seglength));
+            seglength = 0;
+        }
+        else
+        {
+            ++seglength;
+        }
+    }
+    if(seglength>0)
+        tokens.push_back(StringViewer(size-seglength,seglength));
+
+    return tokens;
 }

@@ -12,8 +12,7 @@ NovelMain::NovelMain(std::string LoadPath)
 	Parser.SetPath(Path);
 	Parser.SetFile("main.scr");
 
-	Foreground.SetNovelSize(Novel.Width,Novel.Height);
-	Background.SetNovelSize(Novel.Width,Novel.Height);
+	Images.SetNovelSize(Novel.Width,Novel.Height);
 	//Text.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(SCREEN_WIDTH,SCREEN_HEIGHT);
 	Text.SetBorderSize(0);
@@ -48,10 +47,10 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 
 	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
 	Text.Tick(Pressed || AutoMode);
-	if(Text.Ready)
-	{
-		Parser.Tick(Pressed || AutoMode);
-	}
+
+	bool ParserReady = (Pressed || AutoMode);
+	if(!Text.Ready)	{	ParserReady = false;	}
+	Parser.Tick(ParserReady);
 }
 
 void NovelMain::Draw()
@@ -59,9 +58,7 @@ void NovelMain::Draw()
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
-	Background.Draw();
-	Foreground.Draw();
-	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
+	Images.Draw();
 	Text.Draw();
 	//UI Draw
 	Menu.Draw();
@@ -85,12 +82,16 @@ void NovelMain::Run()
 			Menu.Open = !Menu.Open;
 		}
 
-		Menu.Tick(GamePad,GamePadLast);
+		MenuStateType MenuState = Menu.Tick(GamePad,GamePadLast);
+		if(MenuState == MenuStateType::QuitNovel)
+		{
+			break;
+		}
 
 		if(!Menu.Active)
 			Tick(GamePad,GamePadLast);
 
-		Finished = (Parser.IsFinished());	//End when novel ends
+		Finished = ((Parser.IsFinished()) && (Text.Ready));	//End when novel ends and nothing is being printed
 
 		Draw();
 

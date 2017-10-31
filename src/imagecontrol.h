@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-class ImageControl
+class ImageBase
 {		
 private:
 	bool FileExists(std::string Path)
@@ -19,7 +19,7 @@ public:
 	float Scale = 1.0f;
 	std::shared_ptr<vita2d_texture> Image;
 
-	virtual ~ImageControl() = default;
+	virtual ~ImageBase() = default;
 
 	void SetScreenSize(float Width, float Height)
 	{
@@ -35,7 +35,7 @@ public:
 		Scale = ScreenHeight / NovelHeight;
 	}
 
-	void SetImage(std::string Path)
+	void LoadImage(const std::string Path)
 	{
 		Show = true;
 		if(Path == "~")
@@ -69,9 +69,15 @@ public:
 	}
 };
 
-class BackgroundControl : public ImageControl
+class BackgroundControl : public ImageBase
 {
+private:
 public:
+	void SetImage(const std::string Path)
+	{
+		LoadImage(Path);
+	}
+
 	void Draw()
 	{
 		float BackgroundY = 0.0f;
@@ -79,12 +85,14 @@ public:
 		if((Show == false) || (Image.get() == NULL))
 		{
 			//Draw black background and quit
-			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(100,0,0, 255));	//actually redish 
+			vita2d_draw_rectangle(BackgroundX, BackgroundY, NovelWidth * Scale, NovelHeight * Scale, RGBA8(16,16,16, 255));	//actually redish 
 			return;
 		}
 
 		if(Image.get() != NULL)
+		{
 			vita2d_draw_texture_scale(Image.get(), BackgroundX, BackgroundY, Scale, Scale);
+		}
 	}
 	void DrawBorders()
 	{
@@ -94,12 +102,27 @@ public:
 	}
 };
 
-class ForegroundControl : public ImageControl
+class ForegroundControl : public ImageBase
 {
 private:
 	float X,Y;
 
 public:
+	ForegroundControl(const std::string Path)
+	{
+		SetImage(Path);
+	}
+	ForegroundControl(const std::string Path, float x, float y)
+	{
+		SetImage(Path);
+		SetPosition(x,y);
+	}
+	ForegroundControl(void) = default;
+
+	void SetImage(const std::string Path)
+	{
+		LoadImage(Path);
+	}
 	void SetPosition(float X, float Y)
 	{
 		this->X = X;
@@ -113,7 +136,75 @@ public:
 			return;
 		}
 
+		float Left = (ScreenWidth - (NovelWidth*Scale)) / 2;	
+		float PointScale = Scale*(NovelHeight/192);	//Transform from NDS size -> novel size -> Screen size
+
 		if(Image.get() != NULL)
-			vita2d_draw_texture_scale(Image.get(), X * Scale, Y * Scale, Scale, Scale);
+		{
+			vita2d_draw_texture_scale(Image.get(), Left + (X * PointScale), Y * PointScale, Scale, Scale);
+		}
+
+	}
+};
+
+class ImageControl
+{
+private:
+	int NovelWidth = 256;
+	int	NovelHeight = 192;
+
+public:
+	int BackgroundWait = -1;
+	BackgroundControl Background;
+	std::list<ForegroundControl> ForegroundList;
+
+	void Draw()
+	{
+		Background.Draw();
+		if(ForegroundList.size() > 0)
+		{
+			for(ForegroundControl Image : ForegroundList)
+			{
+				Image.Draw();
+			}
+		}
+		Background.DrawBorders();
+	}
+
+	void BgLoad(std::string Path, int Delay)
+	{
+		ImageClear();	//Bg's hide sprites
+		Background.SetImage(Path);
+		BackgroundWait = Delay;
+	}
+	void BgLoad(std::string Path)
+	{
+		ImageClear();
+		Background.SetImage(Path);
+	}
+
+	void ImageClear()
+	{
+		vita2d_wait_rendering_done();
+		ForegroundList.clear();
+	}
+	void SetImage(const std::string Path,const float x,const float y)
+	{
+		if(Path == "~")
+		{
+			ImageClear();
+		}
+		else
+		{
+			ForegroundList.push_back(ForegroundControl(Path,x,y));
+			ForegroundList.back().SetNovelSize(NovelWidth,NovelHeight);
+		}
+	}
+
+	void SetNovelSize(const int Width, const int Height)
+	{
+		NovelWidth = Width;
+		NovelHeight = Height;
+		Background.SetNovelSize(Width,Height);
 	}
 };

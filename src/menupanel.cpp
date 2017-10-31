@@ -1,21 +1,30 @@
 #include "menupanel.h"
 
-MenuPanel::MenuPanel()
+MenuPanel::MenuPanel(VNDSParser *Parser)
 {
+	this->Parser = Parser;
 	logoPointer = vita2d_load_PNG_file(ASSET_LogoSmall);
 	this->LogoSmall = std::shared_ptr<vita2d_texture>(logoPointer, vita2d_free_texture);
-
-	MenuItemList.emplace_back("Quicksave",MenuDoesNothing);
-	MenuItemList.emplace_back("Quickload",MenuDoesNothing);
-	MenuItemList.emplace_back("Save",MenuDoesNothing);
-	MenuItemList.emplace_back("Load",MenuDoesNothing);
-	MenuItemList.emplace_back("Options",MenuDoesNothing);
-	MenuItemList.emplace_back("Exit",MenuDoesNothing);
+	MenuItemList.emplace_back("QuickSave",[this]() { this->QuickSave(); });
+	MenuItemList.emplace_back("QuickLoad",[this]() { this->QuickLoad(); });
+	MenuItemList.emplace_back("Save",DoesNothing);
+	MenuItemList.emplace_back("Load",DoesNothing);
+	MenuItemList.emplace_back("Options",DoesNothing);
+	MenuItemList.emplace_back("Exit", [this]() { this->QuitNovel(); });
 }
 
-void MenuPanel::MenuExitNovel()
+void MenuPanel::QuitNovel()
 {
-	//
+	State = MenuStateType::QuitNovel;
+}
+
+void MenuPanel::QuickSave()
+{
+	Parser->SaveState("testsave.sav");
+}
+void MenuPanel::QuickLoad()
+{
+	Parser->LoadState("testsave.sav");
 }
 
 MenuPanel::~MenuPanel()
@@ -24,7 +33,7 @@ MenuPanel::~MenuPanel()
 	vita2d_free_pgf(pgf);
 }
 
-void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
+MenuStateType MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 {
 	X = (Open) ? std::max(X - SlideSpeed, -PanelWidth) : std::min(X + SlideSpeed, 0.5f);
 	Active = (X < -(PanelWidth/2));	//Enable controls if panel is at least half open
@@ -42,10 +51,12 @@ void MenuPanel::Tick(SceCtrlData GamePad, SceCtrlData GamePadLast)
 
 		if((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 		{
-			std::function<void()> FunctionPointer = MenuItemList[ItemSelected].FunctionPointer;
+			std::function<void()> & FunctionPointer = MenuItemList[ItemSelected].FunctionPointer;
 			FunctionPointer();
 		}
 	}
+
+	return State;
 }
 
 void MenuPanel::Draw()
@@ -75,6 +86,4 @@ void MenuPanel::Draw()
 		vita2d_draw_line(Left, 96 + ((i+1)*Spacing), Left+PanelWidth, 96 + ((i+1)*Spacing), COLOUR_UIBorder);
 		vita2d_pgf_draw_text(pgf, Left+8, 128 + (i*Spacing), COLOUR_Font, 2.0f, MenuItemList[i].Title.c_str());
 	}
-
-
 }

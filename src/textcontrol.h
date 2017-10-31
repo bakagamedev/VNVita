@@ -15,6 +15,7 @@ private:
 	float Border = 32;
 	float X,Y,Width,Height;
 	uint8_t Alpha = 128;
+	bool SmallMode = true;
 
 	//UI Gizmos
 	vita2d_texture * ptrArrowUp;
@@ -33,6 +34,7 @@ public:
 	void ScrollUp();
 	void ScrollDown();
 
+	int MaxLines = 10;	//Calculated on draw
 	bool Ready = true;
 	bool Show = true;
 	void SetAlpha(uint8_t Alpha);

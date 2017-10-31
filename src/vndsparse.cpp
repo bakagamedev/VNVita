@@ -1,18 +1,56 @@
 #include "vndsparse.h"
 
-VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text)
+VNDSParser::VNDSParser(ImageControl *Images, TextControl *Text)
 {
-	this->Background = Background;
-	this->Foreground = Foreground;
+	this->Images = Images;
 	this->Text = Text;
+}
+
+void VNDSParser::SaveState(const std::string SaveFile)
+{
+	//Assumes GUI handles all file conflicts
+	sceIoMkdir(SavePath.c_str(), 0777);
+
+	std::ofstream filesave(SavePath + SaveFile);
+	if(filesave.is_open())
+	{
+		filesave << File;
+		filesave << "\n";
+		filesave << std::to_string(CurrentLine);
+	}
+	filesave.close();
+}
+void VNDSParser::LoadState(const std::string SaveFile)
+{
+	std::ifstream fileread(SavePath + SaveFile);
+
+	if(fileread.is_open())
+	{
+		fileread >> this->File;
+		SetFile(File);
+		
+		std::string CurrentLineTemp;
+		fileread >> CurrentLineTemp;
+		try
+		{
+			CurrentLine = std::stoi(CurrentLineTemp);
+		}
+		catch(std::invalid_argument)
+		{
+			CurrentLine = 0;
+		}
+	}
+	fileread.close();
 }
 
 void VNDSParser::SetPath(const std::string Path)
 {
 	this->BasePath = Path;
 	this->ScriptPath = Path + "/script/";
+	this->SoundPath = Path + "/sound/";
 	this->BackgroundPath = Path + "/background/";
 	this->ForegroundPath = Path + "/foreground/";
+	this->SavePath = Path + "/save/";
 }
 
 void VNDSParser::SetFile(const std::string File)
@@ -20,13 +58,14 @@ void VNDSParser::SetFile(const std::string File)
 	this->File = File;
 
 	//Clear State
+	LabelLocations.clear();
 	Instructions.clear();
 	StringBlob.clear();
 	CurrentLine = 0;
+	DelayFrames = 0;
+	FunctionClearText();
 
 	//Log label locations
-	std::map<std::string,uint> LabelLocations;
-
 	//Read file
 	uint LineNo = 0;
 
@@ -71,7 +110,21 @@ void VNDSParser::SetFile(const std::string File)
 
 void VNDSParser::Tick(bool Pressed)
 {
-	RunNextLine();
+	--DelayFrames;
+	if(DelayFrames > 0)
+	{
+		return;
+	}
+	--Images->BackgroundWait;
+	if(Images->BackgroundWait > 0)
+	{
+		return;
+	}
+
+	if((Pressed) || (Continue) || (DelayFrames==0))
+	{
+		RunNextLine();
+	}
 }
 
 bool VNDSParser::IsFinished()
@@ -81,41 +134,83 @@ bool VNDSParser::IsFinished()
 
 void VNDSParser::RunNextLine()
 {
-	if(IsFinished())
+	TempString.clear();
+	Blocking = false;
+	Continue = false;
+	//"Blocking" being set to true hands control back to the UI.
+	while(!Blocking)
 	{
-		return;
+		if(IsFinished())
+		{
+			return;
+		}
+
+		VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
+
+		//replace with map or something
+		switch(CurrentInstruction->Opcode)
+		{
+			case OpcodeType::Text:
+				FunctionText(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Cleartext:
+				FunctionClearText();
+				break;
+			case OpcodeType::Jump:
+				FunctionJump(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Bgload:
+				FunctionBgload(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Setimg:
+				FunctionSetimg(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Goto:
+				FunctionGoto(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::If:
+				/*	TextAdd("If");	*/
+				break;
+			case OpcodeType::Fi:
+				/*	TextAdd("Fi");	*/
+				break;
+			case OpcodeType::Setvar:
+				/*	TextAdd("Setvar");	*/
+				break;
+			case OpcodeType::Gsetvar:
+				/*	TextAdd("GSetvar");*/
+				break;
+			case OpcodeType::Random:
+				/*	TextAdd("Random"); */
+				break;
+			case OpcodeType::Delay:
+				FunctionDelay(CurrentInstruction->Operand.String);
+				break;
+			case OpcodeType::Music:
+				/*	TextAdd("Music"); */
+				break;
+			case OpcodeType::Sound:
+				/*	TextAdd("Sound"); */
+				break;
+			case OpcodeType::Choice:
+				FunctionChoice(CurrentInstruction->Operand.String);
+				break;
+		}
+		++CurrentLine;
 	}
 
-	VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
-
-	//replace with map or something
-	switch(CurrentInstruction->Opcode)
-	{
-		case OpcodeType::Text:
-			FunctionText(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Jump:
-			FunctionJump(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Bgload:
-			FunctionBgload(CurrentInstruction->Operand.String);
-			break;
-		case OpcodeType::Setimg:
-			FunctionSetimg(CurrentInstruction->Operand.String);
-			break;
-	}
-
-	++CurrentLine;
+	if(!TempString.empty())
+		Text->TextAdd(TempString);
 }
 
-void VNDSParser::DumpStrings(const std::string outfile)
+void VNDSParser::DumpStrings(const std::string &outfile)
 {
-    std::ofstream out(ScriptPath + outfile);
+    std::ofstream out(outfile);
     out << StringBlob;
     out.close();
 }
 
-OpcodeType VNDSParser::GetOpcode(const std::string line)
+OpcodeType VNDSParser::GetOpcode(const std::string &line)
 {
 	std::string opstring = line.substr(0, line.find(" "));
 	if(OpcodeStrings.find(opstring) != OpcodeStrings.end())
@@ -124,49 +219,143 @@ OpcodeType VNDSParser::GetOpcode(const std::string line)
 	}
 	return OpcodeType::None;
 }
+
 void VNDSParser::GetOperand(std::string &line)
 {
-	line = line.substr(line.find_first_of(" \t")+1);
+	if(line == "text")	//Blank lines manifest here as just "text"
+	{
+		line = "";
+	}
+	else
+	{
+		line = line.substr(line.find_first_of(" \t")+1);
+	}
+}
+
+void VNDSParser::TextAdd(const std::string &String)
+{
+	if(!TempString.empty())	TempString += "\n";
+	TempString += String;
 }
 
 /*
 	Function zone! Actung!
 */
-
 void VNDSParser::FunctionText(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
 	if (String.size() == 0)
 		return;
 
-	bool blocking = true;
+	Blocking = true;
 	char firstchar = String.at(0);
 	if(firstchar == '@')	
-		{	blocking = false;	String.erase(0,1);	}
+		{	String.erase(0,1);	Continue = true;	Blocking = false;}
 	if(firstchar == '~')	
-		{	String = "";	blocking = false;	}
+		{	String = "";	Blocking = true;	Continue = true;	}
 	if(firstchar == '!')	
-		{	String = ""; blocking = true;	}
+		{	String = ""; 	Blocking = true;	}
 
-	Text->TextAdd(String);	//shrug!
+	TextAdd(String);
+}
+
+void VNDSParser::FunctionClearText()
+{
+	Text->TextClear();
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	std::string File = String.substr(0, String.find(" "));	//Find first arg. todo: Make a splitter function
-	SetFile(File);
+	std::vector<StringViewer> Tokens = stringsplit(String);
+	SetFile(Tokens[0].GetString(String));
 }
 
 void VNDSParser::FunctionBgload(StringViewer Viewer)
 {
+	Blocking = true;	//Finishes execution for current frame
+	Continue = true;	//But do run on next, so delays get processed.
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd(BackgroundPath+String);
-	Background->SetImage(BackgroundPath+String);
+	auto Tokens = stringsplit(String);
+	int Delay = 16;
+	if(Tokens.size() > 1)
+	{
+		try
+		{
+			Delay = std::stoi(Tokens[1].GetString(String));
+		}
+		catch(std::invalid_argument)
+		{
+			Delay = 16;
+		}
+	}
+	Images->BgLoad(BackgroundPath+Tokens[0].GetString(String),Delay);
 }
 
 void VNDSParser::FunctionSetimg(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	Text->TextAdd(ForegroundPath+String);
+	auto Tokens = stringsplit(String);
+
+	if(Tokens[0].GetString(String).at(0) == '~')
+	{
+		Images->ImageClear();
+	}
+	else
+	{
+		int x=0,y=0;
+		if(Tokens.size()>1)
+		{
+			try
+			{
+				x = std::stoi(Tokens[1].GetString(String));
+				y = std::stoi(Tokens[2].GetString(String));
+			}
+			catch(std::invalid_argument)
+			{
+				x = 0;
+				y = 0;
+			}
+		}
+		Images->SetImage(ForegroundPath+Tokens[0].GetString(String),x,y);
+	}
+
+}
+
+void VNDSParser::FunctionGoto(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	TextAdd("Goto : "+String);
+	if(LabelLocations.count(String) != 0)
+	{
+		CurrentLine = LabelLocations[String];
+		TextAdd("Cool!");
+	}
+	else
+	{
+		TextAdd("Failed.");
+	}
+}
+
+void VNDSParser::FunctionDelay(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	int Delay;
+	try
+	{
+		Delay = std::stoi(String);
+	}
+	catch(std::invalid_argument)
+	{
+		Delay = 0;
+	}
+	DelayFrames = Delay;
+	Blocking = true;	//Abort parsing for current frame
+}
+
+void VNDSParser::FunctionChoice(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	TextAdd(String);
+	Blocking = true;
 }
