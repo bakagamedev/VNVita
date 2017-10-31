@@ -185,6 +185,7 @@ public:
 
 	void ImageClear()
 	{
+		vita2d_wait_rendering_done();
 		ForegroundList.clear();
 	}
 	void SetImage(const std::string Path,const float x,const float y)
