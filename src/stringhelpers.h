@@ -43,7 +43,7 @@ static inline std::string stringwrap(std::string source, std::size_t width, std:
     return source;
 }
 
-static inline std::vector<StringViewer> stringsplit(const std::string &input)
+static inline std::vector<StringViewer> stringsplit(const std::string &input, char split)
 {
     std::vector<StringViewer> tokens;
 
@@ -52,7 +52,7 @@ static inline std::vector<StringViewer> stringsplit(const std::string &input)
     int seglength = 0;
     for(int offset = 0; offset<size; ++offset)
     {
-        if(input.at(offset) == ' ')
+        if(input.at(offset) == split)
         {
             tokens.push_back(StringViewer(offset-seglength,seglength));
             seglength = 0;
@@ -66,4 +66,9 @@ static inline std::vector<StringViewer> stringsplit(const std::string &input)
         tokens.push_back(StringViewer(size-seglength,seglength));
 
     return tokens;
+}
+
+static inline std::vector<StringViewer> stringsplit(const std::string &input)
+{
+    return stringsplit(input,' ');
 }
