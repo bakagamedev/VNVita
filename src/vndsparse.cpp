@@ -123,8 +123,9 @@ void VNDSParser::Tick(bool Pressed)
 
 	if(QuestionWait)
 	{
-		if(QuestionAnswer != -1)
+		if (!Text->QuestionActive)
 		{
+			//Text->QuestionAnswer;
 			//Set local var "selected" to QuestionAnswer+1 here;
 			QuestionWait = false;
 		}
