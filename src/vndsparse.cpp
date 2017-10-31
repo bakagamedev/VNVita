@@ -238,6 +238,16 @@ void VNDSParser::TextAdd(const std::string &String)
 	TempString += String;
 }
 
+bool VNDSParser::IsQuestion()
+{
+	return QuestionWait;
+}
+
+void VNDSParser::SetAnswer(int Answer)
+{
+	QuestionAnswer = Answer;
+}
+
 /*
 	Function zone! Actung!
 */
@@ -358,4 +368,5 @@ void VNDSParser::FunctionChoice(StringViewer Viewer)
 	std::string String = Viewer.GetString(StringBlob);
 	TextAdd(String);
 	Blocking = true;
+	QuestionWait = true;
 }

@@ -59,6 +59,9 @@ private:
 	bool Blocking = false;
 	uint CurrentLine = 0;
 
+	bool QuestionWait = false;
+	int QuestionAnswer = -1;
+
 	//Loading
 	OpcodeType GetOpcode(const std::string &line);
 	void GetOperand(std::string &line);
@@ -73,10 +76,14 @@ private:
 	void FunctionClearText();
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
+	
 public:
 	VNDSParser(ImageControl *Image, TextControl *Text);
 	void Tick(bool Pressed);
 	bool IsFinished();
+
+	bool IsQuestion();
+	void SetAnswer(int Answer);
 
 	void SaveState(const std::string SaveFile);
 	void LoadState(const std::string SaveFile);
