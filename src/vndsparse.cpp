@@ -16,7 +16,20 @@ void VNDSParser::SaveState(const std::string SaveFile)
 	{
 		filesave << File;
 		filesave << "\n";
-		filesave << std::to_string(CurrentLine);
+		filesave << std::to_string(CurrentLine-1);
+		filesave << "\n";
+		filesave << Images->Background.Path;
+		filesave << "\n";
+		filesave << std::to_string(Images->ForegroundList.size());
+		for(int i=0; i<Images->ForegroundList.size(); ++i)
+		{
+			filesave << "\n";
+			filesave << Images->ForegroundList[i].Path;
+			filesave << "\n";
+			filesave << std::to_string(Images->ForegroundList[i].X);
+			filesave << "\n";
+			filesave << std::to_string(Images->ForegroundList[i].Y);
+		}
 	}
 	filesave.close();
 }
@@ -38,6 +51,34 @@ void VNDSParser::LoadState(const std::string SaveFile)
 		catch(std::invalid_argument)
 		{
 			CurrentLine = 0;
+		}
+
+		std::string BackPath;
+		fileread >> BackPath;
+		Images->BgLoad(BackPath,0);
+
+		int SpriteCount = 0;
+		fileread >> CurrentLineTemp;
+		try
+		{
+			SpriteCount = std::stoi(CurrentLineTemp);
+		}
+		catch(std::invalid_argument)
+		{
+			SpriteCount = 0;
+		}
+		for(int i=0; i<SpriteCount; ++i)
+		{
+			std::string SpritePath;
+			float X,Y;
+			fileread >> SpritePath;
+			fileread >> CurrentLineTemp;
+			try { X = std::stoi(CurrentLineTemp); }
+			catch(std::invalid_argument) { X = 0; }
+			fileread >> CurrentLineTemp;
+			try { Y = std::stoi(CurrentLineTemp); }
+			catch(std::invalid_argument) { Y = 0; }
+			Images->SetImage(SpritePath,X,Y);
 		}
 	}
 	fileread.close();
@@ -64,6 +105,7 @@ void VNDSParser::SetFile(const std::string File)
 	CurrentLine = 0;
 	DelayFrames = 0;
 	FunctionClearText();
+	Text->QuestionActive = false;
 
 	//Log label locations
 	//Read file
