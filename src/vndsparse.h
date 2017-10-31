@@ -22,6 +22,7 @@ private:
 	std::string BasePath;
 	std::string ScriptPath;
 	std::string SavePath;
+	std::string SoundPath;
 	std::string BackgroundPath;
 	std::string ForegroundPath;
 

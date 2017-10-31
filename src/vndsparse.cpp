@@ -48,6 +48,7 @@ void VNDSParser::SetPath(const std::string Path)
 {
 	this->BasePath = Path;
 	this->ScriptPath = Path + "/script/";
+	this->SoundPath = Path + "/sound/";
 	this->BackgroundPath = Path + "/background/";
 	this->ForegroundPath = Path + "/foreground/";
 	this->SavePath = Path + "/save/";
