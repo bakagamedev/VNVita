@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-class ImageControl
+class ImageBase
 {		
 private:
 	bool FileExists(std::string Path)
@@ -19,7 +19,7 @@ public:
 	float Scale = 1.0f;
 	std::shared_ptr<vita2d_texture> Image;
 
-	virtual ~ImageControl() = default;
+	virtual ~ImageBase() = default;
 
 	void SetScreenSize(float Width, float Height)
 	{
@@ -69,12 +69,12 @@ public:
 	}
 };
 
-class BackgroundControl : public ImageControl
+class BackgroundControl : public ImageBase
 {
 private:
 public:
 	int Delay = -1;
-	
+
 	void SetImage(std::string Path, int Delay)
 	{
 		LoadImage(Path);
@@ -109,12 +109,23 @@ public:
 	}
 };
 
-class ForegroundControl : public ImageControl
+class ForegroundControl : public ImageBase
 {
 private:
 	float X,Y;
 
 public:
+	ForegroundControl(const std::string Path)
+	{
+		SetImage(Path);
+	}
+	ForegroundControl(const std::string Path, float x, float y)
+	{
+		SetImage(Path);
+		SetPosition(x,y);
+	}
+	ForegroundControl(void) = default;
+
 	void SetImage(std::string Path)
 	{
 		LoadImage(Path);
@@ -141,5 +152,63 @@ public:
 			vita2d_draw_texture_scale(Image.get(), Left + (X * PointScale), Y * PointScale, Scale, Scale);
 		}
 
+	}
+};
+
+class ImageControl
+{
+private:
+	int NovelWidth = 256;
+	int	NovelHeight = 192;
+
+public:
+	int BackgroundWait = -1;
+	BackgroundControl Background;
+	std::list<ForegroundControl> ForegroundList;
+
+	void Draw()
+	{
+		Background.Draw();
+		for(ForegroundControl Image : ForegroundList)
+		{
+			Image.Draw();
+		}
+		Background.DrawBorders();
+	}
+
+	void BgLoad(std::string Path, int Delay)
+	{
+		ImageClear();	//Bg's hide sprites
+		Background.SetImage(Path,Delay);
+		BackgroundWait = Delay;
+	}
+	void BgLoad(std::string Path)
+	{
+		ImageClear();
+		Background.SetImage(Path);
+	}
+
+	void ImageClear()
+	{
+		ForegroundList.clear();
+	}
+	void SetImage(const std::string Path,const float x,const float y)
+	{
+		if(Path == "~")
+		{
+			ImageClear();
+		}
+		else
+		{
+			ForegroundList.push_back(ForegroundControl(Path,x,y));
+			ForegroundList.back().SetNovelSize(NovelWidth,NovelHeight);
+		}
+	}
+
+	void SetNovelSize(const int Width, const int Height)
+	{
+		NovelWidth = Width;
+		NovelHeight = Height;
+		Background.SetNovelSize(Width,Height);
 	}
 };

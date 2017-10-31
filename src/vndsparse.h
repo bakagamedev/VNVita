@@ -15,8 +15,7 @@
 class VNDSParser
 {
 private:
-	BackgroundControl * Background;
-	ForegroundControl * Foreground; 
+	ImageControl * Images;
 	TextControl * Text;
 
 	std::string BasePath;
@@ -75,7 +74,7 @@ private:
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
 public:
-	VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text);
+	VNDSParser(ImageControl *Image, TextControl *Text);
 	void Tick(bool Pressed);
 	bool IsFinished();
 

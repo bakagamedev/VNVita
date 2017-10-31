@@ -1,9 +1,8 @@
 #include "vndsparse.h"
 
-VNDSParser::VNDSParser(BackgroundControl *Background, ForegroundControl *Foreground, TextControl *Text)
+VNDSParser::VNDSParser(ImageControl *Images, TextControl *Text)
 {
-	this->Background = Background;
-	this->Foreground = Foreground;
+	this->Images = Images;
 	this->Text = Text;
 }
 
@@ -116,8 +115,8 @@ void VNDSParser::Tick(bool Pressed)
 	{
 		return;
 	}
-	--Background->Delay;
-	if(Background->Delay > 0)
+	--Images->BackgroundWait;
+	if(Images->BackgroundWait > 0)
 	{
 		return;
 	}
@@ -278,7 +277,7 @@ void VNDSParser::FunctionBgload(StringViewer Viewer)
 	Continue = true;	//But do run on next, so delays get processed.
 	std::string String = Viewer.GetString(StringBlob);
 	auto Tokens = stringsplit(String);
-	int Delay;
+	int Delay = 16;
 	if(Tokens.size() > 1)
 	{
 		try
@@ -290,10 +289,7 @@ void VNDSParser::FunctionBgload(StringViewer Viewer)
 			Delay = 16;
 		}
 	}
-	Background->SetImage(BackgroundPath+Tokens[0].GetString(String),Delay);
-
-	Foreground->SetImage("~");	//Background changes cancel out foreground
-
+	Images->BgLoad(BackgroundPath+Tokens[0].GetString(String),Delay);
 }
 
 void VNDSParser::FunctionSetimg(StringViewer Viewer)
@@ -303,7 +299,7 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 
 	if(Tokens[0].GetString(String).at(0) == '~')
 	{
-		Foreground->SetImage("~");
+		Images->ImageClear();
 	}
 	else
 	{
@@ -320,9 +316,8 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 				x = 0;
 				y = 0;
 			}
-			Foreground->SetPosition(x,y);
-			Foreground->SetImage(ForegroundPath+Tokens[0].GetString(String));
 		}
+		Images->SetImage(ForegroundPath+Tokens[0].GetString(String),x,y);
 	}
 
 }

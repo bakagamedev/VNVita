@@ -12,8 +12,7 @@ NovelMain::NovelMain(std::string LoadPath)
 	Parser.SetPath(Path);
 	Parser.SetFile("main.scr");
 
-	Foreground.SetNovelSize(Novel.Width,Novel.Height);
-	Background.SetNovelSize(Novel.Width,Novel.Height);
+	Images.SetNovelSize(Novel.Width,Novel.Height);
 	//Text.SetNovelSize(Novel.Width,Novel.Height);
 	Text.SetNovelSize(SCREEN_WIDTH,SCREEN_HEIGHT);
 	Text.SetBorderSize(0);
@@ -59,9 +58,7 @@ void NovelMain::Draw()
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
-	Background.Draw();
-	Foreground.Draw();
-	Background.DrawBorders();	//Cover up sides so sprites peeking from the side don't show
+	Images.Draw();
 	Text.Draw();
 	//UI Draw
 	Menu.Draw();

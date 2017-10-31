@@ -13,10 +13,9 @@ private:
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 
 	TextControl Text;
-	ForegroundControl Foreground;
-	BackgroundControl Background;
+	ImageControl Images;
 
-	VNDSParser Parser = VNDSParser(&Background, &Foreground, &Text);
+	VNDSParser Parser = VNDSParser(&Images, &Text);
 	MenuPanel Menu = MenuPanel(&Parser);
 
 	NovelHeader Novel;
