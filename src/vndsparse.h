@@ -46,9 +46,6 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
-	std::map<std::string,VNDSVariable> LocalVariables;
-	std::map<std::string,VNDSVariable> GlobalVariables;
-
 	std::string TempString;	//Pass to Text object
 	std::map<std::string,uint> LabelLocations;
 	std::vector<VNDSInstruction> Instructions;
@@ -69,6 +66,14 @@ private:
 	void GetOperand(std::string &line);
 
 	void TextAdd(const std::string &String);
+
+	//Variables
+	std::map<std::string,std::string> LocalVariables;
+	std::map<std::string,std::string> GlobalVariables;
+	void SetVar(std::string Var, std::string Value);
+	void SetVar(std::string Var, int Value);
+	void SetGVar(std::string Var, std::string Value);
+
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
@@ -78,6 +83,7 @@ private:
 	void FunctionClearText();
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
+	void FunctionIf(StringViewer Viewer);
 
 public:
 	VNDSParser(ImageControl *Image, TextControl *Text);

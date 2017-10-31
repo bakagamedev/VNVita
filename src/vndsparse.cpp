@@ -44,14 +44,8 @@ void VNDSParser::LoadState(const std::string SaveFile)
 		
 		std::string CurrentLineTemp;
 		fileread >> CurrentLineTemp;
-		try
-		{
-			CurrentLine = std::stoi(CurrentLineTemp);
-		}
-		catch(std::invalid_argument)
-		{
-			CurrentLine = 0;
-		}
+		try	{	CurrentLine = std::stoi(CurrentLineTemp);	}
+		catch(std::invalid_argument)	{CurrentLine = 0;	}
 
 		std::string BackPath;
 		fileread >> BackPath;
@@ -59,28 +53,28 @@ void VNDSParser::LoadState(const std::string SaveFile)
 
 		int SpriteCount = 0;
 		fileread >> CurrentLineTemp;
-		try
-		{
-			SpriteCount = std::stoi(CurrentLineTemp);
-		}
-		catch(std::invalid_argument)
-		{
-			SpriteCount = 0;
-		}
+		try	{ SpriteCount = std::stoi(CurrentLineTemp);	}
+		catch(std::invalid_argument){SpriteCount = 0;}
+
 		for(int i=0; i<SpriteCount; ++i)
 		{
 			std::string SpritePath;
 			float X,Y;
+			//Path
 			fileread >> SpritePath;
+			//X
 			fileread >> CurrentLineTemp;
 			try { X = std::stoi(CurrentLineTemp); }
 			catch(std::invalid_argument) { X = 0; }
+			//Y
 			fileread >> CurrentLineTemp;
 			try { Y = std::stoi(CurrentLineTemp); }
 			catch(std::invalid_argument) { Y = 0; }
+
 			Images->SetImage(SpritePath,X,Y);
 		}
 	}
+
 	fileread.close();
 }
 
@@ -167,8 +161,8 @@ void VNDSParser::Tick(bool Pressed)
 	{
 		if (!Text->QuestionActive)
 		{
-			//Text->QuestionAnswer;
-			//Set local var "selected" to QuestionAnswer+1 here;
+			SetVar("selected",Text->QuestionAnswer);
+			Text->QuestionAnswer = -1;
 			QuestionWait = false;
 		}
 		else
@@ -225,7 +219,7 @@ void VNDSParser::RunNextLine()
 				FunctionGoto(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::If:
-				/*	TextAdd("If");	*/
+				FunctionIf(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::Fi:
 				/*	TextAdd("Fi");	*/
@@ -310,6 +304,22 @@ std::string VNDSParser::GetQuestionAnswers()
 }
 
 /*
+	Variable Controls
+*/
+void VNDSParser::SetVar(std::string Var, std::string Value)
+{
+	LocalVariables[Var] = Value;
+}
+void VNDSParser::SetVar(std::string Var, int Value)
+{
+	LocalVariables[Var] = std::to_string(Value);
+}
+void VNDSParser::SetGVar(std::string Var, std::string Value)
+{
+	GlobalVariables[Var] = Value;
+}
+
+/*
 	Function zone! Actung!
 */
 void VNDSParser::FunctionText(StringViewer Viewer)
@@ -328,6 +338,49 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 		{	String = ""; 	Blocking = true;	}
 
 	TextAdd(String);
+}
+
+void VNDSParser::FunctionIf(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	std::vector<StringViewer> Tokens = stringsplit(String);
+
+	bool IfTrue = false;
+	if(Tokens.size() == 3)
+	{
+		std::string LeftSide = Tokens[0].GetString(String);
+		std::string Operator = Tokens[1].GetString(String);;
+		std::string RightSide = Tokens[2].GetString(String);;
+
+		if(LocalVariables.count(LeftSide) != 0)
+		{
+			LeftSide = LocalVariables[LeftSide];	//Replace with value
+		}
+
+		if(Operator == "==")
+		{
+			if(LeftSide == RightSide)
+				IfTrue = true;
+		}
+	}
+
+	if(!IfTrue)	//Skip to matching fi
+	{
+		bool Found = false;
+		int IfMatch = 1;
+		int Position = CurrentLine+1;
+		while(!Found)
+		{
+			if(Instructions[Position].Opcode == OpcodeType::If)
+				++IfMatch;
+			if(Instructions[Position].Opcode == OpcodeType::Fi)
+				--IfMatch;
+			if(IfMatch == 0)
+				Found = true;
+			++Position;	//Doesn't matter that Found ^ is set before increment, Fi doesn't do anything so skipping is OK
+		}
+		CurrentLine = Position;
+	}
 }
 
 void VNDSParser::FunctionClearText()
