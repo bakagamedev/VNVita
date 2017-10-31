@@ -35,7 +35,7 @@ public:
 		Scale = ScreenHeight / NovelHeight;
 	}
 
-	void LoadImage(std::string Path)
+	void LoadImage(const std::string Path)
 	{
 		Show = true;
 		if(Path == "~")
@@ -73,14 +73,7 @@ class BackgroundControl : public ImageBase
 {
 private:
 public:
-	int Delay = -1;
-
-	void SetImage(std::string Path, int Delay)
-	{
-		LoadImage(Path);
-		this->Delay = Delay;
-	}
-	void SetImage(std::string Path)
+	void SetImage(const std::string Path)
 	{
 		LoadImage(Path);
 	}
@@ -126,7 +119,7 @@ public:
 	}
 	ForegroundControl(void) = default;
 
-	void SetImage(std::string Path)
+	void SetImage(const std::string Path)
 	{
 		LoadImage(Path);
 	}
@@ -138,7 +131,6 @@ public:
 
 	void Draw()
 	{
-
 		if((Show == false) || (Image.get() == NULL))
 		{
 			return;
@@ -169,9 +161,12 @@ public:
 	void Draw()
 	{
 		Background.Draw();
-		for(ForegroundControl Image : ForegroundList)
+		if(ForegroundList.size() > 0)
 		{
-			Image.Draw();
+			for(ForegroundControl Image : ForegroundList)
+			{
+				Image.Draw();
+			}
 		}
 		Background.DrawBorders();
 	}
@@ -179,7 +174,7 @@ public:
 	void BgLoad(std::string Path, int Delay)
 	{
 		ImageClear();	//Bg's hide sprites
-		Background.SetImage(Path,Delay);
+		Background.SetImage(Path);
 		BackgroundWait = Delay;
 	}
 	void BgLoad(std::string Path)
