@@ -159,11 +159,12 @@ void VNDSParser::Tick(bool Pressed)
 
 	if(QuestionWait)
 	{
-		if (!Text->QuestionActive)
+		if ((!Text->QuestionActive) && (Text->QuestionAnswer>=1))	//Wait for Text to respond
 		{
 			SetVar("selected",Text->QuestionAnswer);
 			Text->QuestionAnswer = -1;
 			QuestionWait = false;
+			return;	//End for frame, continue next
 		}
 		else
 		{
@@ -352,15 +353,28 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 		std::string Operator = Tokens[1].GetString(String);;
 		std::string RightSide = Tokens[2].GetString(String);;
 
-		if(LocalVariables.count(LeftSide) != 0)
+		if(LocalVariables.count(LeftSide) != 0)	
 		{
 			LeftSide = LocalVariables[LeftSide];	//Replace with value
-		}
 
-		if(Operator == "==")
+			if(Operator == "==")
+			{
+				if(LeftSide == RightSide)
+					IfTrue = true;
+			}
+			if(Operator == "!=")
+			{
+				if(LeftSide != RightSide)
+					IfTrue = true;
+			}
+		}
+		else
 		{
-			if(LeftSide == RightSide)
+			//If variable isn't found, match with 0.
+			if((Operator == "==") && (RightSide == "0"))
+			{
 				IfTrue = true;
+			}
 		}
 	}
 
@@ -375,9 +389,11 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 				++IfMatch;
 			if(Instructions[Position].Opcode == OpcodeType::Fi)
 				--IfMatch;
+
 			if(IfMatch == 0)
 				Found = true;
-			++Position;	//Doesn't matter that Found ^ is set before increment, Fi doesn't do anything so skipping is OK
+			else
+				++Position;	
 		}
 		CurrentLine = Position;
 	}
@@ -483,5 +499,6 @@ void VNDSParser::FunctionChoice(StringViewer Viewer)
 	QuestionAnswerViewer = Viewer;
 	Blocking = true;
 	QuestionWait = true;
+	TextAdd(String);
 	Text->SetQuestion(String);
 }
