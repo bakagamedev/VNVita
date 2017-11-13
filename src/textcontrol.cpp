@@ -65,7 +65,7 @@ void TextControl::ScrollDown()
 	ScrollClamp();
 }
 
-void TextControl::Tick(bool Continue)
+void TextControl::Tick(bool Continue, bool Up, bool Down)
 {
 	int Size = TextList.size();
 	if(Size == 0)
@@ -75,6 +75,7 @@ void TextControl::Tick(bool Continue)
 	}
 
 	Ready = false;
+	DoneTyping = false;
 	auto String = TextList[Size-1];
 	if(CharsDisplay < String.size())  
 	{ 
@@ -82,14 +83,61 @@ void TextControl::Tick(bool Continue)
 	}
 	else
 	{
-		if(Continue)
-			Ready = true;
+		DoneTyping = true;
 	}
-
 	if(Scroll != 0)
 	    Ready = false;
+
+	if(DoneTyping)
+	{
+		if(!QuestionActive)
+		{
+			if(Up)
+			{
+				ScrollUp();
+			}
+			if(Down)
+			{
+				ScrollDown();
+			}
+			if(Continue)
+			{
+				Ready = true;
+			}
+		}
+		else
+		{
+			if(Up)
+			{
+				QuestionAnswer = std::max(QuestionAnswer-1,1);
+			}
+			if(Down)
+			{
+				QuestionAnswer = std::min(QuestionAnswer+1,QuestionSize);
+			}
+			if(Continue)
+			{
+				EndQuestion();
+			}
+		}
+
+	}
 }
 	
+void TextControl::SetQuestion(const std::string Text)
+{
+	QuestionText = Text;   
+	std::replace(QuestionText.begin(), QuestionText.end(), '|', '\n');
+	QuestionSize = (std::count(QuestionText.begin(), QuestionText.end(), '\n'))+1;	//Count lines
+	QuestionActive = true;
+	QuestionAnswer = 1;
+}
+
+void TextControl::EndQuestion()
+{
+	QuestionActive = false;
+}
+
 void TextControl::Draw()
 {
 	if(Show)
@@ -101,9 +149,13 @@ void TextControl::Draw()
 
 		int TextY = Height + DrawOffset;
 		int Size = TextList.size();
-
 		if(Size > 0)
 		{
+			if(QuestionActive)
+			{
+				TextY -= CharHeight*((std::count(QuestionText.begin(), QuestionText.end(), '\n'))+1);
+			}
+
 			if((Scroll == 0) && (SmallMode = true))
 			{
 				auto Colour = RGBA8(255,255,255,255);	//White
@@ -111,13 +163,20 @@ void TextControl::Draw()
 				String = stringwrap(String,MaxCharsPerLine);
 				TextY -= CharHeight*((std::count(String.begin(), String.end(), '\n'))+1);
 				String.resize(CharsDisplay);
-
 				vita2d_draw_rectangle(X + Border, TextY - CharHeight,(Width*Scale)-(Border*2), SCREEN_HEIGHT, RGBA8(0,0,0,Alpha));
 				vita2d_pgf_draw_text(pgf, X,TextY,Colour, 1.5f, String.c_str());
+
+				if((QuestionActive) && (DoneTyping))
+				{
+					TextY += CharHeight*((std::count(String.begin(), String.end(), '\n'))+1);	//step back down
+					auto Colour = RGBA8(255,255,0,255);	//Yellow
+					vita2d_pgf_draw_text(pgf,X + Border + CharHeight, TextY, Colour, 1.5f, QuestionText.c_str());
+					vita2d_pgf_draw_text(pgf,X + Border, TextY + (QuestionAnswer-1)*CharHeight, Colour, 1.5f, ">");
+				}
 			}
 			else	//Large box
 			{
-				vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
+				//vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 				int ListMax = std::max((Size+Scroll)-1,0);
 				int ListMin = std::max(ListMax - MaxLines,0);
 

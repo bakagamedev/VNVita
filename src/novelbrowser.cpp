@@ -141,7 +141,6 @@ std::string NovelBrowser::Run()
 			vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 
 			//Headerbar
-			int count = NovelList.size();
 			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
 			vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
 			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line

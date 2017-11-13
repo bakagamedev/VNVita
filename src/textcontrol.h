@@ -17,14 +17,22 @@ private:
 	uint8_t Alpha = 128;
 	bool SmallMode = true;
 
+	bool DoneTyping = false;
+
 	//UI Gizmos
 	vita2d_texture * ptrArrowUp;
 	std::shared_ptr<vita2d_texture> ImgArrowUp;
 	vita2d_texture * ptrArrowDown;
 	std::shared_ptr<vita2d_texture> ImgArrowDown;
 
+
 	void ScrollClamp();
 public:
+	bool QuestionActive = false;
+	int QuestionAnswer = -1;
+	int QuestionSize = 1;
+	std::string QuestionText;
+
 	~TextControl();
 	TextControl();
 
@@ -34,6 +42,9 @@ public:
 	void ScrollUp();
 	void ScrollDown();
 
+	void EndQuestion();
+	void SetQuestion(const std::string Text);
+
 	int MaxLines = 10;	//Calculated on draw
 	bool Ready = true;
 	bool Show = true;
@@ -41,6 +52,6 @@ public:
 	void SetNovelSize(float Width, float Height);
 	void SetBorderSize(float Border);
 
-	void Tick(bool Continue);
+	void Tick(bool Continue, bool Up, bool Down);
 	void Draw();
 };

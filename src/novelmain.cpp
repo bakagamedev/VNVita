@@ -20,6 +20,8 @@ NovelMain::NovelMain(std::string LoadPath)
 
 void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 {
+	bool Up = false;
+	bool Down = false;
 	if((GamePad.buttons & SCE_CTRL_CIRCLE) && ((GamePadLast.buttons & SCE_CTRL_CIRCLE) == 0))
 	{
 	} 	
@@ -33,11 +35,11 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 
 	if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
 	{
-		Text.ScrollUp();
+		Up = true;
 	} 
 	if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
 	{
-		Text.ScrollDown();
+		Down = true;
 	} 
 
 	if((GamePad.buttons & SCE_CTRL_LTRIGGER ) && ((GamePadLast.buttons & SCE_CTRL_LTRIGGER ) == 0))
@@ -46,7 +48,9 @@ void NovelMain::Tick(SceCtrlData GamePad,SceCtrlData GamePadLast)
 	}
 
 	bool Pressed = ((GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0));
-	Text.Tick(Pressed || AutoMode);
+	bool TextGo = Pressed;
+	if(!Text.QuestionActive)	{	TextGo = (Pressed || AutoMode);	}
+	Text.Tick(TextGo, Up, Down);
 
 	bool ParserReady = (Pressed || AutoMode);
 	if(!Text.Ready)	{	ParserReady = false;	}

@@ -46,24 +46,34 @@ private:
 		{ "choice", OpcodeType::Choice },
 	};
 
-	std::map<std::string,VNDSVariable> LocalVariables;
-	std::map<std::string,VNDSVariable> GlobalVariables;
-
 	std::string TempString;	//Pass to Text object
 	std::map<std::string,uint> LabelLocations;
 	std::vector<VNDSInstruction> Instructions;
 	std::string StringBlob;	
+
+	StringViewer QuestionAnswerViewer;
 
 	int DelayFrames = -1;
 	bool Continue = false;
 	bool Blocking = false;
 	uint CurrentLine = 0;
 
+	bool QuestionWait = false;
+	int QuestionAnswer = -1;
+
 	//Loading
 	OpcodeType GetOpcode(const std::string &line);
 	void GetOperand(std::string &line);
 
 	void TextAdd(const std::string &String);
+
+	//Variables
+	std::map<std::string,std::string> LocalVariables;
+	std::map<std::string,std::string> GlobalVariables;
+	void SetVar(std::string Var, std::string Value);
+	void SetVar(std::string Var, int Value);
+	void SetGVar(std::string Var, std::string Value);
+
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
 	void FunctionJump(StringViewer Viewer);
@@ -73,10 +83,16 @@ private:
 	void FunctionClearText();
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
+	void FunctionIf(StringViewer Viewer);
+
 public:
 	VNDSParser(ImageControl *Image, TextControl *Text);
 	void Tick(bool Pressed);
 	bool IsFinished();
+
+	bool IsQuestion();
+	void SetAnswer(int Answer);
+	std::string GetQuestionAnswers();
 
 	void SaveState(const std::string SaveFile);
 	void LoadState(const std::string SaveFile);

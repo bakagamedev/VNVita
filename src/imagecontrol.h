@@ -44,6 +44,7 @@ public:
 		}
 		if(Path != this->Path)
 		{
+			this->Path = Path;
 			vita2d_wait_rendering_done();
 			if(FileExists(Path))
 			{
@@ -104,10 +105,9 @@ public:
 
 class ForegroundControl : public ImageBase
 {
-private:
+public:
 	float X,Y;
 
-public:
 	ForegroundControl(const std::string Path)
 	{
 		SetImage(Path);
@@ -156,7 +156,7 @@ private:
 public:
 	int BackgroundWait = -1;
 	BackgroundControl Background;
-	std::list<ForegroundControl> ForegroundList;
+	std::vector<ForegroundControl> ForegroundList;
 
 	void Draw()
 	{

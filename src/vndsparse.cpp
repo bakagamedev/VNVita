@@ -16,7 +16,20 @@ void VNDSParser::SaveState(const std::string SaveFile)
 	{
 		filesave << File;
 		filesave << "\n";
-		filesave << std::to_string(CurrentLine);
+		filesave << std::to_string(CurrentLine-1);
+		filesave << "\n";
+		filesave << Images->Background.Path;
+		filesave << "\n";
+		filesave << std::to_string(Images->ForegroundList.size());
+		for(int i=0; i<Images->ForegroundList.size(); ++i)
+		{
+			filesave << "\n";
+			filesave << Images->ForegroundList[i].Path;
+			filesave << "\n";
+			filesave << std::to_string(Images->ForegroundList[i].X);
+			filesave << "\n";
+			filesave << std::to_string(Images->ForegroundList[i].Y);
+		}
 	}
 	filesave.close();
 }
@@ -31,15 +44,37 @@ void VNDSParser::LoadState(const std::string SaveFile)
 		
 		std::string CurrentLineTemp;
 		fileread >> CurrentLineTemp;
-		try
+		try	{	CurrentLine = std::stoi(CurrentLineTemp);	}
+		catch(std::invalid_argument)	{CurrentLine = 0;	}
+
+		std::string BackPath;
+		fileread >> BackPath;
+		Images->BgLoad(BackPath,0);
+
+		int SpriteCount = 0;
+		fileread >> CurrentLineTemp;
+		try	{ SpriteCount = std::stoi(CurrentLineTemp);	}
+		catch(std::invalid_argument){SpriteCount = 0;}
+
+		for(int i=0; i<SpriteCount; ++i)
 		{
-			CurrentLine = std::stoi(CurrentLineTemp);
-		}
-		catch(std::invalid_argument)
-		{
-			CurrentLine = 0;
+			std::string SpritePath;
+			float X,Y;
+			//Path
+			fileread >> SpritePath;
+			//X
+			fileread >> CurrentLineTemp;
+			try { X = std::stoi(CurrentLineTemp); }
+			catch(std::invalid_argument) { X = 0; }
+			//Y
+			fileread >> CurrentLineTemp;
+			try { Y = std::stoi(CurrentLineTemp); }
+			catch(std::invalid_argument) { Y = 0; }
+
+			Images->SetImage(SpritePath,X,Y);
 		}
 	}
+
 	fileread.close();
 }
 
@@ -64,6 +99,7 @@ void VNDSParser::SetFile(const std::string File)
 	CurrentLine = 0;
 	DelayFrames = 0;
 	FunctionClearText();
+	Text->QuestionActive = false;
 
 	//Log label locations
 	//Read file
@@ -121,6 +157,21 @@ void VNDSParser::Tick(bool Pressed)
 		return;
 	}
 
+	if(QuestionWait)
+	{
+		if ((!Text->QuestionActive) && (Text->QuestionAnswer>=1))	//Wait for Text to respond
+		{
+			SetVar("selected",Text->QuestionAnswer);
+			Text->QuestionAnswer = -1;
+			QuestionWait = false;
+			return;	//End for frame, continue next
+		}
+		else
+		{
+			return;	//No answer given yet, abort.
+		}
+	}
+
 	if((Pressed) || (Continue) || (DelayFrames==0))
 	{
 		RunNextLine();
@@ -169,7 +220,7 @@ void VNDSParser::RunNextLine()
 				FunctionGoto(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::If:
-				/*	TextAdd("If");	*/
+				FunctionIf(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::Fi:
 				/*	TextAdd("Fi");	*/
@@ -238,6 +289,37 @@ void VNDSParser::TextAdd(const std::string &String)
 	TempString += String;
 }
 
+bool VNDSParser::IsQuestion()
+{
+	return QuestionWait;
+}
+
+void VNDSParser::SetAnswer(int Answer)
+{
+	QuestionAnswer = Answer;
+}
+
+std::string VNDSParser::GetQuestionAnswers()
+{
+	return QuestionAnswerViewer.GetString(StringBlob);
+}
+
+/*
+	Variable Controls
+*/
+void VNDSParser::SetVar(std::string Var, std::string Value)
+{
+	LocalVariables[Var] = Value;
+}
+void VNDSParser::SetVar(std::string Var, int Value)
+{
+	LocalVariables[Var] = std::to_string(Value);
+}
+void VNDSParser::SetGVar(std::string Var, std::string Value)
+{
+	GlobalVariables[Var] = Value;
+}
+
 /*
 	Function zone! Actung!
 */
@@ -257,6 +339,64 @@ void VNDSParser::FunctionText(StringViewer Viewer)
 		{	String = ""; 	Blocking = true;	}
 
 	TextAdd(String);
+}
+
+void VNDSParser::FunctionIf(StringViewer Viewer)
+{
+	std::string String = Viewer.GetString(StringBlob);
+	std::vector<StringViewer> Tokens = stringsplit(String);
+
+	bool IfTrue = false;
+	if(Tokens.size() == 3)
+	{
+		std::string LeftSide = Tokens[0].GetString(String);
+		std::string Operator = Tokens[1].GetString(String);;
+		std::string RightSide = Tokens[2].GetString(String);;
+
+		if(LocalVariables.count(LeftSide) != 0)	
+		{
+			LeftSide = LocalVariables[LeftSide];	//Replace with value
+
+			if(Operator == "==")
+			{
+				if(LeftSide == RightSide)
+					IfTrue = true;
+			}
+			if(Operator == "!=")
+			{
+				if(LeftSide != RightSide)
+					IfTrue = true;
+			}
+		}
+		else
+		{
+			//If variable isn't found, match with 0.
+			if((Operator == "==") && (RightSide == "0"))
+			{
+				IfTrue = true;
+			}
+		}
+	}
+
+	if(!IfTrue)	//Skip to matching fi
+	{
+		bool Found = false;
+		int IfMatch = 1;
+		int Position = CurrentLine+1;
+		while(!Found)
+		{
+			if(Instructions[Position].Opcode == OpcodeType::If)
+				++IfMatch;
+			if(Instructions[Position].Opcode == OpcodeType::Fi)
+				--IfMatch;
+
+			if(IfMatch == 0)
+				Found = true;
+			else
+				++Position;	
+		}
+		CurrentLine = Position;
+	}
 }
 
 void VNDSParser::FunctionClearText()
@@ -356,6 +496,9 @@ void VNDSParser::FunctionDelay(StringViewer Viewer)
 void VNDSParser::FunctionChoice(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	TextAdd(String);
+	QuestionAnswerViewer = Viewer;
 	Blocking = true;
+	QuestionWait = true;
+	TextAdd(String);
+	Text->SetQuestion(String);
 }
