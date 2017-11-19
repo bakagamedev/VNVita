@@ -2,7 +2,6 @@
 #include "defines.h"
 #include "novelheader.h"
 #include "novelbrowser.h"
-#include "novelmain.h"
 
 int main(int argc, char *argv[]) 
 {
@@ -22,8 +21,7 @@ int main(int argc, char *argv[])
 		}
 		if(Status == StatusType::GoLoad)
 		{		
-			NovelMain novel = NovelMain(Path);
-			novel.Run();
+
 		}
 		else
 		{
