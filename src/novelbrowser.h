@@ -28,7 +28,7 @@ public:
 	NovelBrowser();
 	~NovelBrowser();
 	
-	std::string Run();
+	NovelHeader Run();
 
 	bool Tick(ViewModeType &ViewMode);
 	void DrawList();
