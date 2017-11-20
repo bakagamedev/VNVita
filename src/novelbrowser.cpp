@@ -62,7 +62,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		{
 			if(NovelList[i].Type == NovelType::Error)
 			{
-				NovelList.erase(i);
+				NovelList.erase(NovelList.begin()+i);
 				--i;
 				--count;
 			}
