@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "noveltypes.h"
 #include "ini/INIReader.h"
 
 class NovelHeader
@@ -66,6 +67,7 @@ class NovelHeader
 		int Height = 192;
 		std::string Name;
 		std::string Path;
+		NovelType Type = NovelType::Error;
 		std::shared_ptr<vita2d_texture> Icon;
 		std::shared_ptr<vita2d_texture> Thumbnail;
 
@@ -80,41 +82,74 @@ class NovelHeader
 			this->Name = Path;
 			this->Path = Path;
 
-			//Load name from info.txt
-			auto InfoPath = Path + "\\info.txt";
-			INIReader reader = INIReader(InfoPath);
-			if (reader.ParseError() < 0) {
-				Name = Path;
-				Name.append("#");
-			}
-			else
+			//VNVita mode
+			if(FileExists(Path+"\\config.ini"))
 			{
-				Name = reader.Get("", "title", Path);
-			}
-			//Image size from img.ini
-			auto ImgPath = Path + "\\img.ini";
-			reader = INIReader(ImgPath);
-			if (reader.ParseError() >= 0)
-			{
-				Width = reader.GetInteger("", "width", Width);
-				Height = reader.GetInteger("", "height", Height);
+				Type = NovelType::VNVita;
+				INIReader Reader = INIReader(Path + "\\config.ini");
+				Name = "error bad config";
+				if(Reader.ParseError() == 0)
+				{
+					Name = reader.Get("","title","error no title");
+					Width = 960;
+					Height = 544;
+				}
+
+				vita2d_texture * iconPointer = LoadImageName(Path + "\\icon");
+				vita2d_texture * thumbPointer= LoadImageName(Path + "\\thumbnail");
+				if(iconPointer != NULL)
+				{
+					vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+					this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
+				}
+				if(thumbPointer != NULL)
+				{
+					vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+					this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+				}
 			}
 
-			//Images
-			//Icon
-			vita2d_texture * iconPointer = LoadImageName(Path + "\\icon"); 
-			if(iconPointer != NULL)
+			//VNDS mode
+			if((FileExists(Path+"\\info.txt")) && (FileExists(Path+"\\img.ini")))
 			{
-				vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-				this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
-			}
+				Type = NovelType::VNDS;
 
-			//Thumbnail / Preview
-			vita2d_texture * thumbPointer = LoadImageName(Path + "\\thumbnail"); 
-			if(thumbPointer != NULL)
-			{	
-				vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-				this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+				//Load name from info.txt
+				auto InfoPath = Path + "\\info.txt";
+				INIReader reader = INIReader(InfoPath);
+				if (reader.ParseError() < 0) {
+					Name = Path;
+					Name.append("#");
+				}
+				else
+				{
+					Name = reader.Get("", "title", Path);
+				}
+				//Image size from img.ini
+				auto ImgPath = Path + "\\img.ini";
+				reader = INIReader(ImgPath);
+				if (reader.ParseError() >= 0)
+				{
+					Width = reader.GetInteger("", "width", Width);
+					Height = reader.GetInteger("", "height", Height);
+				}
+
+				//Images
+				//Icon
+				vita2d_texture * iconPointer = LoadImageName(Path + "\\icon"); 
+				if(iconPointer != NULL)
+				{
+					vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+					this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
+				}
+
+				//Thumbnail / Preview
+				vita2d_texture * thumbPointer = LoadImageName(Path + "\\thumbnail"); 
+				if(thumbPointer != NULL)
+				{	
+					vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
+					this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
+				}
 			}
 		}
 };
