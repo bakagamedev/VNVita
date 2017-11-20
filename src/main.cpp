@@ -25,13 +25,8 @@ int main(int argc, char *argv[])
 			NovelMain Novel = NovelMain(Header);
 			Novel.Run();
 		}
-		else
-		{
-			Running = false;
-		}
 	}
 
 	vita2d_fini();
-
 	sceKernelExitProcess(0);
 }
