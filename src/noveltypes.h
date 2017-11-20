@@ -5,4 +5,4 @@ enum class NovelType
 	Error,
 	VNVita,
 	VNDS,
-}
+};

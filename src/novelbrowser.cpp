@@ -56,6 +56,18 @@ void NovelBrowser::Search(std::string SearchPath)
 			NovelList.emplace_back(TempPath);
 		}
 
+		//Remove invalid dirs
+		size_t count = NovelList.size();
+		for (int i=0; i<count; ++i)
+		{
+			if(NovelList[i].Type == NovelType::Error)
+			{
+				NovelList.erase(i);
+				--i;
+				--count;
+			}
+		}
+
 		this->StatusCode = StatusType::OK;
 	}
 	else

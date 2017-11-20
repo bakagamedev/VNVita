@@ -15,7 +15,7 @@ class NovelHeader
 		vita2d_texture * LoadImageName(std::string Path)
 		{
 			//Takes name without type. por exampler;  ux0:data/vnvita/saya no uta/icon
-			//Priority : High PNG -> High JPG -> Base PNG -> Base PNG
+			//Priority : High PNG -> High JPG -> Base PNG -> Base JPG
 			vita2d_texture* Texture = NULL;
 			std::string PathTemp = Path;
 
@@ -67,7 +67,7 @@ class NovelHeader
 		int Height = 192;
 		std::string Name;
 		std::string Path;
-		NovelType Type = NovelType::Error;
+		NovelType Type;
 		std::shared_ptr<vita2d_texture> Icon;
 		std::shared_ptr<vita2d_texture> Thumbnail;
 
@@ -81,18 +81,20 @@ class NovelHeader
 		{
 			this->Name = Path;
 			this->Path = Path;
+			Type = NovelType::Error;
 
 			//VNVita mode
-			if(FileExists(Path+"\\config.ini"))
+			if(FileExists(Path+"\\vnvita.ini"))
 			{
 				Type = NovelType::VNVita;
+				Name = "error - bad config";
+
 				INIReader Reader = INIReader(Path + "\\config.ini");
-				Name = "error bad config";
-				if(Reader.ParseError() == 0)
+				if(Reader.ParseError() >= 0)
 				{
-					Name = reader.Get("","title","error no title");
-					Width = 960;
-					Height = 544;
+					Name = Reader.Get("","title","error - no title");
+					Width = Reader.GetInteger("","width",960);
+					Height = Reader.GetInteger("","height",544);
 				}
 
 				vita2d_texture * iconPointer = LoadImageName(Path + "\\icon");
