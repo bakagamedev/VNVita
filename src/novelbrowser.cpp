@@ -21,7 +21,10 @@ void NovelBrowser::LoadAssets()
 	if(IconVNVitaPtr != NULL)
 		{	IconVNVita = std::shared_ptr<vita2d_texture>(IconVNVitaPtr, vita2d_free_texture);	}
 	if(IconNoIconPtr != NULL)
-		{	IconNoIcon = std::shared_ptr<vita2d_texture>(IconNoIconPtr, vita2d_free_texture);	}
+	{	
+		vita2d_texture_set_filters(IconNoIconPtr, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);		
+		IconNoIcon = std::shared_ptr<vita2d_texture>(IconNoIconPtr, vita2d_free_texture);	
+	}
 }
 
 NovelBrowser::~NovelBrowser()
@@ -288,10 +291,12 @@ void NovelBrowser::DrawList()
 		vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
 
 		auto Icon = NovelList[i].Icon.get();
-		if(Icon == NULL)
-			{	Icon == IconNoIcon.get();	}
+		if(Icon == nullptr)
+		{
+			Icon = IconNoIcon.get();	
+		}
 
-		if(Icon != NULL)
+		if(Icon != nullptr)
 		{
 			float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
 			vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
@@ -312,10 +317,12 @@ void NovelBrowser::DrawGrid()
 		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
 
 		auto Icon = NovelList[i].Icon.get();		
-		if(Icon == NULL)
-			{	Icon == IconNoIcon.get();	}
+		if(Icon == nullptr)
+		{
+			Icon = IconNoIcon.get();
+		}
 
-		if(Icon != NULL)
+		if(Icon != nullptr)
 		{
 			float Scale = IconWidth / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
 			Scale *= 0.9;
