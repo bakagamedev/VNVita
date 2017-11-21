@@ -25,6 +25,7 @@ private:
 
 	std::shared_ptr<vita2d_texture> IconVNDS;
 	std::shared_ptr<vita2d_texture> IconVNVita;
+	std::shared_ptr<vita2d_texture> IconNoIcon;
 	void LoadAssets();
 public:
 	StatusType StatusCode;
