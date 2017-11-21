@@ -1,6 +1,5 @@
 #pragma once
 #include "common.h"
-#include "noveltypes.h"
 #include "ini/INIReader.h"
 
 class NovelHeader

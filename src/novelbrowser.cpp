@@ -12,9 +12,9 @@ NovelBrowser::NovelBrowser()
 
 void NovelBrowser::LoadAssets()
 {
-	vita2d_texture * IconVNDSPtr = vita2d_load_PNG_file("app0:assets/vndslogo.png");
-	vita2d_texture * IconVNVitaPtr = vita2d_load_PNG_file("app0:assets/vnvitalogo.png");
-	vita2d_texture * IconNoIconPtr = vita2d_load_PNG_file("app0:assets/noicon.png");
+	vita2d_texture * IconVNDSPtr = vita2d_load_PNG_file(ASSET_VNDSFlag);
+	vita2d_texture * IconVNVitaPtr = vita2d_load_PNG_file(ASSET_VNVitaFlag);
+	vita2d_texture * IconNoIconPtr = vita2d_load_PNG_file(ASSET_NoIcon);
 
 	if(IconVNDSPtr != NULL)
 		{	IconVNDS = std::shared_ptr<vita2d_texture>(IconVNDSPtr, vita2d_free_texture);	}

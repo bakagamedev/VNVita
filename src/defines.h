@@ -1,11 +1,5 @@
 #pragma once
-
-enum class MainState
-{
-	Startup,
-	Browser,
-	Novel,
-};
+#include "common.h"
 
 enum class StatusType
 {
@@ -14,12 +8,20 @@ enum class StatusType
 	EpicFail,
 	MainDirectoryFail,
 	GoLoad,
+	Finished,
 };
 
 enum class MenuStateType
 {
 	OK,
 	QuitNovel,
+};
+
+enum class NovelType
+{
+	Error,
+	VNVita,
+	VNDS,
 };
 
 constexpr static const int SCREEN_WIDTH  = 960;
@@ -31,6 +33,9 @@ constexpr static const char * ASSET_LogoSmall = "app0:assets/logosmall.png";
 constexpr static const char * ASSET_ArrowUp	  = "app0:assets/arrowup.png";
 constexpr static const char * ASSET_ArrowDown = "app0:assets/arrowdown.png";
 constexpr static const char * ASSET_NoAsset	  = "app0:assets/nofile.png";
+constexpr static const char * ASSET_VNDSFlag  = "app0:assets/vndslogo.png";
+constexpr static const char * ASSET_VNVitaFlag= "app0:assets/vnvitalogo.png";
+constexpr static const char * ASSET_NoIcon	  = "app0:assets/noicon.png";
 
 //constexpr static const auto 
 constexpr static const auto COLOUR_Font					= RGBA8(0,0,0,255);
