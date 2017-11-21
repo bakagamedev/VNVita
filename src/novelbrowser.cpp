@@ -294,7 +294,7 @@ void NovelBrowser::DrawList()
 		if(Icon != NULL)
 		{
 			float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
-			vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
+			vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scagle);
 			//vita2d_draw_texture(Icon,0,Y-32);
 		}
 	}
@@ -311,7 +311,10 @@ void NovelBrowser::DrawGrid()
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
 
-		auto Icon = NovelList[i].Icon.get();
+		auto Icon = NovelList[i].Icon.get();		
+		if(Icon == NULL)
+			{	Icon == IconNoIcon.get();	}
+
 		if(Icon != NULL)
 		{
 			float Scale = IconWidth / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
