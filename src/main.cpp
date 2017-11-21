@@ -23,7 +23,10 @@ int main(int argc, char *argv[])
 		if(Status == StatusType::GoLoad)
 		{		
 			NovelMain Novel = NovelMain(Header);
-			Novel.Run();
+			while(Novel.StatusCode == StatusType::OK)
+			{
+				Novel.Run();
+			}
 		}
 	}
 
