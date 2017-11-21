@@ -22,6 +22,10 @@ private:
 	int ScrollY = 0;
 	int Scroll = 0;
 	int GridPerLine = 5;
+
+	std::shared_ptr<vita2d_texture> IconVNDS;
+	std::shared_ptr<vita2d_texture> IconVNVita;
+	void LoadAssets();
 public:
 	StatusType StatusCode;
 	

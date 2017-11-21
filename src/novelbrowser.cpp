@@ -6,6 +6,19 @@ NovelBrowser::NovelBrowser()
 	//const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
 	std::string SearchPath = "ux0:data/vnvita/";
 	Search(SearchPath.c_str());
+
+	LoadAssets();
+}
+
+void NovelBrowser::LoadAssets()
+{
+	vita2d_texture * IconVNDSPtr = vita2d_load_PNG_file("app0:assets/vndslogo.png");
+	vita2d_texture * IconVNVitaPtr = vita2d_load_PNG_file("app0:assets/vnvitalogo.png");
+
+	if(IconVNDSPtr != NULL)
+		{	IconVNDS = std::shared_ptr<vita2d_texture>(IconVNDSPtr, vita2d_free_texture);	}
+	if(IconVNVitaPtr != NULL)
+		{	IconVNVita = std::shared_ptr<vita2d_texture>(IconVNVitaPtr, vita2d_free_texture);	}
 }
 
 NovelBrowser::~NovelBrowser()
@@ -49,7 +62,7 @@ void NovelBrowser::Search(std::string SearchPath)
 		std::sort(DirectoryList.begin(),DirectoryList.end());
 
 		//Add to list
-	    for (std::string Name : DirectoryList)
+		for (std::string Name : DirectoryList)
 		{
 			std::string TempPath = SearchPath;
 			TempPath.append(Name);
@@ -122,13 +135,31 @@ NovelHeader NovelBrowser::Run()
 
 			//Preview section
 			float X = SCREEN_WIDTH/2;
-			float Y = 32;	
-			//Status panel above thumbnail
-			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 32, COLOUR_UITitlebar);
-			vita2d_pgf_draw_text(pgf, X,Y+25,COLOUR_Font, 1.5f,NovelList[ItemSelected].Name.c_str());
-			vita2d_draw_line(X,Y+32, X+(SCREEN_WIDTH/2), Y+32, COLOUR_UIBorder);
-			//Thumbnail itself
-			Y += 32;
+			float Y = 32;
+			//Name panel
+			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
+			vita2d_pgf_draw_text(pgf, X,Y+17,COLOUR_Font, 1,NovelList[ItemSelected].Name.c_str());
+			vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
+			Y += 24;
+
+			///Status panel
+			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
+
+			//Resolution
+			char ResolutionString[10];
+			sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
+			vita2d_pgf_draw_text(pgf, X+2,Y+17,COLOUR_Font, 1.0f,ResolutionString);
+
+			//Icon
+			auto Icon = IconVNVita;
+			if(NovelList[ItemSelected].Type == NovelType::VNDS)
+				Icon = IconVNDS;
+			vita2d_draw_texture(Icon.get(),(X+(SCREEN_WIDTH/2)) - 64,Y);
+
+			vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
+			Y += 24;
+
+			//Thumbnail
 			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
 			if(Thumbnail != NULL)
 			{				
@@ -147,10 +178,6 @@ NovelHeader NovelBrowser::Run()
 			{
 				Y += 360;	//How tall a properly configured thumbnail should be.
 			}
-			//Text area
-			char ResolutionString[10];
-			sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
-			vita2d_pgf_draw_text(pgf, X, Y,COLOUR_Font, 1.0f, ResolutionString);
 
 			//Headerbar
 			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
@@ -275,11 +302,16 @@ void NovelBrowser::DrawGrid()
 	float X = 0;
 	for(int i=0; i<NovelList.size(); ++i)
 	{
+		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
+		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
+
 		auto Icon = NovelList[i].Icon.get();
 		if(Icon != NULL)
 		{
 			float Scale = IconWidth / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
-			vita2d_draw_texture_scale(Icon, X*IconWidth, Y, Scale, Scale);
+			Scale *= 0.9;
+			float DrawOffset = IconWidth*0.05;
+			vita2d_draw_texture_scale(Icon, (X*IconWidth)+DrawOffset, Y+DrawOffset, Scale, Scale);
 		}
 
 		if(++X >= GridPerLine)

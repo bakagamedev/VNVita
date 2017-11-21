@@ -89,7 +89,7 @@ class NovelHeader
 				Type = NovelType::VNVita;
 				Name = "error - bad config";
 
-				INIReader Reader = INIReader(Path + "\\config.ini");
+				INIReader Reader = INIReader(Path + "\\vnvita.ini");
 				if(Reader.ParseError() >= 0)
 				{
 					Name = Reader.Get("","title","error - no title");
