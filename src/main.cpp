@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
 		NovelHeader Header;
 		StatusType Status;
 		{
-			NovelBrowser browser = NovelBrowser();
-			Header = browser.Run();
-			Status = browser.StatusCode;
+			NovelBrowser Browser = NovelBrowser();
+			Header = Browser.Run();
+			Status = Browser.StatusCode;
 		}
 		if(Status == StatusType::GoLoad)
 		{		
