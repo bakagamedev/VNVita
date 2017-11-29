@@ -2,5 +2,5 @@
 
 void Parser::Tick()
 {
-	OpcodeType Opcode = GetNextOpcode();
+	InstructionType Instruction = GetNextInstruction();
 }

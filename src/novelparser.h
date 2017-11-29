@@ -1,28 +1,10 @@
 #pragma once
-
-enum class OpcodeType
-{	
-	Nop = 0,
-	Text,
-	Delay,
-	Waitui,
-	Goto,
-	Varselect,
-	Varsetint,
-	Varsetstring,
-	Varpurge,
-	Varcheckequals,
-	Varchecknotequals,
-	Varcheckgreaterthan,
-	Varchecklesserthan,
-	Varcheckgreaterorequals,
-	Varchecklesserorequals,
-};
+#include "instruction.h"
 
 class Parser
 {
 private:
-	OpcodeType GetNextOpcode() { return OpcodeType::Nop;	}
+	InstructionType GetNextInstruction() { return InstructionType; }
 public:
 	void Tick();
 };
