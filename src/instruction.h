@@ -4,36 +4,36 @@
 
 class InstructionType {
 public:
-	OperandType Operand;
+	OpcodeType	Opcode;
 	DataType 	Type;
 	DataFormat 	Data;
 
 	InstructionType() 
 	{
-		this->Operand = OperandType::Nop;
+		this->Opcode = OpcodeType::Nop;
 		this->Type = DataType::Null;
 	}
 
-	InstructionType(OperandType Operand)
+	InstructionType(OpcodeType OpcodeType)
 	{
-		this->Operand = Operand;
+		this->Opcode = Opcode;
 		this->Type = DataType::Null;
 	}
-	InstructionType(OperandType Operand, DataType Type)
+	InstructionType(OpcodeType Opcode, DataType Type)
 	{
-		this->Operand = Operand;
+		this->Opcode = Opcode;
 		this->Type = Type;
 	}
 
-	InstructionType(OperandType Operand, int Data)
+	InstructionType(OpcodeType Opcode, int Data)
 	{
-		this->Operand = Operand;
+		this->Opcode = Opcode;
 		this->Type = DataType::Int;
 		this->Data.Integer = Data;
 	}	
-	InstructionType(OperandType Operand, StringViewer Data)
+	InstructionType(OpcodeType OpcodeType, StringViewer Data)
 	{
-		this->Operand = Operand;
+		this->Opcode = Opcode;
 		this->Type = DataType::String;
 		this->Data.String = Data;
 	}

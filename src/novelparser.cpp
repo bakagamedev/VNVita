@@ -22,7 +22,7 @@ NovelParser::NovelParser(NovelType ScriptType, std::string ScriptBasePath)
 			this->ScriptPath = ScriptBasePath+"\\main.txt";
 			break;
 	}
-	LoadScript(ScriptName);
+	LoadScript(ScriptPath);
 }
 
 void NovelParser::LoadScript(std::string const& ScriptPath)
@@ -48,10 +48,27 @@ void NovelParser::LoadScriptVNVita(std::string const& ScriptPath)
 
 InstructionType NovelParser::GetNextInstruction()
 {
-	return InstructionType();	//No args = nop
+	if(IsEndOfScript())
+		return InstructionType();	//No args = nop
+
+	return Instructions[InstructionPointer++];
+}
+bool NovelParser::IsEndOfScript()
+{
+	return(InstructionPointer >= Instructions.size());
 }
 
 void NovelParser::Tick()
 {
+	ParseInstruction();
+}
+
+void NovelParser::ParseInstruction()
+{
 	InstructionType Instruction = GetNextInstruction();
+	switch(Instruction.Opcode)
+	{
+		case OpcodeType::Nop:	{}; break;
+
+	}
 }

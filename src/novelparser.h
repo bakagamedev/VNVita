@@ -5,20 +5,25 @@
 class NovelParser
 {
 private:
-	//Loading
-	void LoadScript(std::string const& ScriptName);
+	//State
 	void LoadState(std::string const& SaveName);
+	void SaveState(std::string const& SaveName);
 
-	void LoadScriptVNDS(std::string const& ScriptName);
-	void LoadScriptVNVita(std::string const& ScriptName);
+	//Script loading
+	void LoadScript(std::string const& ScriptPath);
+	void LoadScriptVNDS(std::string const& ScriptPath);
+	void LoadScriptVNVita(std::string const& ScriptPath);
 
-	//
+	//Instruction stuff
 	std::vector<InstructionType> Instructions;
 	InstructionType GetNextInstruction();
+	int16_t InstructionPointer;
+	void ParseInstruction();
+	bool IsEndOfScript();
 
 	//Meta
+	std::string ScriptBasePath;
 	std::string ScriptPath;
-	std::string ScriptName;
 	NovelType 	ScriptType;
 public:
 	NovelParser();

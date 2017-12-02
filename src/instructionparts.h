@@ -1,6 +1,6 @@
 #pragma once
 
-enum class OperandType
+enum class OpcodeType
 {	
 	Nop,
 };
