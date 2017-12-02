@@ -2,6 +2,15 @@
 #include "instruction.h"
 #include "novelheader.h"
 
+enum class ParserState
+{
+	Running,
+	Finished,
+	Confused,
+	WaitDecision,
+	WaitKey,
+}
+
 class NovelParser
 {
 private:
@@ -25,6 +34,7 @@ private:
 	std::string ScriptBasePath;
 	std::string ScriptPath;
 	NovelType 	ScriptType;
+	ParserState State;
 public:
 	NovelParser();
 	NovelParser(NovelType ScriptType, std::string ScriptPath, std::string ScriptName);
