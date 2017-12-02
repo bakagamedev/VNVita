@@ -1,42 +1,27 @@
 #pragma once
 #include "stringviewer.h"
-
-enum class OperandType
-{	
-	Nop,
-};
-
-enum class DataType
-{
-	Null,
-	Int,
-	String,
-}
+#include "instructionparts.h"
 
 class InstructionType {
 public:
 	OperandType Operand;
 	DataType 	Type;
-	union Data
-	{
-		int Integer,
-		StringViewer String,
-	};
+	DataFormat 	Data;
 
 	InstructionType() 
 	{
 		this->Operand = OperandType::Nop;
-		this->Data = DataType::Null;
-	} = default;
+		this->Type = DataType::Null;
+	}
 
 	InstructionType(OperandType Operand)
 	{
-		this->Operand = OperandType::Operand;
+		this->Operand = Operand;
 		this->Type = DataType::Null;
 	}
 	InstructionType(OperandType Operand, DataType Type)
 	{
-		this->Operand = OperandType::Operand;
+		this->Operand = Operand;
 		this->Type = Type;
 	}
 
@@ -44,12 +29,12 @@ public:
 	{
 		this->Operand = Operand;
 		this->Type = DataType::Int;
-		this->Data = Data;
+		this->Data.Integer = Data;
 	}	
 	InstructionType(OperandType Operand, StringViewer Data)
 	{
 		this->Operand = Operand;
 		this->Type = DataType::String;
-		this->Data = Data;
+		this->Data.String = Data;
 	}
-}
+};

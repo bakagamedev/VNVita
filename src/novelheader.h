@@ -5,6 +5,23 @@
 class NovelHeader
 {
 	private:
+		void SetPaths()
+		{
+			switch(Type)
+			{
+				case NovelType::Error:
+				{
+					PathScript = "";
+				}; break;
+				
+				case NovelType::VNDS:
+				case NovelType::VNVita:
+				{
+					PathScript = Path+"\\Script\\main.scr";
+				}; break;
+			}
+		}
+
 		bool FileExists(std::string Path)
 		{
 			SceIoStat StatTemp;
@@ -66,6 +83,7 @@ class NovelHeader
 		int Height = 192;
 		std::string Name;
 		std::string Path;
+		std::string PathScript;
 		NovelType Type;
 		std::shared_ptr<vita2d_texture> Icon;
 		std::shared_ptr<vita2d_texture> Thumbnail;
