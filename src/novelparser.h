@@ -9,7 +9,7 @@ enum class ParserState
 	Confused,
 	WaitDecision,
 	WaitKey,
-}
+};
 
 class NovelParser
 {

@@ -21,8 +21,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 file(GLOB SOURCES src/*.cpp)
 add_executable(${SHORT_NAME}.elf
-  src/ini/INIReader.cpp
-  src/ini/ini.c
+  inih/cpp/INIReader.cpp
+  inih/ini.c
   ${SOURCES}
 )
 
