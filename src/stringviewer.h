@@ -5,20 +5,20 @@
 class StringViewer
 {
 private:
-	std::size_t Start;
-	std::size_t Length;
+	std::size_t start;
+	std::size_t length;
 
 public:
 	StringViewer(void) = default;
-	StringViewer(std::size_t Start, std::size_t Length)
+	StringViewer(std::size_t start, std::size_t length)
 	{
-		this->Start = Start;
-		this->Length = Length;
+		this->start = start;
+		this->length = length;
 	}
 
-	std::string GetString(std::string &String)
+	std::string GetString(std::string &string)
 	{
-		return String.substr(Start,Length);
+		return string.substr(start,length);
 	}
 };
 
