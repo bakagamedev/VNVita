@@ -8,7 +8,7 @@ class CodeReader
 {
 public: //UNPUBLIC
 	std::vector<uint8_t> data;
-	size_t index;
+	size_t index = 0;
 
 public:
 	CodeReader(void) = default;

@@ -8,9 +8,6 @@ NovelMain::NovelMain(NovelHeader Header)
 	codeLoader = CodeLoader();
 	codeReader = codeLoader.Load();
 	processor = Processor(codeReader,codeLoader);
-
-	for(uint8_t i=0; i<3; ++i)
-		processor.Process();
 }
 
 NovelMain::~NovelMain()
@@ -21,24 +18,44 @@ NovelMain::~NovelMain()
 
 void NovelMain::Run()
 {
-	sceCtrlPeekBufferPositive(0, &GamePad, 1);
-	if(GamePad.buttons != 0)
-	{
-		StatusType::Finished;
-	}
 
 	vita2d_start_drawing();
 	vita2d_clear_screen();
+
+	sceCtrlPeekBufferPositive(0, &GamePad, 1);
+	if((GamePad.buttons != 0) && (GamePadLast.buttons == 0))
+	{
+		processor.Process();
+		vita2d_pgf_draw_text(pgf, 10,45,RGBA8(255,0,0,255), 3.0f, "Hit!");
+	}
+	GamePadLast = GamePad;
 
 	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, Header.Name.c_str());
 
 	std::string StackDrawy = "";
 	for(auto i=0; i<5; ++i)
 	{
-		StackDrawy.append(codeReader.data[i]);
+		char TempString[10];
+		sprintf(TempString,"%u",codeReader.data[i]);
+		StackDrawy.append(TempString);
 	}
 	vita2d_pgf_draw_text(pgf, 0,125,RGBA8(255,255,0,255), 1.0f, StackDrawy.c_str());
-	vita2d_pgf_draw_text(pgf, 0,225,RGBA8(255,255,0,255), 1.0f, processor.stack.empty() ? "Yup":"Nup");
+	{
+		char TempString[10];
+		sprintf(TempString,"Index : %u",codeReader.index);
+		TempString[9] = 0x00;
+		vita2d_pgf_draw_text(pgf, 0,145,RGBA8(255,255,0,255), 1.0f, TempString);
+	}
+
+	{
+		char TempString[10];
+		sprintf(TempString,"SS : %u",processor.stack.size());
+		TempString[9] = 0x00;
+		vita2d_pgf_draw_text(pgf, 0,225,RGBA8(255,255,0,255), 1.0f, TempString);
+	}
+
+
+
 
 	vita2d_end_drawing();
 	vita2d_swap_buffers();

@@ -16,6 +16,8 @@ uint8_t CodeReader::PeekU8(void) const
 }
 uint8_t CodeReader::ReadU8(void) 
 {
+	if(index >= data.size())
+		return 0;	
 	const auto result = this->data[index];
 	++index;
 	return result;
