@@ -14,7 +14,7 @@ public:
 	UITextBox(void) = default;
 	UITextBox(Rectangle rectangle);
 
-	UIAnimatedSprite SprContinue = UIAnimatedSprite("app0:assets/continue1.png","app0:assets/continue2.png");
+ 	UIAnimatedSprite SprContinue = { "app0:assets/continue1.png","app0:assets/continue2.png" };
 	
 	void Draw(void)
 	{

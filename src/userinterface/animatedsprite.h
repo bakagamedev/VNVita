@@ -16,12 +16,12 @@ public:
 	uint32_t FrameMilliseconds = 65;
 
 	UIAnimatedSprite(void) = default;
-	UIAnimatedSprite(std::string firstImage,int FrameMilliseconds);
-	UIAnimatedSprite(std::string firstImage,std::string secondImage);
+	UIAnimatedSprite(const std::string& firstImage,int FrameMilliseconds);
+	UIAnimatedSprite(std::initializer_list<std::string> initialiser);
 
 	void SetFrameTime(uint64_t FrameMilliseconds);
 
-	void AddFrame(std::string Path);
+	void AddFrame(const std::string& Path);
 	int GetFrameCount(void) const;
 
 	void Draw(int X,int Y);
