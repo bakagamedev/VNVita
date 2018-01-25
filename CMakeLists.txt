@@ -13,7 +13,7 @@ project(${SHORT_NAME})
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
 set(VITA_APP_NAME "VNVita MK2")
-set(VITA_TITLEID  "VNVT12345")
+set(VITA_TITLEID  "VNVitaMK2")
 set(VITA_VERSION  "01.50")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
