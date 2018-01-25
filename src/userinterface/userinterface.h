@@ -12,7 +12,7 @@ private:
 	bool backlogOpen = false;
 
 	UIBoxBase UIbacklog = UIBoxBase(Rectangle(8,8,944,524));
-	UITextBox UItextbox = Rectangle(0,344,960,200);
+	UITextBox UItextbox = UITextBox(Rectangle(0,344,960,200));
 	UIBoxBase UIpanel   = UIBoxBase(Rectangle(0,0,128,544));
 
 	SceCtrlData GamePad, GamePadLast;				

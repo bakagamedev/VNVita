@@ -90,7 +90,7 @@ class NovelHeader
 		std::shared_ptr<vita2d_texture> Icon;
 		std::shared_ptr<vita2d_texture> Thumbnail;
 
-		NovelHeader(void) {}
+		NovelHeader(void) = default;
 		NovelHeader(std::string Path)
 		{
 			Reset(Path);

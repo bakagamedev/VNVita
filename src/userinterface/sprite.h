@@ -7,8 +7,6 @@ class UISprite
 {
 private:
 	std::shared_ptr<vita2d_texture> Sprite;
-
-	void Load(const std::string& Path);
 public:
 	UISprite(const std::string& Path);
 	UISprite(const std::string& Path, uint32_t Flags);

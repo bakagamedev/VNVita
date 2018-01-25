@@ -1,6 +1,6 @@
 #include "sprite.h"
 
-UISprite::UISprite(std::string Path)
+UISprite::UISprite(const std::string& Path)
 {
 	vita2d_texture * SpritePointer = vita2d_load_PNG_file(Path.c_str());
 	if(SpritePointer != NULL)
@@ -9,7 +9,7 @@ UISprite::UISprite(std::string Path)
 	}
 }
 
-UISprite::UISprite(std::string Path, uint32_t Flags)
+UISprite::UISprite(const std::string& Path, uint32_t Flags)
 {	
 	vita2d_texture * SpritePointer = vita2d_load_PNG_file(Path.c_str());
 
