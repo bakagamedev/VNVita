@@ -12,7 +12,7 @@ set(SHORT_NAME vnvita)
 project(${SHORT_NAME})
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
-set(VITA_APP_NAME "VNVita Alpha")
+set(VITA_APP_NAME "VNVita MK2")
 set(VITA_TITLEID  "VNVT12345")
 set(VITA_VERSION  "01.50")
 
@@ -20,9 +20,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 file(GLOB SOURCES src/*.cpp)
+file(GLOB UISOURCES src/userinterface/*.cpp)
 add_executable(${SHORT_NAME}.elf
   inih/cpp/INIReader.cpp
   inih/ini.c
+  ${UISOURCES}
   ${SOURCES}
 )
 

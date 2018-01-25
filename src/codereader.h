@@ -34,9 +34,15 @@ public:
 		index = jump;
 	}
 
+	bool InMemory(void) const;
+	
 	Opcode PeekOpcode(void) const;
 	Opcode ReadOpcode(void);
 
 	uint8_t PeekU8(void) const;
 	uint8_t ReadU8(void);
+	uint16_t PeekU16(void);
+	uint16_t ReadU16(void);
+	uint32_t ReadU32(void);
+	uint32_t PeekU32(void);
 };

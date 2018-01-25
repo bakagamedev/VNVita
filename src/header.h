@@ -13,11 +13,13 @@ class NovelHeader
 				{
 					PathScript = "";
 				}; break;
-				
 				case NovelType::VNDS:
-				case NovelType::VNVita:
 				{
 					PathScript = Path+"\\Script\\main.scr";
+				};	break;
+				case NovelType::VNVita:
+				{
+					PathScript = Path+"\\Script\\main.txt";
 				}; break;
 			}
 		}

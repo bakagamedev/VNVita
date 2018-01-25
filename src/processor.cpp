@@ -8,32 +8,125 @@ Processor::Processor(CodeReader &codeReader, CodeLoader &codeLoader)
 
 void Processor::Process(void)
 {
+	if(State != ProcessorState::Running)
+		return;
+
 	Opcode op = codeReader->ReadOpcode();
 	switch(op)
 	{
 		case Opcode::Push:
 		{
 			stack.push(Variable(codeReader->ReadU8(), Variable::Type::Integer));
-		}
-		break;
+		} break;
+		case Opcode::Pop:
+		{
+			stack.pop();
+		} break;
+		case Opcode::Add:
+		{
+			uint8_t first = stack.top().GetValue();
+				stack.pop();
+			uint8_t second = stack.top().GetValue();
+				stack.pop();
+			uint32_t result = first + second;
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+		case Opcode::Sub:
+		{
+			uint8_t first = stack.top().GetValue();
+			stack.pop();
+			uint8_t second = stack.top().GetValue();
+			stack.pop();
+			uint32_t result = first - second;
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+		case Opcode::Div:
+		{
+			uint8_t first = stack.top().GetValue();
+			stack.pop();
+			uint8_t second = stack.top().GetValue();
+			stack.pop();
+			uint32_t result = first / second;
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+		case Opcode::Mul:
+		{
+			uint8_t first = stack.top().GetValue();
+			stack.pop();
+			uint8_t second = stack.top().GetValue();
+			stack.pop();
+			uint32_t result = first * second;
+			stack.push(Variable(result,Variable::Type::Integer));
+
+		} break;
 		case Opcode::Addi:
 		{
-			uint8_t result = stack.top().GetValue() + codeReader->ReadU8(); 
+			uint32_t result = stack.top().GetValue() + codeReader->ReadU8(); 
 			stack.pop();
 			stack.push(Variable(result,Variable::Type::Integer));
-		}
-		break;
+		} break;
+		case Opcode::Subi:
+		{
+			uint32_t result = stack.top().GetValue() - codeReader->ReadU8();
+			stack.pop();
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+		case Opcode::Divi:
+		{
+			uint32_t result = stack.top().GetValue() / codeReader->ReadU8();
+			stack.pop();
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+		case Opcode::Muli:
+		{
+			uint32_t result = stack.top().GetValue() * codeReader->ReadU8();
+			stack.pop();
+			stack.push(Variable(result,Variable::Type::Integer));
+		} break;
+
+		case Opcode::VarLoadID:
+		{
+
+		} break;
+		case Opcode::VarLoadString:
+		{
+
+		} break;
+		case Opcode::VarClearBuffer:
+		{
+			VariableBuffer.clear();
+		} break;
+
+		case Opcode::TextClear:
+		{
+			StringBuffer.clear();
+		}; break;
+		case Opcode::TextAddID:
+		{
+			StringViewer stringView = StringTable[codeReader->ReadU32()];
+			StringBuffer.append(stringView.GetString(StringBlob));
+		} break;
+		case Opcode::TextAddFromVar:
+		{
+			StringBuffer.append(VariableBuffer);
+		} break;
+		case Opcode::TextPrint:
+		{
+			//Send StringBuffer to screen
+		} break;
+		case Opcode::TextPrintDirect:
+		{
+			StringViewer stringView = StringTable[codeReader->ReadU32()];
+			std::string TempString = stringView.GetString(StringBlob);
+			//send TempString to screen
+		} break;
 		case Opcode::DebugPrint:
 		{
-			/*
-			auto file = std::fopen("ux0:data/vnvitaStack.txt","w");
-			uint8_t buffer[] = { stack.top().GetValue() };
-			std::fwrite(buffer, sizeof(uint8_t), 1, file);
+			auto file = std::fopen("ux0:data/_vnvitastack.txt","w");
+			uint32_t buffer[] = { stack.top().GetValue() };
+			std::fwrite(buffer, sizeof(uint32_t), 1, file);
 			std::fflush(file);
 			std::fclose(file);
-			*/
-			Panic = true;
-		}
-		break;
+		} break;
 	}
 }

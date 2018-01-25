@@ -6,25 +6,6 @@ NovelBrowser::NovelBrowser()
 	//const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
 	std::string SearchPath = "ux0:data/vnvita/";
 	Search(SearchPath.c_str());
-
-	LoadAssets();
-}
-
-void NovelBrowser::LoadAssets()
-{
-	vita2d_texture * IconVNDSPtr = vita2d_load_PNG_file(ASSET_VNDSFlag);
-	vita2d_texture * IconVNVitaPtr = vita2d_load_PNG_file(ASSET_VNVitaFlag);
-	vita2d_texture * IconNoIconPtr = vita2d_load_PNG_file(ASSET_NoIcon);
-
-	if(IconVNDSPtr != NULL)
-		{	IconVNDS = std::shared_ptr<vita2d_texture>(IconVNDSPtr, vita2d_free_texture);	}
-	if(IconVNVitaPtr != NULL)
-		{	IconVNVita = std::shared_ptr<vita2d_texture>(IconVNVitaPtr, vita2d_free_texture);	}
-	if(IconNoIconPtr != NULL)
-	{	
-		vita2d_texture_set_filters(IconNoIconPtr, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);		
-		IconNoIcon = std::shared_ptr<vita2d_texture>(IconNoIconPtr, vita2d_free_texture);	
-	}
 }
 
 NovelBrowser::~NovelBrowser()
@@ -160,7 +141,7 @@ NovelHeader NovelBrowser::Run()
 			auto Icon = IconVNVita;
 			if(NovelList[ItemSelected].Type == NovelType::VNDS)
 				Icon = IconVNDS;
-			vita2d_draw_texture(Icon.get(),(X+(SCREEN_WIDTH/2)) - 64,Y);
+			Icon.Draw(X+(SCREEN_WIDTH/2) - 64,Y);
 
 			vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
 			Y += 24;
@@ -293,7 +274,7 @@ void NovelBrowser::DrawList()
 		auto Icon = NovelList[i].Icon.get();
 		if(Icon == nullptr)
 		{
-			Icon = IconNoIcon.get();	
+			//Icon = IconNoIcon.get();	
 		}
 
 		if(Icon != nullptr)
@@ -319,7 +300,7 @@ void NovelBrowser::DrawGrid()
 		auto Icon = NovelList[i].Icon.get();		
 		if(Icon == nullptr)
 		{
-			Icon = IconNoIcon.get();
+			//Icon = IconNoIcon.get();
 		}
 
 		if(Icon != nullptr)

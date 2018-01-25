@@ -1,8 +1,9 @@
 #pragma once
 #include "common.h"
-#include "novelheader.h"
+#include "header.h"
 #include <algorithm>
 #include "stringhelpers.h"
+#include "userinterface/sprite.h"
 
 enum class ViewModeType
 {
@@ -23,10 +24,9 @@ private:
 	int Scroll = 0;
 	int GridPerLine = 5;
 
-	std::shared_ptr<vita2d_texture> IconVNDS;
-	std::shared_ptr<vita2d_texture> IconVNVita;
-	std::shared_ptr<vita2d_texture> IconNoIcon;
-	void LoadAssets();
+	UISprite IconVNDS = UISprite(ASSET_VNDSFlag);
+	UISprite IconVNVita = UISprite(ASSET_VNVitaFlag);
+	UISprite IconNoIcon = UISprite(ASSET_NoIcon);
 public:
 	StatusType StatusCode;
 	

@@ -1,11 +1,12 @@
 #include "novelmain.h"
 
-NovelMain::NovelMain(NovelHeader Header)
+NovelMain::NovelMain(NovelHeader header)
 {
-	this->Header = Header;
+	this->header = header;
 	StatusCode = StatusType::OK;
 
-	codeLoader = CodeLoader();
+	ui = UI();
+	codeLoader = CodeLoader(header);
 	codeReader = codeLoader.Load();
 	processor = Processor(codeReader,codeLoader);
 }
@@ -18,7 +19,6 @@ NovelMain::~NovelMain()
 
 void NovelMain::Run()
 {
-
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 
@@ -26,11 +26,11 @@ void NovelMain::Run()
 	if((GamePad.buttons != 0) && (GamePadLast.buttons == 0))
 	{
 		processor.Process();
-		vita2d_pgf_draw_text(pgf, 10,45,RGBA8(255,0,0,255), 3.0f, "Hit!");
+		vita2d_pgf_draw_text(pgf, 45,45,RGBA8(255,0,0,255), 3.0f, "Hit!");
 	}
 	GamePadLast = GamePad;
 
-	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, Header.Name.c_str());
+	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, header.Name.c_str());
 
 	std::string StackDrawy = "";
 	for(auto i=0; i<5; ++i)
@@ -54,8 +54,8 @@ void NovelMain::Run()
 		vita2d_pgf_draw_text(pgf, 0,225,RGBA8(255,255,0,255), 1.0f, TempString);
 	}
 
-
-
+	ui.Tick();
+	ui.Draw();
 
 	vita2d_end_drawing();
 	vita2d_swap_buffers();

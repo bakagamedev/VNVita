@@ -1,22 +1,24 @@
 #pragma once
 #include "defines.h"
+#include "userinterface/userinterface.h"
 #include "processor.h"
-#include "novelheader.h"
+#include "header.h"
 
 class NovelMain
 {
 private:
-	NovelHeader Header; 
-	CodeReader codeReader;
-	CodeLoader codeLoader;
-	Processor processor;
+	NovelHeader header; 
+	CodeLoader	codeLoader;
+	CodeReader 	codeReader;
+	Processor 	processor;
+	UI ui;
 
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	SceCtrlData GamePad, GamePadLast;
 public:
 	StatusType StatusCode;
 
-	NovelMain(NovelHeader Header);
+	NovelMain(NovelHeader header);
 	~NovelMain();
 	void Run();
 };

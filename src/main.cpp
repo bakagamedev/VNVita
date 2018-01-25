@@ -1,7 +1,7 @@
 #include "common.h"
 #include "defines.h"
 #include "novelmain.h"
-#include "novelheader.h"
+#include "header.h"
 #include "novelbrowser.h"
 
 int main(int argc, char *argv[]) 
@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 		}
 		if(Status == StatusType::GoLoad)
 		{		
+			
 			NovelMain Novel = NovelMain(Header);
 			while(Novel.StatusCode == StatusType::OK)
 			{

@@ -24,6 +24,27 @@ enum class NovelType
 	VNDS,
 };
 
+enum class UIMode
+{
+	Fullscreen,
+	VNDS,
+};
+
+struct Rectangle
+{
+	int X,Y,Width,Height;
+	Rectangle(void) = default;
+	Rectangle(int X,int Y,int Width,int Height)
+	{
+		this->X = X;
+		this->Y = Y;
+		this->Width = Width;
+		this->Height = Height;
+	}
+};
+
+constexpr static const int MAX_BACKLOG = 1000;
+
 constexpr static const int SCREEN_WIDTH  = 960;
 constexpr static const int SCREEN_HEIGHT = 544;
 
@@ -38,10 +59,11 @@ constexpr static const char * ASSET_VNVitaFlag= "app0:assets/vnvitalogo.png";
 constexpr static const char * ASSET_NoIcon	  = "app0:assets/noicon.png";
 
 //constexpr static const auto 
-constexpr static const auto COLOUR_Font					= RGBA8(0,0,0,255);
-constexpr static const auto COLOUR_Deselected			= RGBA8(28,28,28,255);
+constexpr static const auto UI_BorderSize =	2;
+constexpr static const auto COLOUR_Font					= RGBA8(  0,  0,  0,255);
+constexpr static const auto COLOUR_Deselected			= RGBA8( 28, 28, 28,255);
 constexpr static const auto COLOUR_Selected  			= RGBA8(200,200,200,255);
-constexpr static const auto COLOUR_UIBackgroundFocus	= RGBA8(114, 137, 217, 255);
-constexpr static const auto COLOUR_UIBackground			= RGBA8(166, 191, 204, 255);
-constexpr static const auto COLOUR_UITitlebar			= RGBA8(74 ,  98, 109, 255);
+constexpr static const auto COLOUR_UIBackgroundFocus	= RGBA8(114,137,217,255);
+constexpr static const auto COLOUR_UIBackground			= RGBA8(166,191,204,255);
+constexpr static const auto COLOUR_UITitlebar			= RGBA8( 74, 98,109,255);
 constexpr static const auto COLOUR_UIBorder 			= RGBA8(255,255,255,255);

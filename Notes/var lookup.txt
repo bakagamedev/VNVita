@@ -1,0 +1,40 @@
+
+Functions:
+	TextClear
+		Clears string buffer
+	TextPresentUI
+		Sends string buffer to UI
+	TextAdd $1
+		Retrives ID string from string table and appends value to string buffer.
+	TextAddVar
+		Appends contents of var buffer to string buffer.
+	VarLoadID $1
+		Loads named var into var buffer
+	VarLoadString
+		
+	VarClearBuffer 
+		Clears var buffer
+	
+text blahblah $name wordswords $name2
+	stringtable = 0"blahblah ",1"name",2" wordswords",3"name2"
+		name = "dave"
+		name2= "sally"
+	Stack = TextAdd,0,VarLoadID,1,TextAddVar,TextAdd,2,VarLoadID,3,TextAddVar,TextPresentUI,TextClear,VarClear
+	State	CMD 			VarBuffer			StrBuffer
+		TextAdd,0			""					"blahblah "
+		VarLoadID,1			"dave" 				"blahblah "
+		TextAddVar 			"dave"				"blahblah dave"
+		TextAdd,2 			"dave" 				"blahblah dave wordswords "
+		VarLoadID,3 		"sally" 			"blahblah dave wordswords "
+		TextAddVar 			"sally" 			"blahblah dave wordswords sally"
+		TextPresentUI		"sally"				"blahblah dave wordswords sally"
+		TextClear 			"sally"				""
+		VarClear 			""					""
+		
+if name == dave
+fi
+	stringtable = ["name","dave"]
+		name = "dave"
+	Stack = VarLoadID,0,
+	State	CMD				VarBuffer
+		
