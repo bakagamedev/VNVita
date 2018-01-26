@@ -17,60 +17,63 @@ NovelBrowser::~NovelBrowser()
 void NovelBrowser::Search(std::string SearchPath)
 {
 	NovelList.clear();
-	SceUID uid = sceIoDopen(SearchPath.c_str());
-	if(uid >= 0)
+
+	try
 	{
-		//Find potential novel directories
-		SceIoDirent fileInfo;
-		std::vector<std::string> DirectoryList;
-		for(int next = sceIoDread(uid, &fileInfo); next != 0; next = sceIoDread(uid, &fileInfo))
+		SceUID uid = sceIoDopen(SearchPath.c_str());
+		if(uid >= 0)
 		{
-			if(next > 0)
+			//Find potential novel directories
+			SceIoDirent fileInfo;
+			std::vector<std::string> DirectoryList;
+			for(int next = sceIoDread(uid, &fileInfo); next != 0; next = sceIoDread(uid, &fileInfo))
 			{
-				SceIoStat stat = fileInfo.d_stat;
-				if(stat.st_mode == 4486)	//4486 == directory
+				if(next > 0)
 				{
-					std::string name(fileInfo.d_name);
-					stringtrim(name);
-					DirectoryList.push_back(name);
+					SceIoStat stat = fileInfo.d_stat;
+					if(stat.st_mode == 4486)	//4486 == directory
+					{
+						std::string name(fileInfo.d_name);
+						stringtrim(name);
+						DirectoryList.push_back(name);
+					}
+				}
+				else
+				{
+				// log error?
 				}
 			}
-			else
+			if(sceIoDclose(uid) < 0)
 			{
-			// log error?
+				// also an error
 			}
-		}
-		if(sceIoDclose(uid) < 0)
-		{
-			// also an error
-		}
 
-		//Sort alphabetically (doesn't really work)
-		std::sort(DirectoryList.begin(),DirectoryList.end());
+			//Sort alphabetically (doesn't really work)
+			std::sort(DirectoryList.begin(),DirectoryList.end());
 
-		//Add to list
-		for (std::string Name : DirectoryList)
-		{
-			std::string TempPath = SearchPath;
-			TempPath.append(Name);
-			NovelList.emplace_back(TempPath);
-		}
-
-		//Remove invalid dirs
-		size_t count = NovelList.size();
-		for (int i=0; i<count; ++i)
-		{
-			if(NovelList[i].Type == NovelType::Error)
+			//Add to list
+			for (std::string Name : DirectoryList)
 			{
-				NovelList.erase(NovelList.begin()+i);
-				--i;
-				--count;
+				std::string TempPath = SearchPath;
+				TempPath.append(Name);
+				NovelList.emplace_back(TempPath);
 			}
-		}
 
-		this->StatusCode = StatusType::OK;
+			//Remove invalid dirs
+			size_t count = NovelList.size();
+			for (int i=0; i<count; ++i)
+			{
+				if(NovelList[i].Type == NovelType::Error)
+				{
+					NovelList.erase(NovelList.begin()+i);
+					--i;
+					--count;
+				}
+			}
+			this->StatusCode = StatusType::OK;
+		}
 	}
-	else
+	catch(...)
 	{
 		StatusCode = StatusType::MainDirectoryFail;
 	}
@@ -81,102 +84,25 @@ NovelHeader NovelBrowser::Run()
 	std::string PathReturn = "";
 	ItemSelected = 0;
 
-	ViewModeType ViewMode = ViewModeType::List;
-
 	bool Ready = false;
 	while(!Ready)
 	{
 		sceCtrlPeekBufferPositive(0, &GamePad, 1);
 
-		if(StatusCode == StatusType::MainDirectoryFail)
+		if(StatusCode == StatusType::OK)
 		{
-			vita2d_start_drawing();
-			vita2d_clear_screen();
-			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,0,0,255), 1.5f, "Bad directory!\nCheck ux0:data\\vnvita\\ exists");
-			vita2d_end_drawing();
-			vita2d_swap_buffers();
-
+			if(Tick(ViewMode))
+				return NovelList[ItemSelected].Path;
+		}
+		else if (StatusCode == StatusType::MainDirectoryFail)
+		{
 			if(GamePad.buttons != 0)
 			{
 				Ready = true;
 			}
 		}
 
-		if(StatusCode == StatusType::OK)
-		{
-			if(Tick(ViewMode))
-				return NovelList[ItemSelected].Path;
-
-			vita2d_start_drawing();
-			vita2d_clear_screen();
-
-			vita2d_set_clip_rectangle(0,32,SCREEN_WIDTH/2,SCREEN_HEIGHT);
-			vita2d_enable_clipping();
-
-			if(ViewMode == ViewModeType::List)
-				DrawList();
-			else
-				DrawGrid();
-
-			vita2d_disable_clipping();
-
-			//Preview section
-			float X = SCREEN_WIDTH/2;
-			float Y = 32;
-			//Name panel
-			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
-			vita2d_pgf_draw_text(pgf, X,Y+17,COLOUR_Font, 1,NovelList[ItemSelected].Name.c_str());
-			vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
-			Y += 24;
-
-			///Status panel
-			vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
-
-			//Resolution
-			char ResolutionString[10];
-			sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
-			vita2d_pgf_draw_text(pgf, X+2,Y+17,COLOUR_Font, 1.0f,ResolutionString);
-
-			//Icon
-			auto Icon = IconVNVita;
-			if(NovelList[ItemSelected].Type == NovelType::VNDS)
-				Icon = IconVNDS;
-			Icon.Draw(X+(SCREEN_WIDTH/2) - 64,Y);
-
-			vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
-			Y += 24;
-
-			//Thumbnail
-			auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
-			if(Thumbnail != NULL)
-			{				
-				//Thumbnail
-				float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
-				if(vita2d_texture_get_width(Thumbnail) > 128.0f)
-				{
-					Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
-				}
-				float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
-
-				vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
-				Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
-			}
-			else
-			{
-				Y += 360;	//How tall a properly configured thumbnail should be.
-			}
-
-			//Headerbar
-			vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
-			vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
-			vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
-
-			//Divide centre of screen
-			vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	
-
-			vita2d_end_drawing();
-			vita2d_swap_buffers();
-		}
+		Draw();
 
 		GamePadLast = GamePad;
 	}
@@ -244,6 +170,93 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 	}
 
 	return false;
+}
+
+void NovelBrowser::Draw()
+{
+		vita2d_start_drawing();
+		vita2d_clear_screen();
+
+		vita2d_set_clip_rectangle(0,32,SCREEN_WIDTH/2,SCREEN_HEIGHT);
+		vita2d_enable_clipping();
+		if(StatusCode == StatusType::OK)
+		{
+			if(ViewMode == ViewModeType::List)
+				DrawList();
+			else
+				DrawGrid();
+		}
+		else if(StatusCode == StatusType::MainDirectoryFail)
+		{
+			vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,0,0,255), 1.5f, "Bad directory!\nCheck ux0:data\\vnvita\\ exists");
+			vita2d_end_drawing();
+			vita2d_swap_buffers();
+		}
+		vita2d_disable_clipping();
+
+		DrawPreview();
+
+		vita2d_end_drawing();
+		vita2d_swap_buffers();
+
+}
+
+void NovelBrowser::DrawPreview()
+{
+	//Preview section
+	float X = SCREEN_WIDTH/2;
+	float Y = 32;
+	//Name panel
+	vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
+	vita2d_pgf_draw_text(pgf, X,Y+17,COLOUR_Font, 1,NovelList[ItemSelected].Name.c_str());
+	vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
+	Y += 24;
+
+	///Status panel
+	vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
+
+	//Resolution
+	char ResolutionString[10];
+	sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
+	vita2d_pgf_draw_text(pgf, X+2,Y+17,COLOUR_Font, 1.0f,ResolutionString);
+
+	//Icon
+	auto Icon = IconVNVita;
+	if(NovelList[ItemSelected].Type == NovelType::VNDS)
+		Icon = IconVNDS;
+	Icon.Draw(X+(SCREEN_WIDTH/2) - 64,Y);
+
+	vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
+	Y += 24;
+
+	//Thumbnail
+	auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
+	if(Thumbnail != NULL)
+	{				
+		//Thumbnail
+		float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
+		if(vita2d_texture_get_width(Thumbnail) > 128.0f)
+		{
+			Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
+		}
+		float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
+
+		vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
+		Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
+	}
+	else
+	{
+		Y += 360;	//How tall a properly configured thumbnail should be.
+	}
+
+	//Headerbar
+	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
+	vita2d_pgf_draw_text(pgf, 0,25,COLOUR_Font, 1.5f, "VNVita");
+	vita2d_draw_line(0,32,960,32,RGBA8(255,255,255,255));	//Underscore line
+
+	//Divide centre of screen
+	vita2d_draw_line((SCREEN_WIDTH/2)-1, 32, (SCREEN_WIDTH/2), SCREEN_HEIGHT, RGBA8(255,255,255,255));	
+
 }
 
 void NovelBrowser::DrawList()

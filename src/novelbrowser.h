@@ -19,6 +19,7 @@ private:
 	std::vector<NovelHeader> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	int ItemSelected = 0;
+	ViewModeType ViewMode = ViewModeType::List;
 
 	int ScrollY = 0;
 	int Scroll = 0;
@@ -36,6 +37,8 @@ public:
 	NovelHeader Run();
 
 	bool Tick(ViewModeType &ViewMode);
+	void Draw();
 	void DrawList();
 	void DrawGrid();
+	void DrawPreview();
 };
