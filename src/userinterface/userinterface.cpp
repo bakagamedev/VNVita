@@ -5,6 +5,11 @@ UI::UI()
 
 }
 
+bool UI::PressContinue(void)
+{
+	return (!backlogOpen && !menuOpen);
+}
+
 void UI::PrintTextbox(std::string String)
 {
 	StringViewer viewer = StringViewer(StringBlob.size(),String.size());

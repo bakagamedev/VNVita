@@ -20,6 +20,8 @@ private:
 public:
 	UI();
 
+	bool PressContinue(void);
+
 	void PrintTextbox(std::string String);
 	void Tick();
 	void Draw();

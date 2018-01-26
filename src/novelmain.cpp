@@ -23,7 +23,9 @@ void NovelMain::Run()
 	vita2d_clear_screen();
 
 	sceCtrlPeekBufferPositive(0, &GamePad, 1);
-	if((GamePad.buttons != 0) && (GamePadLast.buttons == 0))
+
+	//Move button press logic to UI
+	if(ui.PressContinue() && (GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
 	{
 		processor.Process();
 		vita2d_pgf_draw_text(pgf, 45,45,RGBA8(255,0,0,255), 3.0f, "Hit!");
