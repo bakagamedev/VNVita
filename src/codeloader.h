@@ -3,6 +3,7 @@
 #include <string>
 #include "opcode.h"
 #include "header.h"
+#include "stringtable.h"
 
 class CodeLoader
 {

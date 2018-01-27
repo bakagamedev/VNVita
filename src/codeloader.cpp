@@ -7,7 +7,7 @@ CodeLoader::CodeLoader(NovelHeader& header)
 
 CodeReader CodeLoader::Load(std::string& URL)
 {
-	return Load();
+	return LoadError(URL);
 	/*
 	switch(header.Type)
 	{
@@ -28,10 +28,13 @@ CodeReader CodeLoader::LoadError(std::string& URL)
 {
 	//Print an error message in dialogue box
 	/*
-		Say something like 
-			""
+		Say something like
 			"bad file : " + URL
 	*/
+	StringTable table;
+	table.Add(URL);
+	table.Add("Malformed file. Sorry.");
+
 	std::vector<uint8_t> data = 
 	{
 		static_cast<uint8_t>(Opcode::TextAddID),0,

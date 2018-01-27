@@ -16,7 +16,7 @@ public:
 		this->length = length;
 	}
 
-	std::string GetString(std::string &string)
+	std::string GetString(const std::string &string)
 	{
 		return string.substr(start,length);
 	}
