@@ -5,7 +5,7 @@ NovelBrowser::NovelBrowser()
 	vita2d_set_clear_color(COLOUR_UIBackground);
 	//const char *Paths[] = {"ux0:data/vnvita/","ur0:data/vnvita/","uma0:data/vnvita/"};
 	std::string SearchPath = "ux0:data/vnvita/";
-	Search(SearchPath.c_str());
+	Search(SearchPath);
 }
 
 NovelBrowser::~NovelBrowser()
