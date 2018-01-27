@@ -211,7 +211,12 @@ void NovelBrowser::Draw()
 
 void NovelBrowser::DrawDebugOverlay()
 {
+	vita2d_draw_rectangle(0,0,100,24,COLOUR_UIBackgroundFocus);
 
+	char TempString[10];
+	sprintf(TempString,"TC : %u", textureCache.GetCount());
+
+	vita2d_pgf_draw_text(pgf,0,17,COLOUR_Font, 1.0f, TempString);
 }
 
 void NovelBrowser::DrawPreview()
