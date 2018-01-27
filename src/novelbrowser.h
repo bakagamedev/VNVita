@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "stringhelpers.h"
 #include "userinterface/sprite.h"
+#include "userinterface/textureloader.h"
 
 enum class ViewModeType
 {
@@ -20,14 +21,16 @@ private:
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	int ItemSelected = 0;
 	ViewModeType ViewMode = ViewModeType::List;
+	bool drawDebug = false;
 
 	int ScrollY = 0;
 	int Scroll = 0;
 	int GridPerLine = 5;
 
-	UISprite IconVNDS = UISprite(ASSET_VNDSFlag);
-	UISprite IconVNVita = UISprite(ASSET_VNVitaFlag);
-	UISprite IconNoIcon = UISprite(ASSET_NoIcon);
+	TextureCache textureCache;
+	UISprite IconVNDS = UISprite(textureCache.GetOrLoad(ASSET_VNDSFlag));
+	UISprite IconVNVita = UISprite(textureCache.GetOrLoad(ASSET_VNVitaFlag));
+	UISprite IconNoIcon = UISprite(textureCache.GetOrLoad(ASSET_NoIcon));
 public:
 	StatusType StatusCode;
 	
@@ -41,4 +44,5 @@ public:
 	void DrawList();
 	void DrawGrid();
 	void DrawPreview();
+	void DrawDebugOverlay();
 };

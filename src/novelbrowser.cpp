@@ -147,6 +147,11 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 		return true;
 	}
 
+	if((GamePad.buttons & SCE_CTRL_SELECT) && ((GamePadLast.buttons & SCE_CTRL_SELECT) == 0))
+	{
+		drawDebug = !drawDebug;
+	}
+
 	//Other buttons
 	if((GamePad.buttons & SCE_CTRL_SQUARE) && ((GamePadLast.buttons & SCE_CTRL_SQUARE) == 0))
 	{
@@ -196,8 +201,16 @@ void NovelBrowser::Draw()
 
 		DrawPreview();
 
+		if(drawDebug)
+			DrawDebugOverlay();
+
 		vita2d_end_drawing();
 		vita2d_swap_buffers();
+
+}
+
+void NovelBrowser::DrawDebugOverlay()
+{
 
 }
 
