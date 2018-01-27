@@ -3,14 +3,25 @@
 UIAnimatedSprite::UIAnimatedSprite(const std::string& firstImage,int FrameMilliseconds)
 {
 	this->FrameMilliseconds = FrameMilliseconds;
-	AddFrame(firstImage);
+	LoadFrameFromFile(firstImage);
 }
-
 UIAnimatedSprite::UIAnimatedSprite(std::initializer_list<std::string> initialiser)
 {
 	for(auto & value : initialiser)
 	{
-		AddFrame(value);
+		LoadFrameFromFile(value);
+	}
+}
+UIAnimatedSprite::UIAnimatedSprite(SpriteType Texture)
+{
+	this->FrameList.push_back(Texture);
+}
+
+UIAnimatedSprite::UIAnimatedSprite(std::initializer_list<SpriteType> initialiser)
+{
+	for(auto & value : initialiser)
+	{
+		this->FrameList.push_back(value);
 	}
 }
 
@@ -20,7 +31,7 @@ void UIAnimatedSprite::SetFrameTime(uint64_t FrameMilliseconds)
 	//frameTimer.Timer(1000*FrameMilliseconds);
 }
 
-void UIAnimatedSprite::AddFrame(const std::string& Path)
+void UIAnimatedSprite::LoadFrameFromFile(const std::string& Path)
 {
 	vita2d_texture * SpritePointer = vita2d_load_PNG_file(Path.c_str());
 	if(SpritePointer != NULL)

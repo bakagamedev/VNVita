@@ -18,10 +18,12 @@ public:
 	UIAnimatedSprite(void) = default;
 	UIAnimatedSprite(const std::string& firstImage,int FrameMilliseconds);
 	UIAnimatedSprite(std::initializer_list<std::string> initialiser);
+	UIAnimatedSprite(SpriteType Texture);
+	UIAnimatedSprite(std::initializer_list<SpriteType> Texture);
 
 	void SetFrameTime(uint64_t FrameMilliseconds);
 
-	void AddFrame(const std::string& Path);
+	void LoadFrameFromFile(const std::string& Path);
 	int GetFrameCount(void) const;
 
 	void Draw(int X,int Y);

@@ -1,42 +1,41 @@
 #include "sprite.h"
 
+UISprite::UISprite(std::shared_ptr<vita2d_texture> Texture)
+{
+	this->texture = Texture;
+}
+
 UISprite::UISprite(const std::string& Path)
 {
-	vita2d_texture * SpritePointer = vita2d_load_PNG_file(Path.c_str());
-	if(SpritePointer != NULL)
+	vita2d_texture * texturePtr = vita2d_load_PNG_file(Path.c_str());
+	if(texturePtr != nullptr)
 	{
-		Sprite = std::shared_ptr<vita2d_texture>(SpritePointer, vita2d_free_texture);
+		texture = std::shared_ptr<vita2d_texture>(texturePtr, vita2d_free_texture);
 	}
 }
 
-UISprite::UISprite(const std::string& Path, uint32_t Flags)
-{	
-	vita2d_texture * SpritePointer = vita2d_load_PNG_file(Path.c_str());
-
-	if(SpritePointer != NULL)
-	{
-		Sprite = std::shared_ptr<vita2d_texture>(SpritePointer, vita2d_free_texture);
-		SceGxmTextureFilter FlagCast = static_cast<SceGxmTextureFilter>(Flags);
-		vita2d_texture_set_filters(SpritePointer, FlagCast, FlagCast);		
-	}
+void UISprite::SetFlags(SceGxmTextureFilter MinFilter,SceGxmTextureFilter MagFilter)
+{
+	if(texture != nullptr)
+		vita2d_texture_set_filters(texture.get(), MinFilter, MagFilter);		
 }
 
 int UISprite::GetWidth(void)
 {
-	return(vita2d_texture_get_width(Sprite.get()));
+	return(vita2d_texture_get_width(texture.get()));
 }
 int UISprite::GetHeight(void)
 {
-	return(vita2d_texture_get_height(Sprite.get()));
+	return(vita2d_texture_get_height(texture.get()));
 }
 
 void UISprite::Draw(int X, int Y)
 {
-	if(Sprite.get() != NULL)
-		vita2d_draw_texture(Sprite.get(),X,Y);
+	if(texture.get() != nullptr)
+		vita2d_draw_texture(texture.get(),X,Y);
 }
 void UISprite::DrawScaled(int X,int Y,float Scale)
 {
-	if(Sprite.get() != NULL)
-		vita2d_draw_texture_scale(Sprite.get(),X,Y,Scale,Scale);
+	if(texture.get() != nullptr)
+		vita2d_draw_texture_scale(texture.get(),X,Y,Scale,Scale);
 }
