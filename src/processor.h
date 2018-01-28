@@ -7,7 +7,7 @@
 #include "variable.h"
 #include "codereader.h"
 #include "codeloader.h"
-#include "stringviewer.h"
+#include "stringtable.h"
 #include "opcode.h"
 
 enum class ProcessorState
@@ -29,8 +29,7 @@ public:	//to:do MAKE UNPUBLIC
 	CodeReader * codeReader;
 	CodeLoader * codeLoader;
 
-	std::string StringBlob;
-	std::vector<StringViewer> StringTable;
+	StringTable stringTable;
 
 	std::string StringBuffer;
 	std::string VariableBuffer;

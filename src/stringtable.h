@@ -29,12 +29,9 @@ public:
 		return GetLine(Entry);
 	}
 
-	void Purge(void)
+	void Clear(void)
 	{
 		StringBlob.clear();
 		Viewers.clear();
 	}
 };
-
-
-//Overload [] operator for reading?
