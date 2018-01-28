@@ -4,24 +4,24 @@
 class StringTable
 {
 private:
-	std::string StringBlob;
-	std::vector<StringViewer> Viewers;
+	std::string stringBlob;
+	std::vector<StringViewer> viewers;
 public:
 	void Add(const std::string& NewString)
 	{
-		StringViewer tempViewer = StringViewer(StringBlob.size(),NewString.size()); 
-		StringBlob.append(NewString);
-		Viewers.push_back(tempViewer);
+		StringViewer tempViewer = StringViewer(stringBlob.size(),NewString.size()); 
+		stringBlob.append(NewString);
+		viewers.push_back(tempViewer);
 	}
 
 	std::string GetLine(const size_t Entry) const
 	{
-		if(Entry < Viewers.size())
+		if(Entry < viewers.size())
 		{
-			StringViewer tempViewer = Viewers[Entry];
-			return tempViewer.GetString(StringBlob);
+			StringViewer tempViewer = viewers[Entry];
+			return tempViewer.GetString(stringBlob);
 		}
-		return "\0";
+		return "";
 	}
 
 	std::string operator[] (const size_t Entry) const
@@ -31,7 +31,7 @@ public:
 
 	void Clear(void)
 	{
-		StringBlob.clear();
-		Viewers.clear();
+		stringBlob.clear();
+		viewers.clear();
 	}
 };
