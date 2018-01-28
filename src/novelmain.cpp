@@ -7,7 +7,7 @@ NovelMain::NovelMain(NovelHeader header)
 
 	ui = UI();
 	codeLoader = CodeLoader(header);
-	codeReader = codeLoader.Load();
+	codeReader = codeLoader.Load(header.PathScript);
 	processor = Processor(codeReader,codeLoader);
 }
 

@@ -103,8 +103,7 @@ void Processor::Process(void)
 		}; break;
 		case Opcode::TextAddID:
 		{
-			StringViewer stringView = StringTable[codeReader->ReadU32()];
-			StringBuffer.append(stringView.GetString(StringBlob));
+			StringBuffer.append(stringTable[codeReader->ReadU32()]);
 		} break;
 		case Opcode::TextAddFromVar:
 		{
@@ -116,8 +115,7 @@ void Processor::Process(void)
 		} break;
 		case Opcode::TextPrintDirect:
 		{
-			StringViewer stringView = StringTable[codeReader->ReadU32()];
-			std::string TempString = stringView.GetString(StringBlob);
+			std::string TempString = stringTable[codeReader->ReadU32()];
 			//send TempString to screen
 		} break;
 		case Opcode::DebugPrint:

@@ -24,7 +24,7 @@ public:
 		return "\0";
 	}
 
-	std::string operator[] (size_t Entry)
+	std::string operator[] (const size_t Entry) const
 	{
 		return GetLine(Entry);
 	}
