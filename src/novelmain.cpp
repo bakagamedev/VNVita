@@ -1,14 +1,16 @@
 #include "novelmain.h"
 
-NovelMain::NovelMain(NovelHeader header)
+NovelMain::NovelMain(NovelInfo header)
 {
 	this->header = header;
 	StatusCode = StatusType::OK;
 
+	std::string StartFile = header.Path + "\\compiled\\main.txt";
+
 	ui = UI();
 	codeLoader = CodeLoader(header);
-	stringLoader = StringLoader(header.)
-	codeReader = codeLoader.Load(header.PathScript);
+	//stringLoader = StringLoader(header.)
+	codeReader = codeLoader.Load(StartFile);
 	processor = Processor(codeReader,codeLoader,stringLoader);
 }
 
@@ -33,7 +35,7 @@ void NovelMain::Run()
 	}
 	GamePadLast = GamePad;
 
-	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, header.Name.c_str());
+	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, header.Title.c_str());
 
 	std::string StackDrawy = "";
 	for(auto i=0; i<5; ++i)

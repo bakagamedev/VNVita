@@ -1,10 +1,10 @@
 #pragma once
 #include "common.h"
-#include "header.h"
 #include <algorithm>
 #include "stringhelpers.h"
 #include "userinterface/sprite.h"
 #include "userinterface/textureloader.h"
+#include "novelinfo.h"
 
 enum class ViewModeType
 {
@@ -17,7 +17,7 @@ class NovelBrowser
 private:
 	SceCtrlData GamePad, GamePadLast;
 	void Search(std::string SearchPath);
-	std::vector<NovelHeader> NovelList;
+	std::vector<NovelInfo> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	int ItemSelected = 0;
 	ViewModeType ViewMode = ViewModeType::List;
@@ -37,7 +37,7 @@ public:
 	NovelBrowser();
 	~NovelBrowser();
 	
-	NovelHeader Run();
+	NovelInfo Run();
 
 	bool Tick(ViewModeType &ViewMode);
 	void Draw();

@@ -63,7 +63,7 @@ void NovelBrowser::Search(std::string SearchPath)
 			size_t count = NovelList.size();
 			for (int i=0; i<count; ++i)
 			{
-				if(NovelList[i].Type == NovelType::Error)
+				if(NovelList[i].Format == NovelFormatType::Error)
 				{
 					NovelList.erase(NovelList.begin()+i);
 					--i;
@@ -79,7 +79,7 @@ void NovelBrowser::Search(std::string SearchPath)
 	}
 }
 
-NovelHeader NovelBrowser::Run()
+NovelInfo NovelBrowser::Run()
 {
 	std::string PathReturn = "";
 	ItemSelected = 0;
@@ -226,7 +226,7 @@ void NovelBrowser::DrawPreview()
 	float Y = 32;
 	//Name panel
 	vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
-	vita2d_pgf_draw_text(pgf, X,Y+17,COLOUR_Font, 1,NovelList[ItemSelected].Name.c_str());
+	vita2d_pgf_draw_text(pgf, X,Y+17,COLOUR_Font, 1,NovelList[ItemSelected].Title.c_str());
 	vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
 	Y += 24;
 
@@ -238,16 +238,20 @@ void NovelBrowser::DrawPreview()
 	sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
 	vita2d_pgf_draw_text(pgf, X+2,Y+17,COLOUR_Font, 1.0f,ResolutionString);
 
-	//Icon
-	auto Icon = IconVNVita;
-	if(NovelList[ItemSelected].Type == NovelType::VNDS)
-		Icon = IconVNDS;
+	//Novel format icon
+	UISprite Icon;
+	switch(NovelList[ItemSelected].Format)
+	{
+		case NovelFormatType::VNDS:	Icon = IconVNDS; break;
+		case NovelFormatType::VNVita: Icon = IconVNVita; break;
+	}
 	Icon.Draw(X+(SCREEN_WIDTH/2) - 64,Y);
 
 	vita2d_draw_line(X,Y+24, X+(SCREEN_WIDTH/2), Y+24, COLOUR_UIBorder);
 	Y += 24;
 
 	//Thumbnail
+	/*
 	auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
 	if(Thumbnail != NULL)
 	{				
@@ -263,9 +267,10 @@ void NovelBrowser::DrawPreview()
 		Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
 	}
 	else
-	{
+	*/
+	//{
 		Y += 360;	//How tall a properly configured thumbnail should be.
-	}
+	//}
 
 	//Headerbar
 	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);
@@ -299,10 +304,10 @@ void NovelBrowser::DrawList()
 		vita2d_draw_rectangle(0, Y-32, SCREEN_WIDTH/2, 64, Colour);
 
 		vita2d_draw_line(0,Y+32, SCREEN_WIDTH/2, Y+32, COLOUR_UIBorder);
-		vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Name.c_str());
+		vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Title.c_str());
 		vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
 
-		auto Icon = NovelList[i].Icon.get();
+		auto Icon = nullptr;//NovelList[i].Icon.get();
 		if(Icon == nullptr)
 		{
 			//Icon = IconNoIcon.get();	
@@ -328,7 +333,7 @@ void NovelBrowser::DrawGrid()
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
 
-		auto Icon = NovelList[i].Icon.get();		
+		auto Icon = nullptr;//NovelList[i].Icon.get();		
 		if(Icon == nullptr)
 		{
 			//Icon = IconNoIcon.get();

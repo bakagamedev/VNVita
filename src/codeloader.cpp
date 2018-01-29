@@ -1,6 +1,6 @@
 #include "codeloader.h"
 
-CodeLoader::CodeLoader(NovelHeader& header)
+CodeLoader::CodeLoader(NovelInfo& header)
 {
 	this->header = header;
 }

@@ -1,9 +1,21 @@
 #pragma once
+#include <iterator>
+#include <cstring>
 #include <string>
+#include <algorithm>
 #include "stringviewer.h"
 
-//https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+static inline bool CharEqualInsensitive(char a, char b)
+{ 
+    return tolower(a) == tolower(b);
+}
 
+static inline bool StringHasExtension(std::string Input,std::string Extension)
+{
+    std::equal(Extension.begin(), Extension.end(), Input.end() - Extension.size(), CharEqualInsensitive);
+}
+
+//https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 // trim from start (in place)
 static inline void stringltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),

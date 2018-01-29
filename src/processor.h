@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "header.h"
+#include "novelinfo.h"
 #include "variable.h"
 #include "codereader.h"
 #include "codeloader.h"

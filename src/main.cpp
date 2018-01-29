@@ -1,7 +1,7 @@
 #include "common.h"
 #include "defines.h"
 #include "novelmain.h"
-#include "header.h"
+#include "novelinfo.h"
 #include "novelbrowser.h"
 
 int main(int argc, char *argv[]) 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	bool Running = true;
 	while(Running)
 	{
-		NovelHeader Header;
+		NovelInfo Header;
 		StatusType Status;
 		{
 			NovelBrowser Browser = NovelBrowser();

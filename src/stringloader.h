@@ -4,4 +4,4 @@ class StringLoader
 {
 private:
 public:
-}
+};

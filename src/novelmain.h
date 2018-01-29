@@ -2,12 +2,12 @@
 #include "defines.h"
 #include "userinterface/userinterface.h"
 #include "processor.h"
-#include "header.h"
+#include "novelinfo.h"
 
 class NovelMain
 {
 private:
-	NovelHeader  header; 
+	NovelInfo  header; 
 	CodeLoader	 codeLoader;
 	CodeReader 	 codeReader;
 	StringLoader stringLoader;
@@ -19,7 +19,7 @@ private:
 public:
 	StatusType StatusCode;
 
-	NovelMain(NovelHeader header);
+	NovelMain(NovelInfo header);
 	~NovelMain();
 	void Run();
 };
