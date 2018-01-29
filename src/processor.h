@@ -7,6 +7,7 @@
 #include "variable.h"
 #include "codereader.h"
 #include "codeloader.h"
+#include "stringloader.h"
 #include "stringtable.h"
 #include "opcode.h"
 
@@ -20,7 +21,7 @@ class Processor
 {
 public:
 	Processor(void) = default;
-	Processor(CodeReader &codeReader,CodeLoader &codeLoader);
+	Processor(CodeReader &codeReader,CodeLoader &codeLoader, StringLoader &stringLoader);
 	
 	void Process(void);
 
@@ -28,6 +29,7 @@ public:
 public:	//to:do MAKE UNPUBLIC
 	CodeReader * codeReader;
 	CodeLoader * codeLoader;
+	StringLoader * stringLoader;
 
 	StringTable stringTable;
 

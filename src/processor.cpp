@@ -1,9 +1,10 @@
 #include "processor.h"
 
-Processor::Processor(CodeReader &codeReader, CodeLoader &codeLoader)
+Processor::Processor(CodeReader &codeReader, CodeLoader &codeLoader, StringLoader &stringLoader)
 {
 	this->codeReader = &codeReader;
 	this->codeLoader = &codeLoader;
+	this->stringLoader = &stringLoader;
 }
 
 void Processor::Process(void)

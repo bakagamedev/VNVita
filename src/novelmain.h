@@ -7,10 +7,11 @@
 class NovelMain
 {
 private:
-	NovelHeader header; 
-	CodeLoader	codeLoader;
-	CodeReader 	codeReader;
-	Processor 	processor;
+	NovelHeader  header; 
+	CodeLoader	 codeLoader;
+	CodeReader 	 codeReader;
+	StringLoader stringLoader;
+	Processor 	 processor;
 	UI ui;
 
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
