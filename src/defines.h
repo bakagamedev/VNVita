@@ -17,7 +17,7 @@ enum class MenuStateType
 	QuitNovel,
 };
 
-enum class NovelType
+enum class NovelFormatType
 {
 	Error,
 	VNVita,

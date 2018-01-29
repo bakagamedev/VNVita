@@ -1,176 +1,133 @@
 #pragma once
 #include "common.h"
 #include "../inih/cpp/INIReader.h"
+#include "userinterface/sprite.h"
+
+//Move somewhere else!
+bool FileExists(std::string Path)
+{
+	SceIoStat StatTemp;
+	return (sceIoGetstat(Path.c_str(), &StatTemp) >= 0);
+}
+
+enum class NovelPackType
+{
+	Folder,
+	Zip,
+	VNDSNovel,
+}
 
 class NovelHeader
 {
-	private:
-		void SetPaths()
-		{
-			switch(Type)
-			{
-				case NovelType::Error:
-				{
-					PathScript = "";
-				}; break;
-				case NovelType::VNDS:
-				{
-					PathScript = Path+"\\Script\\main.scr";
-				};	break;
-				case NovelType::VNVita:
-				{
-					PathScript = Path+"\\Script\\main.txt";
-				}; break;
-			}
-		}
+private:
+	NovelFormatType IdentifyFormat();
+	void ReadVNVitaHeader();
+	void ReadVNDSHeader();
+public:
+	std::string Path;
+	std::string Title;
+	int resolutionX = 0, resolutionY = 0;
 
-		bool FileExists(std::string Path)
-		{
-			SceIoStat StatTemp;
-			return (sceIoGetstat(Path.c_str(), &StatTemp) >= 0);
-		}
+	NovelFormatType FormatType;
+	NovelPackType PackType;
+	bool Compiled;
 
-		vita2d_texture * LoadImageName(std::string Path)
-		{
-			//Takes name without type. por exampler;  ux0:data/vnvita/saya no uta/icon
-			//Priority : High PNG -> High JPG -> Base PNG -> Base JPG
-			vita2d_texture* Texture = NULL;
-			std::string PathTemp = Path;
-
-			// High PNG
-			PathTemp.append("-high.png");
-			if(FileExists(PathTemp))
-			{
-				Texture = vita2d_load_PNG_file((PathTemp).c_str());
-			}
-			
-			// High JPG
-			if(Texture == NULL)
-			{
-				PathTemp = Path;
-				PathTemp.append("-high.jpg");
-				if(FileExists(PathTemp))
-				{
-					Texture = vita2d_load_JPEG_file(PathTemp.c_str());
-				}
-			}
-
-			// Low PNG
-			if(Texture == NULL)
-			{
-				PathTemp = Path;
-				PathTemp.append(".png");
-				if(FileExists(PathTemp))
-				{
-					Texture = vita2d_load_PNG_file(PathTemp.c_str());
-				}
-			}
-
-			// Low JPG
-			if(Texture == NULL)
-			{
-				PathTemp = Path;
-				PathTemp.append(".jpg");
-				if(FileExists(PathTemp))
-				{
-					Texture = vita2d_load_JPEG_file(PathTemp.c_str());
-				};
-			}
-
-			return Texture;
-		}
-
-	public:
-		int Width = 256;
-		int Height = 192;
-		std::string Name;
-		std::string Path;
-		std::string PathScript;
-		NovelType Type;
-		std::shared_ptr<vita2d_texture> Icon;
-		std::shared_ptr<vita2d_texture> Thumbnail;
-
-		NovelHeader(void) = default;
-		NovelHeader(std::string Path)
-		{
-			Reset(Path);
-		}
-
-		void Reset(std::string Path)
-		{
-			this->Name = Path;
-			this->Path = Path;
-			Type = NovelType::Error;
-
-			//VNVita mode
-			if(FileExists(Path+"\\vnvita.ini"))
-			{
-				Type = NovelType::VNVita;
-				Name = "error - bad config";
-
-				INIReader Reader = INIReader(Path + "\\vnvita.ini");
-				if(Reader.ParseError() >= 0)
-				{
-					Name = Reader.Get("","title","error - no title");
-					Width = Reader.GetInteger("","width",960);
-					Height = Reader.GetInteger("","height",544);
-				}
-
-				vita2d_texture * iconPointer = LoadImageName(Path + "\\icon");
-				vita2d_texture * thumbPointer= LoadImageName(Path + "\\thumbnail");
-				if(iconPointer != NULL)
-				{
-					vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
-				}
-				if(thumbPointer != NULL)
-				{
-					vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
-				}
-			}
-
-			//VNDS mode
-			if((FileExists(Path+"\\info.txt")) && (FileExists(Path+"\\img.ini")))
-			{
-				Type = NovelType::VNDS;
-
-				//Load name from info.txt
-				auto InfoPath = Path + "\\info.txt";
-				INIReader reader = INIReader(InfoPath);
-				if (reader.ParseError() < 0) {
-					Name = Path;
-					Name.append("#");
-				}
-				else
-				{
-					Name = reader.Get("", "title", Path);
-				}
-				//Image size from img.ini
-				auto ImgPath = Path + "\\img.ini";
-				reader = INIReader(ImgPath);
-				if (reader.ParseError() >= 0)
-				{
-					Width = reader.GetInteger("", "width", Width);
-					Height = reader.GetInteger("", "height", Height);
-				}
-
-				//Images
-				//Icon
-				vita2d_texture * iconPointer = LoadImageName(Path + "\\icon"); 
-				if(iconPointer != NULL)
-				{
-					vita2d_texture_set_filters(iconPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					this->Icon = std::shared_ptr<vita2d_texture>(iconPointer, vita2d_free_texture);
-				}
-
-				//Thumbnail / Preview
-				vita2d_texture * thumbPointer = LoadImageName(Path + "\\thumbnail"); 
-				if(thumbPointer != NULL)
-				{	
-					vita2d_texture_set_filters(thumbPointer, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-					this->Thumbnail = std::shared_ptr<vita2d_texture>(thumbPointer, vita2d_free_texture);
-				}
-			}
-		}
+	NovelHeader() = default;
+	NovelHeader(const std::string& url);
 };
+
+NovelHeader::NovelHeader(const std::string& url)
+{
+	Path = url;
+	Title = url;	//Gets overwritten later, hopefully.
+
+	//Work out how to handle these later
+	if(BasePath.substr(Path.size()-6)) = ".novel"	//".novel" is actually a renamed .zip with the usual VNDS dir structure inside
+	{
+		PackType = NovelPackType::VNDSNovel;
+	}
+	if(BasePath.substr(Path.size()-4)) = ".zip"		//Potential vnvita format? Same idea as vnds, reuse zip code.
+	{
+		PackType = NovelPackType::Zip;
+	}
+
+	//Strings/bytecode folder
+	Compiled = (FileExists(Path+"\\Compiled"));
+
+	FormatType = IdentifyFormat();
+
+	switch(FormatType)
+	{
+		case FormatType::VNDS:
+		{
+			ReadVNDSHeader();
+		} break;
+		case FormatType::VNVita:
+		{
+			ReadVNVitaHeader();
+		} break;
+		default:	return;		//Just break here, no more data needed
+	}
+}
+
+void NovelHeader::ReadVNDSHeader()
+{	
+	//Read title from info.txt
+	if(FileExists(Path+"\\info.txt"))
+	{
+		INIReader reader = INIReader(Path + "\\info.txt");
+		if(reader.ParseError() >= 0) // >= 0 means no error. Huh?
+		{
+			Title = Reader.Get("","title","");	
+		}
+	}
+	//Read resolution from img.ini
+	if(FileExists(Path+"\\img.ini"))
+	{
+		reader = INIReader(Path + "\\img.ini");
+		if (reader.ParseError() >= 0)
+		{
+			Width = reader.GetInteger("", "width", 256);
+			Height = reader.GetInteger("", "height", 192);
+		}
+	}
+	else //If it doesn't exist, this is just a plain DS file, not an android version
+	{
+		Width = 256;
+		Height = 192;
+	}
+}
+
+void NovelHeader::ReadVNVitaHeader()
+{
+	Width = 960;
+	Height = 544;
+	if(FileExists(Path +"\\vnvita.ini"))
+	{
+		INIReader reader = INIReader(Path + "\\vnvita.ini");
+		if(reader.ParseError() >= 0)
+		{
+			Title = Reader.Get("","title","error - no title");
+			Width = Reader.GetInteger("","width",960);
+			Height = Reader.GetInteger("","height",544);
+		}
+	}
+}
+
+NovelFormatType NovelHeader::IdentifyFormat()
+{
+	if(PackType == NovelPackType::VNDSNovel)
+		return NovelFormatType::VNDS;
+	if(PackType == NovelPackType::Zip)
+	{
+		return NovelFormatType::VNVita;
+	}
+
+	//Plain dir
+	if(FileExists(Path+"\\info.txt"))
+		return NovelFormatType::VNDS;
+	if(FileExists(Path+"\\vnvita.ini"))
+		return NovelFormatType::VNVita;
+
+	return NovelFormatType::Error;
+}
