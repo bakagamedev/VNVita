@@ -2,6 +2,7 @@
 #include "defines.h"
 #include "novelmain.h"
 #include "novelinfo.h"
+#include "compilemain.h"
 #include "novelbrowser.h"
 
 int main(int argc, char *argv[]) 
@@ -22,7 +23,12 @@ int main(int argc, char *argv[])
 		}
 		if(Status == StatusType::GoLoad)
 		{		
-			
+			if(!Header.IsCompiled)
+			{
+				CompileMain Compiler = CompileMain(Header);
+				Compiler.Run();
+			}
+
 			NovelMain Novel = NovelMain(Header);
 			while(Novel.StatusCode == StatusType::OK)
 			{

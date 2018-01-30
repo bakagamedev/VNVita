@@ -17,7 +17,7 @@ NovelInfo::NovelInfo(const std::string& url)
 	}
 
 	//Strings/bytecode folder
-	Compiled = (FileExists(Path+"\\Compiled"));
+	IsCompiled = (FileExists(Path+"\\Compiled"));
 
 	Format = IdentifyFormat();
 

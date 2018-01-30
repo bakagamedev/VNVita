@@ -27,13 +27,16 @@ public:
 	std::string Path;
 	std::string Title;
 	std::string Description;
+	UISprite Icon;
+	UISprite Preview;
+
 	int Width = 0, Height = 0;
 
 	std::string ScriptEntry;
 
 	NovelFormatType Format;
 	NovelPackType PackType;
-	bool Compiled;
+	bool IsCompiled;
 
 	NovelInfo() = default;
 	NovelInfo(const std::string& url);
