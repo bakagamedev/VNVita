@@ -234,7 +234,7 @@ void NovelBrowser::DrawPreview()
 	vita2d_draw_rectangle(X, Y, SCREEN_WIDTH/2, 24, COLOUR_UITitlebar);
 
 	//Resolution
-	char ResolutionString[10];
+	char ResolutionString[11]; //4 digits + " x " + 4 digits
 	sprintf(ResolutionString,"%d x %d",NovelList[ItemSelected].Width,NovelList[ItemSelected].Height);
 	vita2d_pgf_draw_text(pgf, X+2,Y+17,COLOUR_Font, 1.0f,ResolutionString);
 
@@ -307,18 +307,16 @@ void NovelBrowser::DrawList()
 		vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Title.c_str());
 		vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
 
-		auto Icon = nullptr;//NovelList[i].Icon.get();
-		if(Icon == nullptr)
+		UISprite Icon;// = NovelList[i].Icon.get();
+		if(Icon.IsNull())
 		{
-			//Icon = IconNoIcon.get();	
+			Icon = IconNoIcon;	
 		}
 
-		if(Icon != nullptr)
-		{
-			float Scale = 64.0f / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
-			vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
-			//vita2d_draw_texture(Icon,0,Y-32);
-		}
+		float Scale = 64.0f / (float)(Icon.GetWidth());	//Base scale on width of texture
+		Icon.DrawScaled(0,Y-32,Scale);
+		//vita2d_draw_texture_scale(Icon, 0, Y-32, Scale, Scale);
+		//vita2d_draw_texture(Icon,0,Y-32);
 	}
 }
 
@@ -333,19 +331,16 @@ void NovelBrowser::DrawGrid()
 		auto Colour = (i == ItemSelected) ? COLOUR_UIBackgroundFocus : COLOUR_UIBackground;
 		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
 
-		auto Icon = nullptr;//NovelList[i].Icon.get();		
-		if(Icon == nullptr)
+		//Draw single icon on grid
+		UISprite Icon;// = NovelList[i].Icon.get();		
+		if(Icon.IsNull())	//this check will make sense once icon loading is back.
 		{
-			//Icon = IconNoIcon.get();
+			Icon = IconNoIcon;
 		}
-
-		if(Icon != nullptr)
-		{
-			float Scale = IconWidth / (float)vita2d_texture_get_width(Icon);	//Base scale on width of texture
-			Scale *= 0.9;
-			float DrawOffset = IconWidth*0.05;
-			vita2d_draw_texture_scale(Icon, (X*IconWidth)+DrawOffset, Y+DrawOffset, Scale, Scale);
-		}
+		float Scale = IconWidth / (float)(Icon.GetWidth());	//Base scale on width of texture
+		Scale *= 0.9;
+		float DrawOffset = IconWidth*0.05;
+		Icon.DrawScaled((X*IconWidth)+DrawOffset, Y+DrawOffset, Scale);
 
 		if(++X >= GridPerLine)
 		{

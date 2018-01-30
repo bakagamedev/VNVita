@@ -13,9 +13,11 @@ public:
 	UISprite(const std::string& Path);
 	UISprite(const std::string& Path, uint32_t Flags);
 
+	bool IsNull(void) const;
+
 	void SetFlags(SceGxmTextureFilter MinFilter, SceGxmTextureFilter MagFilter);
-	int GetWidth(void);
-	int GetHeight(void);
+	int GetWidth(void) const;
+	int GetHeight(void) const;
 
 	void Draw(int X,int Y);
 	void DrawScaled(int X,int Y,float Scale);

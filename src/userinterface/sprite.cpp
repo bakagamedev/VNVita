@@ -20,11 +20,16 @@ void UISprite::SetFlags(SceGxmTextureFilter MinFilter,SceGxmTextureFilter MagFil
 		vita2d_texture_set_filters(texture.get(), MinFilter, MagFilter);		
 }
 
-int UISprite::GetWidth(void)
+bool UISprite::IsNull(void) const
+{
+	return (texture.get() == nullptr);
+}
+
+int UISprite::GetWidth(void) const
 {
 	return(vita2d_texture_get_width(texture.get()));
 }
-int UISprite::GetHeight(void)
+int UISprite::GetHeight(void) const
 {
 	return(vita2d_texture_get_height(texture.get()));
 }
