@@ -24,7 +24,8 @@ void CompileMain::Run()
 	static const int Tasks = 10;
 	for(int i=0; i<Tasks; ++i)
 	{
-		//Do task
+		//Do thing here
+		progress.SetPercent(static_cast<float>(i)/static_cast<float>(Tasks));	//argh!
 		Draw();
 	}
 }
