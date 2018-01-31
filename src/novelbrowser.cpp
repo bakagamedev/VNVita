@@ -251,23 +251,21 @@ void NovelBrowser::DrawPreview()
 	Y += 24;
 
 	//Thumbnail
-	/*
-	auto Thumbnail = NovelList[ItemSelected].Thumbnail.get();
-	if(Thumbnail != NULL)
+	UISprite Preview = NovelList[ItemSelected].Preview;//.get();
+	if(!Preview.IsNull())
 	{				
 		//Thumbnail
 		float Width = 100.0f;	//Small thumbs are 100px wide, vita2d textures round up to ^2 so cannot be trusted
-		if(vita2d_texture_get_width(Thumbnail) > 128.0f)
+		if(Preview.GetWidth() > 128.0f)
 		{
-			Width = vita2d_texture_get_width(Thumbnail);	//Large ones are 512px, hopefully
+			Width = Preview.GetWidth();	//Large ones are 512px, hopefully
 		}
 		float Scale = (SCREEN_WIDTH/2) / Width;//vita2d_texture_get_width(Thumbnail);	//Base scale on width of texture
-
-		vita2d_draw_texture_scale(Thumbnail, X, Y, Scale, Scale);
-		Y += (vita2d_texture_get_height(Thumbnail)*Scale) + 16;
+		Preview.DrawScaled(X,Y,Scale);
+		Y += (Preview.GetHeight()*Scale) + 16;
 	}
 	else
-	*/
+	
 	//{
 		Y += 360;	//How tall a properly configured thumbnail should be.
 	//}
@@ -307,7 +305,7 @@ void NovelBrowser::DrawList()
 		vita2d_pgf_draw_text(pgf, 66, Y, COLOUR_Font, 2.0f, NovelList[i].Title.c_str());
 		vita2d_pgf_draw_text(pgf, 66, Y+24, COLOUR_Font, 1.0f, NovelList[i].Path.c_str());
 
-		UISprite Icon;// = NovelList[i].Icon.get();
+		UISprite Icon = NovelList[i].Icon;
 		if(Icon.IsNull())
 		{
 			Icon = IconNoIcon;	
@@ -332,7 +330,7 @@ void NovelBrowser::DrawGrid()
 		vita2d_draw_rectangle(X*IconWidth, Y, IconWidth, IconWidth, Colour);
 
 		//Draw single icon on grid
-		UISprite Icon;// = NovelList[i].Icon.get();		
+		UISprite Icon = NovelList[i].Icon;		
 		if(Icon.IsNull())	//this check will make sense once icon loading is back.
 		{
 			Icon = IconNoIcon;
