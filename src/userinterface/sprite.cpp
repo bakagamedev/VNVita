@@ -7,7 +7,12 @@ UISprite::UISprite(std::shared_ptr<vita2d_texture> Texture)
 
 UISprite::UISprite(const std::string& Path)
 {
-	vita2d_texture * texturePtr = vita2d_load_PNG_file(Path.c_str());
+	vita2d_texture * texturePtr;
+	if(StringHasExtension(Path,"png"))	
+		texturePtr = vita2d_load_PNG_file(Path.c_str());
+	if(StringHasExtension(Path,"jpg") || StringHasExtension(Path,"jpeg"))	
+		texturePtr = vita2d_load_JPEG_file(Path.c_str());
+
 	if(texturePtr != nullptr)
 	{
 		texture = std::shared_ptr<vita2d_texture>(texturePtr, vita2d_free_texture);

@@ -2,6 +2,7 @@
 #include <vita2d.h>
 #include <string>
 #include <memory>
+#include "../stringhelpers.h"
 
 class UISprite
 {
