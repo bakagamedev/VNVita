@@ -23,6 +23,7 @@ private:
 	NovelFormatType IdentifyFormat();
 	void ReadVNVitaHeader();
 	void ReadVNDSHeader();
+	void LoadImages();
 public:
 	std::string Path;
 	std::string Title;

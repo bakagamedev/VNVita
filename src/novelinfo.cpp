@@ -33,6 +33,40 @@ NovelInfo::NovelInfo(const std::string& url)
 		} break;
 		default:	return;		//Just break here, no more data needed
 	}
+
+	LoadImages();
+}
+
+void NovelInfo::LoadImages()
+{
+	switch(Format)
+	{
+		case NovelFormatType::VNDS:
+		{
+			//Horrible. Just horrible. Rewrite.
+			std::string IconPath;
+			if(FileExists(Path+"\\icon-high.png")) IconPath = Path+"\\icon-high.png";
+			else if (FileExists(Path+"\\icon-high.jpg")) IconPath = Path+"\\icon-high.jpg";
+			else if (FileExists(Path+"\\icon.png")) IconPath = Path+"icon.png";
+			else if (FileExists(Path+"\\icon.jpg")) IconPath = Path+"icon.jpg";
+			Icon = UISprite(IconPath);
+
+			std::string ThumbPath;
+			if(FileExists(Path+"\\thumbnail-high.png")) ThumbPath = Path+"\\thumbnail-high.png";
+			else if (FileExists(Path+"\\thumbnail-high.jpg")) ThumbPath = Path+"\\thumbnail-high.jpg";
+			else if (FileExists(Path+"\\thumbnail.png")) ThumbPath = Path+"thumbnail.png";
+			else if (FileExists(Path+"\\thumbnail.jpg")) ThumbPath = Path+"thumbnail.jpg";
+			Preview = UISprite(ThumbPath);
+		} break;
+		case NovelFormatType::VNVita:
+		{
+			//much nicer.
+			const std::string IconPath = Path + "\\icon.png";
+			const std::string ThumbPath= Path + "\\preview.png";
+			if(FileExists(IconPath))	Icon = UISprite(IconPath);
+			if(FileExists(ThumbPath))	Preview = UISprite(ThumbPath);
+		} break;
+	}
 }
 
 void NovelInfo::ReadVNDSHeader()
@@ -43,7 +77,9 @@ void NovelInfo::ReadVNDSHeader()
 		INIReader reader = INIReader(Path + "\\info.txt");
 		if(reader.ParseError() >= 0) // >= 0 means no error. Huh?
 		{
-			Title = reader.Get("","title","");	
+			//Sets name to dir name by default.
+			std::string defaultName = Path.substr(Path.find_last_of("/")+1);
+			Title = reader.Get("","title",defaultName);	
 		}
 	}
 	//Read resolution from img.ini
