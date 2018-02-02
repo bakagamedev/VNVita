@@ -14,6 +14,11 @@ public:
 		viewers.push_back(tempViewer);
 	}
 
+	size_t Count(void) const
+	{
+		return (viewers.size());
+	}
+
 	std::string GetLine(const size_t Entry) const
 	{
 		if(Entry < viewers.size())
