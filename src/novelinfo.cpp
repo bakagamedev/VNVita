@@ -45,17 +45,17 @@ void NovelInfo::LoadImages()
 		{
 			//Horrible. Just horrible. Rewrite.
 			std::string IconPath;
-			if(FileExists(Path+"\\icon-high.png")) IconPath = Path+"\\icon-high.png";
-			else if (FileExists(Path+"\\icon-high.jpg")) IconPath = Path+"\\icon-high.jpg";
-			else if (FileExists(Path+"\\icon.png")) IconPath = Path+"icon.png";
-			else if (FileExists(Path+"\\icon.jpg")) IconPath = Path+"icon.jpg";
+			if (FileExists(Path+"\\icon.jpg")) IconPath = Path+"icon.jpg";
+			if (FileExists(Path+"\\icon.png")) IconPath = Path+"icon.png";
+			if (FileExists(Path+"\\icon-high.jpg")) IconPath = Path+"\\icon-high.jpg";
+			if (FileExists(Path+"\\icon-high.png")) IconPath = Path+"\\icon-high.png";
 			Icon = UISprite(IconPath);
 
 			std::string ThumbPath;
-			if(FileExists(Path+"\\thumbnail-high.png")) ThumbPath = Path+"\\thumbnail-high.png";
-			else if (FileExists(Path+"\\thumbnail-high.jpg")) ThumbPath = Path+"\\thumbnail-high.jpg";
-			else if (FileExists(Path+"\\thumbnail.png")) ThumbPath = Path+"thumbnail.png";
-			else if (FileExists(Path+"\\thumbnail.jpg")) ThumbPath = Path+"thumbnail.jpg";
+			if (FileExists(Path+"\\thumbnail.jpg")) ThumbPath = Path+"thumbnail.jpg";
+			if (FileExists(Path+"\\thumbnail.png")) ThumbPath = Path+"thumbnail.png";
+			if (FileExists(Path+"\\thumbnail-high.jpg")) ThumbPath = Path+"\\thumbnail-high.jpg";
+			if (FileExists(Path+"\\thumbnail-high.png")) ThumbPath = Path+"\\thumbnail-high.png";
 			Preview = UISprite(ThumbPath);
 		} break;
 		case NovelFormatType::VNVita:

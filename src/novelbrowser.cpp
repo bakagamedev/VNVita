@@ -112,6 +112,15 @@ NovelInfo NovelBrowser::Run()
 
 bool NovelBrowser::Tick(ViewModeType &ViewMode)
 {
+	if(popupOpen)
+	{
+		if((GamePad.buttons & SCE_CTRL_UP) && ((GamePadLast.buttons & SCE_CTRL_UP) == 0))
+			popupSelected = std::max(--popupSelected,0);
+		if((GamePad.buttons & SCE_CTRL_DOWN) && ((GamePadLast.buttons & SCE_CTRL_DOWN) == 0))
+			popupSelected = std::min(++popupSelected,1);
+	}
+	else
+	{
 	int GoLeft,GoRight,GoUp,GoDown;
 	switch(ViewMode)
 	{
@@ -147,6 +156,11 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 		return true;
 	}
 
+	if((GamePad.buttons & SCE_CTRL_TRIANGLE) && ((GamePadLast.buttons & SCE_CTRL_TRIANGLE) == 0))
+	{
+		popupOpen = !popupOpen;
+	}
+
 	if((GamePad.buttons & SCE_CTRL_SELECT) && ((GamePadLast.buttons & SCE_CTRL_SELECT) == 0))
 	{
 		drawDebug = !drawDebug;
@@ -173,7 +187,7 @@ bool NovelBrowser::Tick(ViewModeType &ViewMode)
 			GridPerLine = std::min(GridPerLine+1,10);
 		}
 	}
-
+	}
 	return false;
 }
 
@@ -201,12 +215,24 @@ void NovelBrowser::Draw()
 
 		DrawPreview();
 
+		if(popupOpen)
+			DrawSelectPopup();
+
 		if(drawDebug)
 			DrawDebugOverlay();
 
 		vita2d_end_drawing();
 		vita2d_swap_buffers();
+}
 
+void NovelBrowser::DrawSelectPopup()
+{
+	uint16_t height = 18*3;
+	char Text[] = "Options\nclear compiled files\nback";
+	UIBoxBase Box = UIBoxBase(Rectangle(SCREEN_WIDTH/2 - 150,SCREEN_HEIGHT/2-(height/2),300,height));
+	Box.DrawBox();
+	vita2d_draw_rectangle(Box.rectangle.X+1,Box.rectangle.Y+1+((popupSelected+1)*17),Box.rectangle.Width-2,17,COLOUR_UIBackgroundFocus);
+	vita2d_pgf_draw_text(pgf, Box.rectangle.X+1, Box.rectangle.Y+17,COLOUR_Font, 1,Text);
 }
 
 void NovelBrowser::DrawDebugOverlay()
@@ -265,10 +291,11 @@ void NovelBrowser::DrawPreview()
 		Y += (Preview.GetHeight()*Scale) + 16;
 	}
 	else
-	
-	//{
+	{
 		Y += 360;	//How tall a properly configured thumbnail should be.
-	//}
+	}
+
+	
 
 	//Headerbar
 	vita2d_draw_rectangle(0, 0, SCREEN_WIDTH, 32, COLOUR_UITitlebar);

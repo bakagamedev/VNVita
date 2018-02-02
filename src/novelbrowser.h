@@ -2,6 +2,7 @@
 #include "common.h"
 #include <algorithm>
 #include "stringhelpers.h"
+#include "userinterface/boxbase.h"
 #include "userinterface/sprite.h"
 #include "userinterface/textureloader.h"
 #include "novelinfo.h"
@@ -20,6 +21,8 @@ private:
 	std::vector<NovelInfo> NovelList;
 	vita2d_pgf * pgf = vita2d_load_default_pgf();	//Font!
 	int ItemSelected = 0;
+	bool popupOpen = false;
+	int popupSelected = 0;
 	ViewModeType ViewMode = ViewModeType::List;
 	bool drawDebug = false;
 
@@ -45,4 +48,5 @@ public:
 	void DrawGrid();
 	void DrawPreview();
 	void DrawDebugOverlay();
+	void DrawSelectPopup();
 };

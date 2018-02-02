@@ -10,9 +10,10 @@ static inline bool CharEqualInsensitive(char a, char b)
     return tolower(a) == tolower(b);
 }
 
-static inline bool StringHasExtension(std::string Input,std::string Extension)
+inline bool StringHasExtension(std::string Input,std::string Extension)
 {
-    std::equal(Extension.begin(), Extension.end(), Input.end() - Extension.size(), CharEqualInsensitive);
+    //return (Input.substr(Input.find_last_of(".") + 1) == Extension);
+    return std::equal(Extension.begin(), Extension.end(), Input.end() - Extension.size(), CharEqualInsensitive);
 }
 
 //https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
