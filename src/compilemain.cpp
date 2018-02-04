@@ -3,31 +3,10 @@
 CompileMain::CompileMain(NovelInfo header)
 {
 	this->header = header;
-	if(header.Format == NovelFormatType::VNDS)
-		DetectVNDS();
-}
-
-void CompileMain::DetectVNDS()
-{
-	const std::string SearchPath = header.Path+"\\scripts";
-	SceUID uid = sceIoDopen(SearchPath.c_str());
-	if(uid >= 0)
+	loader = CompilerLoader();
+	if((header.Format == NovelFormatType::VNDS) || (header.Format == NovelFormatType::VNVita))
 	{
-		SceIoDirent fileInfo;
-		for(int next = sceIoDread(uid, &fileInfo); next != 0; next = sceIoDread(uid, &fileInfo))
-		{
-			if(next > 0)
-			{
-				SceIoStat stat = fileInfo.d_stat;
-				if(stat.st_mode = 0000)	//???? file type here
-				{
-					std::string name(fileInfo.d_name);
-					stringtrim(name);
-					if(StringHasExtension(name,"txt"))
-						sourcefiles.Add(name);
-				}
-			}
-		}
+		Compiler compiler = loader.Load(header.Path+"\\scripts",header.Path+"\\compiled",header.Format);
 	}
 }
 
