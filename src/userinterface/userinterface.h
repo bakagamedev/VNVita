@@ -24,5 +24,6 @@ public:
 
 	void PrintTextbox(std::string String);
 	void Tick();
+	void TickEnd();
 	void Draw();
 };

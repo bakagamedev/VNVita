@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 			Header = Browser.Run();
 			Status = Browser.StatusCode;
 		}
+		/*
 		if(Status == StatusType::GoLoad)
 		{		
 			if(!Header.IsCompiled)
@@ -35,6 +36,7 @@ int main(int argc, char *argv[])
 				Novel.Run();
 			}
 		}
+		*/
 	}
 
 	vita2d_fini();

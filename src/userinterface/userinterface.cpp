@@ -7,7 +7,7 @@ UI::UI()
 
 bool UI::PressContinue(void)
 {
-	return (!backlogOpen && !menuOpen);
+	return (!backlogOpen && !menuOpen && (GamePad.buttons & SCE_CTRL_CROSS) & !(GamePadLast.buttons & SCE_CTRL_CROSS));
 }
 
 void UI::PrintTextbox(std::string String)
@@ -32,8 +32,13 @@ void UI::Tick()
 		}
 	}
 
+}
+
+void UI::TickEnd()
+{
 	GamePadLast = GamePad;
 }
+
 void UI::Draw() 
 {
 	if(backlogOpen)

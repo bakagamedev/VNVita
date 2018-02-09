@@ -26,14 +26,17 @@ void NovelMain::Run()
 	vita2d_clear_screen();
 
 	sceCtrlPeekBufferPositive(0, &GamePad, 1);
+	ui.Tick();
 
 	//Move button press logic to UI
-	if(ui.PressContinue() && (GamePad.buttons & SCE_CTRL_CROSS) && ((GamePadLast.buttons & SCE_CTRL_CROSS) == 0))
+	if(ui.PressContinue())
 	{
 		processor.Process();
 		vita2d_pgf_draw_text(pgf, 45,45,RGBA8(255,0,0,255), 3.0f, "Hit!");
 	}
+	
 	GamePadLast = GamePad;
+	ui.TickEnd();
 
 	vita2d_pgf_draw_text(pgf, 0,25,RGBA8(255,255,0,255), 1.0f, header.Title.c_str());
 
@@ -41,7 +44,7 @@ void NovelMain::Run()
 	for(auto i=0; i<5; ++i)
 	{
 		char TempString[10];
-		sprintf(TempString,"%u",codeReader.data[i]);
+		sprintf(TempString,"%u,",codeReader.data[i]);
 		StackDrawy.append(TempString);
 	}
 	vita2d_pgf_draw_text(pgf, 0,125,RGBA8(255,255,0,255), 1.0f, StackDrawy.c_str());
@@ -59,7 +62,6 @@ void NovelMain::Run()
 		vita2d_pgf_draw_text(pgf, 0,225,RGBA8(255,255,0,255), 1.0f, TempString);
 	}
 
-	ui.Tick();
 	ui.Draw();
 
 	vita2d_end_drawing();

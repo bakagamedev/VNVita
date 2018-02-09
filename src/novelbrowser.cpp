@@ -18,9 +18,13 @@ void NovelBrowser::Search(std::string SearchPath)
 {
 	NovelList.clear();
 
+
+	SceUID uid = sceIoDopen(SearchPath.c_str());
+	if(uid < 0)
+		return;
+
 	try
 	{
-		SceUID uid = sceIoDopen(SearchPath.c_str());
 		if(uid >= 0)
 		{
 			//Find potential novel directories
