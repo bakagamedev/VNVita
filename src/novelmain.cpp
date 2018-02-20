@@ -89,13 +89,14 @@ void NovelMain::Run()
 		MenuStateType MenuState = Menu.Tick(GamePad,GamePadLast);
 		if(MenuState == MenuStateType::QuitNovel)
 		{
-			break;
+			Finished = true;
 		}
 
 		if(!Menu.Active)
+		{
 			Tick(GamePad,GamePadLast);
-
-		Finished = ((Parser.IsFinished()) && (Text.Ready));	//End when novel ends and nothing is being printed
+			Finished = ((Parser.IsFinished()) && (Text.Ready));	//End when novel ends and nothing is being printed
+		}
 
 		Draw();
 
