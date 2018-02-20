@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
 	vita2d_init_advanced(8 * 1024 * 1024);
 	vita2d_set_vblank_wait(true);
 
-	bool Running = true;
-	while(Running)
+	while(true)
 	{
 		std::string Path;
 		StatusType Status;
@@ -25,13 +24,8 @@ int main(int argc, char *argv[])
 			NovelMain novel = NovelMain(Path);
 			novel.Run();
 		}
-		else
-		{
-			Running = false;
-		}
 	}
 
 	vita2d_fini();
-
 	sceKernelExitProcess(0);
 }
