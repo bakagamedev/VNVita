@@ -176,7 +176,7 @@ void TextControl::Draw()
 			}
 			else	//Large box
 			{
-				//vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
+				vita2d_draw_rectangle(X + Border,Y + Border,(Width*Scale)-(Border*2),(Height*Scale)-(Border*2), RGBA8(0,0,0,Alpha));
 				int ListMax = std::max((Size+Scroll)-1,0);
 				int ListMin = std::max(ListMax - MaxLines,0);
 
