@@ -465,15 +465,9 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 void VNDSParser::FunctionGoto(StringViewer Viewer)
 {
 	std::string String = Viewer.GetString(StringBlob);
-	TextAdd("Goto : "+String);
 	if(LabelLocations.count(String) != 0)
 	{
 		CurrentLine = LabelLocations[String];
-		TextAdd("Cool!");
-	}
-	else
-	{
-		TextAdd("Failed.");
 	}
 }
 
