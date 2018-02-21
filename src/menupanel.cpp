@@ -20,11 +20,11 @@ void MenuPanel::QuitNovel()
 
 void MenuPanel::QuickSave()
 {
-	Parser->SaveState("testsave.sav");
+	Parser->SaveState("quicksave.sav");
 }
 void MenuPanel::QuickLoad()
 {
-	Parser->LoadState("testsave.sav");
+	Parser->LoadState("quicksave.sav");
 }
 
 MenuPanel::~MenuPanel()
