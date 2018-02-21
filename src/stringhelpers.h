@@ -26,18 +26,19 @@ static inline void stringtrim(std::string &s) {
 //Not the best solution, leaves words dangling off the end of the line before the \n.
 static inline std::string stringwrap(std::string source, std::size_t width, std::string whitespace = " \t\r")
 {
-    std::size_t  currIndex = width - 1;
-    std::size_t  sizeToElim;
+    std::size_t currIndex = width - 1;
+    std::size_t sizeToElim;
     while ( currIndex < source.length() )
     {
         currIndex = source.find_last_of(whitespace,currIndex + 1); 
+        std::size_t startindex = currIndex;
         if (currIndex == std::string::npos)
             break;
         currIndex = source.find_last_not_of(whitespace,currIndex);
         if (currIndex == std::string::npos)
             break;
         sizeToElim = source.find_first_not_of(whitespace,currIndex + 1) - currIndex - 1;
-        source.replace( currIndex + 1, sizeToElim , "\n");
+        source.replace( startindex, sizeToElim , "\n");
         currIndex += (width + 1); //due to the recently inserted "\n"
     }
     return source;
