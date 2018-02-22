@@ -226,7 +226,7 @@ void VNDSParser::RunNextLine()
 				/*	TextAdd("Fi");	*/
 				break;
 			case OpcodeType::Setvar:
-				/*	TextAdd("Setvar");	*/
+				FunctionSetVar(CurrentInstruction->Operand.String);
 				break;
 			case OpcodeType::Gsetvar:
 				/*	TextAdd("GSetvar");*/
@@ -309,15 +309,19 @@ std::string VNDSParser::GetQuestionAnswers()
 */
 void VNDSParser::SetVar(std::string Var, std::string Value)
 {
-	LocalVariables[Var] = Value;
+	LocalVariables[Var].Data.String = Value;
 }
 void VNDSParser::SetVar(std::string Var, int Value)
 {
-	LocalVariables[Var] = std::to_string(Value);
+	LocalVariables[Var].Data.Integer = Value;
 }
 void VNDSParser::SetGVar(std::string Var, std::string Value)
 {
-	GlobalVariables[Var] = Value;
+	GlobalVariables[Var].Data.String = Value;
+}
+void VNDSParser::SetGVar(std::string Var, int Value)
+{
+	GlobalVariables[Var].Data.Integer = Value;
 }
 
 /*
@@ -350,32 +354,39 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 	if(Tokens.size() == 3)
 	{
 		std::string LeftSide = Tokens[0].GetString(String);
-		std::string Operator = Tokens[1].GetString(String);;
-		std::string RightSide = Tokens[2].GetString(String);;
+		std::string Operator = Tokens[1].GetString(String);
+		std::string RightSide = Tokens[2].GetString(String);
 
+		VNDSVariable LeftVar, RightVar;
 		if(LocalVariables.count(LeftSide) != 0)	
 		{
-			LeftSide = LocalVariables[LeftSide];	//Replace with value
-
-			if(Operator == "==")
-			{
-				if(LeftSide == RightSide)
-					IfTrue = true;
-			}
-			if(Operator == "!=")
-			{
-				if(LeftSide != RightSide)
-					IfTrue = true;
-			}
+			LeftVar = LocalVariables[LeftSide];
+		}
+		else if(GlobalVariables.count(LeftSide) != 0)
+		{
+			LeftVar = GlobalVariables[LeftSide];
 		}
 		else
 		{
-			//If variable isn't found, match with 0.
-			if((Operator == "==") && (RightSide == "0"))
-			{
-				IfTrue = true;
-			}
+			LeftVar = VNDSVariable(0);	//Value 0 if not found.
 		}
+
+		//Improve
+		RightVar = VNDSVariable(RightSide);
+		//Improve
+
+		if(Operator == "==")
+			IfTrue = (LeftVar == RightVar);
+		else if (Operator == "!=")
+			IfTrue = (LeftVar != RightVar);
+		else if (Operator == ">=")
+			IfTrue = (LeftVar >= RightVar);
+		else if (Operator == ">")
+			IfTrue = (LeftVar > RightVar);
+		else if (Operator == "<=")
+			IfTrue = (LeftVar <= RightVar);
+		else if (Operator == "<")
+			IfTrue = (LeftVar < RightVar);
 	}
 
 	if(!IfTrue)	//Skip to matching fi
@@ -459,6 +470,50 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 		}
 		Images->SetImage(ForegroundPath+Tokens[0].GetString(String),x,y);
 	}
+
+}
+
+void VNDSParser::FunctionSetVar(StringViewer Viewer)
+{
+	auto tokens = stringsplit(Viewer.GetString(StringBlob));
+
+	char Operator  = tokens[1].GetString(StringBlob).at(0);
+	std::string LeftSide  = tokens[0].GetString(StringBlob);
+	std::string RightSide = tokens[2].GetString(StringBlob);
+
+	int VarInt;
+	try{	VarInt = std::stoi(RightSide);	}
+	catch(...) {	VarInt = 0;	}
+
+	VNDSVariable RightVar;
+	if(std::string(std::to_string(VarInt)) == RightSide)
+	{
+		RightVar = VNDSVariable(VarInt);
+	}
+	else
+	{
+		RightVar = VNDSVariable(RightSide);
+	}
+
+	if(LocalVariables.count(LeftSide) != 0)	//If Var exists
+	{
+		switch(Operator)
+		{
+			case '=': LocalVariables[LeftSide]  = RightSide; break;
+			case '+': LocalVariables[LeftSide] += RightSide; break;
+			case '-': LocalVariables[LeftSide] -= RightSide; break;
+			case '*': LocalVariables[LeftSide] *= RightSide; break;
+			case '/': LocalVariables[LeftSide] /= RightSide; break;
+		}
+	}
+	else
+	{
+		LocalVariables[LeftSide] = RightVar;
+	}
+}
+
+void VNDSParser::FunctionSetGVar(StringViewer Viewer)
+{
 
 }
 

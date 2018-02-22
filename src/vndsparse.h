@@ -68,11 +68,12 @@ private:
 	void TextAdd(const std::string &String);
 
 	//Variables
-	std::map<std::string,std::string> LocalVariables;
-	std::map<std::string,std::string> GlobalVariables;
+	std::map<std::string,VNDSVariable> LocalVariables;
+	std::map<std::string,VNDSVariable> GlobalVariables;
 	void SetVar(std::string Var, std::string Value);
 	void SetVar(std::string Var, int Value);
 	void SetGVar(std::string Var, std::string Value);
+	void SetGVar(std::string Var, int Value);
 
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
@@ -84,6 +85,8 @@ private:
 	void FunctionDelay(StringViewer Viewer);
 	void FunctionChoice(StringViewer Viewer);
 	void FunctionIf(StringViewer Viewer);
+	void FunctionSetVar(StringViewer Viewer);
+	void FunctionSetGVar(StringViewer Viewer);
 
 public:
 	VNDSParser(ImageControl *Image, TextControl *Text);
