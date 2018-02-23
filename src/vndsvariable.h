@@ -114,12 +114,16 @@ inline bool operator==(const VNDSVariable& lhs, const VNDSVariable& rhs)
 	}
 	if((lhs.IsInteger()) && (rhs.IsString()))	//I == S
 	{
-		int RhsInt = std::stoi(rhs.Data.String);
+		int RhsInt = 0;
+		try {	RhsInt = std::stoi(rhs.Data.String);	}
+		catch(...)	{	RhsInt = 0;	}
 		return lhs.Data.Integer == RhsInt;
 	}
 	if((lhs.IsString()) && (rhs.IsInteger()))	//S == I
 	{
-		int LhsInt = std::stoi(lhs.Data.String);
+		int LhsInt = 0;
+		try { 	LhsInt = std::stoi(lhs.Data.String);	}
+		catch(...)	{	LhsInt = 0;	}
 		return LhsInt == rhs.Data.Integer;
 	}
 	return false;
@@ -128,13 +132,13 @@ inline bool operator!=(const VNDSVariable& lhs, const VNDSVariable& rhs)
 { 
 	return !(lhs == rhs);
 }
-inline bool operator< (const VNDSVariable& lhs, const VNDSVariable& rhs)
+inline bool operator<(const VNDSVariable& lhs, const VNDSVariable& rhs)
 { 
 	if((lhs.IsInteger()) && (rhs.IsInteger()))
 		return lhs.Data.Integer < rhs.Data.Integer;
 	return false;
 }
-inline bool operator> (const VNDSVariable& lhs, const VNDSVariable& rhs)
+inline bool operator>(const VNDSVariable& lhs, const VNDSVariable& rhs)
 { 
 	if((lhs.IsInteger()) && (rhs.IsInteger()))
 		return lhs.Data.Integer > rhs.Data.Integer;

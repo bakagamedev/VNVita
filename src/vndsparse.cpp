@@ -161,7 +161,7 @@ void VNDSParser::Tick(bool Pressed)
 	{
 		if ((!Text->QuestionActive) && (Text->QuestionAnswer>=1))	//Wait for Text to respond
 		{
-			SetVar("selected",Text->QuestionAnswer);
+			SetAnswer(Text->QuestionAnswer);
 			Text->QuestionAnswer = -1;
 			QuestionWait = false;
 			return;	//End for frame, continue next
@@ -197,6 +197,9 @@ void VNDSParser::RunNextLine()
 		}
 
 		VNDSInstruction * CurrentInstruction = &Instructions[CurrentLine];
+
+		if(CurrentInstruction->Opcode != OpcodeType::Text)	
+			TextAdd(CurrentInstruction->Operand.String.GetString(StringBlob));	//Debug
 
 		//replace with map or something
 		switch(CurrentInstruction->Opcode)
@@ -296,7 +299,8 @@ bool VNDSParser::IsQuestion()
 
 void VNDSParser::SetAnswer(int Answer)
 {
-	QuestionAnswer = Answer;
+	SetVar("selected",Answer);
+	Continue = true;
 }
 
 std::string VNDSParser::GetQuestionAnswers()
@@ -307,21 +311,57 @@ std::string VNDSParser::GetQuestionAnswers()
 /*
 	Variable Controls
 */
+bool VNDSParser::VarExists(std::string& VarName)
+{
+	return(LocalVariables.find(VarName) == end(LocalVariables));
+}
+bool VNDSParser::GVarExists(std::string& VarName)
+{
+	return(GlobalVariables.find(VarName) == end(GlobalVariables));
+}
+void VNDSParser::MakeVar(std::string& VarName, int Value)
+{
+	LocalVariables[VarName] = VNDSVariable(Value);
+	TextAdd("MakeVar : "+ VarName);
+}
+void VNDSParser::MakeVar(std::string& VarName, std::string& Value)
+{
+	LocalVariables[VarName] = VNDSVariable(Value);
+	TextAdd("MakeVar : "+ VarName);
+}
+void VNDSParser::MakeGVar(std::string& VarName, int Value)
+{
+	GlobalVariables[VarName] = VNDSVariable(Value);
+	TextAdd("MakeGVar : "+ VarName);
+}
+void VNDSParser::MakeGVar(std::string& VarName, std::string& Value)
+{
+	GlobalVariables[VarName] = VNDSVariable(Value);
+	TextAdd("MakeGVar : "+ VarName);
+}
 void VNDSParser::SetVar(std::string Var, std::string Value)
 {
-	LocalVariables[Var].Data.String = Value;
+	if(!VarExists(Var)) {	MakeVar(Var,Value);	}
+	else LocalVariables[Var].Data.String = Value;
+	TextAdd("SetVar : " + Var + " : "+ Value);
 }
 void VNDSParser::SetVar(std::string Var, int Value)
 {
-	LocalVariables[Var].Data.Integer = Value;
+	if(!VarExists(Var)) {	MakeVar(Var,Value);	}
+	else LocalVariables[Var].Data.Integer = Value;
+	TextAdd("SetVar : " + Var + " : "+ std::to_string(Value));
 }
 void VNDSParser::SetGVar(std::string Var, std::string Value)
 {
-	GlobalVariables[Var].Data.String = Value;
+	if(!GVarExists(Var)) {	MakeGVar(Var,Value);	}
+	else GlobalVariables[Var].Data.String = Value;
+	TextAdd("SetGVar : " + Var + " : "+ Value);
 }
 void VNDSParser::SetGVar(std::string Var, int Value)
 {
-	GlobalVariables[Var].Data.Integer = Value;
+	if(!GVarExists(Var)) {	MakeGVar(Var,Value);	}
+	else GlobalVariables[Var].Data.Integer = Value;
+	TextAdd("SetGVar : " + Var + " : "+ std::to_string(Value));
 }
 
 /*
@@ -357,6 +397,8 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 		std::string Operator = Tokens[1].GetString(String);
 		std::string RightSide = Tokens[2].GetString(String);
 
+		TextAdd("If " + LeftSide + Operator + RightSide);
+
 		VNDSVariable LeftVar, RightVar;
 		if(LocalVariables.count(LeftSide) != 0)	
 		{
@@ -389,6 +431,8 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 			IfTrue = (LeftVar < RightVar);
 	}
 
+	TextAdd(IfTrue ? "True" : "False");
+
 	if(!IfTrue)	//Skip to matching fi
 	{
 		bool Found = false;
@@ -412,7 +456,7 @@ void VNDSParser::FunctionIf(StringViewer Viewer)
 
 void VNDSParser::FunctionClearText()
 {
-	Text->TextClear();
+	//Text->TextClear();
 }
 
 void VNDSParser::FunctionJump(StringViewer Viewer)
@@ -475,18 +519,19 @@ void VNDSParser::FunctionSetimg(StringViewer Viewer)
 
 void VNDSParser::FunctionSetVar(StringViewer Viewer)
 {
-	auto tokens = stringsplit(Viewer.GetString(StringBlob));
+	std::string String = Viewer.GetString(StringBlob);
+	auto tokens = stringsplit(String);
+	char Operator  = tokens[1].GetString(String).at(0);
+	std::string LeftSide  = tokens[0].GetString(String);
+	std::string RightSide = tokens[2].GetString(String);
 
-	char Operator  = tokens[1].GetString(StringBlob).at(0);
-	std::string LeftSide  = tokens[0].GetString(StringBlob);
-	std::string RightSide = tokens[2].GetString(StringBlob);
-
-	int VarInt;
-	try{	VarInt = std::stoi(RightSide);	}
+	int VarInt = 0;
+	bool isValid = false;
+	try{	VarInt = std::stoi(RightSide); isValid = true;	}
 	catch(...) {	VarInt = 0;	}
 
 	VNDSVariable RightVar;
-	if(std::string(std::to_string(VarInt)) == RightSide)
+	if(isValid)	//Is integer?
 	{
 		RightVar = VNDSVariable(VarInt);
 	}
@@ -548,6 +593,6 @@ void VNDSParser::FunctionChoice(StringViewer Viewer)
 	QuestionAnswerViewer = Viewer;
 	Blocking = true;
 	QuestionWait = true;
-	TextAdd(String);
+	TextAdd(" ");	
 	Text->SetQuestion(String);
 }

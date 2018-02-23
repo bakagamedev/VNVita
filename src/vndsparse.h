@@ -74,6 +74,12 @@ private:
 	void SetVar(std::string Var, int Value);
 	void SetGVar(std::string Var, std::string Value);
 	void SetGVar(std::string Var, int Value);
+	bool VarExists(std::string& Var);
+	bool GVarExists(std::string& Var);
+	void MakeVar(std::string& VarName, int Value);
+	void MakeVar(std::string& VarName, std::string& Value);
+	void MakeGVar(std::string& VarName, int Value);
+	void MakeGVar(std::string& VarName, std::string& Value);
 
 	//VNDS Functions
 	void FunctionText(StringViewer Viewer);
